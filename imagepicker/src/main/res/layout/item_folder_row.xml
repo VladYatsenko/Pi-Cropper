@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="fddfdfdf"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:maxLines="1"
         android:lines="1"
