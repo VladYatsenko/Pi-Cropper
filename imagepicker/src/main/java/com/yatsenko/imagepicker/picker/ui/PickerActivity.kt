@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +31,8 @@ import com.yatsenko.imagepicker.picker.utils.checkRequestPermissionsResult
 import com.yatsenko.imagepicker.viewer.StfalconImageViewer
 import kotlinx.android.synthetic.main.activity_picker.*
 import kotlinx.android.synthetic.main.placeholder_progress_loader.*
+import kotlinx.android.synthetic.main.view_overlay.view.*
+import kotlinx.android.synthetic.main.view_overlay.view.imagePositionTxt
 import java.util.concurrent.Executors
 
 class PickerActivity : AppCompatActivity() {
@@ -66,6 +70,9 @@ class PickerActivity : AppCompatActivity() {
 
     private lateinit var options: PickerOptions
 
+    private var fullscreenPosition = 0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
@@ -83,7 +90,9 @@ class PickerActivity : AppCompatActivity() {
         options = intent.extras?.getParcelable(OPTIONS) ?: PickerOptions()
     }
 
+
     private fun setupRV() {
+
         imageAdapter = ImageGripAdapter()
         imageAdapter?.single = options.getMaxNum() == 1
         imageAdapter?.listener = object : OnImageClickListener {
@@ -92,37 +101,41 @@ class PickerActivity : AppCompatActivity() {
                     //open cropper
                 } else {
                     //open fullscreen
+
+                    fullscreenPosition = position
+
+                    val overlayView = LayoutInflater.from(this@PickerActivity).inflate(R.layout.view_overlay, null)
+                    overlayView.backBtn.setOnClickListener {
+//                        viewer.updateTransitionImage(imageAdapter?.getImageViewByPosition(fullscreenPosition))
+                        viewer.close()
+                    }
+
+                    overlayView.imagePositionTxt.setOnClickListener {
+                        onImageSelected(fullscreenPosition)
+                        updateOverlayView(overlayView, fullscreenPosition)
+
+                        //todo wait to adapter updated
+                        //                        viewer.updateTransitionImage(imageAdapter?.getImageViewByPosition(fullscreenPosition))
+                    }
+
                     viewer = StfalconImageViewer.Builder<ImageEntity>(this@PickerActivity, imageAdapter?.getData()?.toMutableList(), ::loadImage)
                         .withHiddenStatusBar(false)
                         .withStartPosition(position)
-                        .withTransitionFrom(imageAdapter?.getImageViewByPosition(position))
-                        .withImageChangeListener {
-                            viewer.updateTransitionImage(imageAdapter?.getImageViewByPosition(it))
+                        .withOverlayView(overlayView)
+//                        .withTransitionFrom(imageAdapter?.getImageViewByPosition(position))
+                        .withImageChangeListener { fullscreenPosition ->
+                            this@PickerActivity.fullscreenPosition = fullscreenPosition
+                            updateOverlayView(overlayView, fullscreenPosition)
+//                            viewer.updateTransitionImage(imageAdapter?.getImageViewByPosition(fullscreenPosition))
                         }
                         .show()
+
+                    updateOverlayView(overlayView, fullscreenPosition)
                 }
             }
 
             override fun onCheckboxClickListener(position: Int) {
-                imageAdapter?.getData()?.getOrNull(position)?.let {
-                    val isSelected: Boolean = ImageDataModel.instance.hasDataInResult(it)
-
-                    if (isSelected) {
-                        ImageDataModel.instance.delDataFromResult(it)
-                        imageAdapter?.notifyDataSetChanged()
-                    } else {
-                        if (ImageDataModel.instance.getResultNum() == options.getMaxNum()) {
-                            showToast("limit ${options.getMaxNum()}")
-                        } else {
-                            ImageDataModel.instance.addDataToResult(it)
-                            imageAdapter?.notifyDataSetChanged()
-                        }
-                    }
-                }
-
-                doneFab.also {
-                    if (ImageDataModel.instance.getResultNum() == 0) it.hide() else it.show()
-                }
+                onImageSelected(position)
             }
         }
         imageRV?.layoutManager = GridLayoutManager(this, 3, RecyclerView.VERTICAL, false)
@@ -200,13 +213,46 @@ class PickerActivity : AppCompatActivity() {
             }
         }
 
-        checkDataByFloder(folder)
+        checkDataByFolder(folder)
     }
 
-    private fun checkDataByFloder(folder: ImageFolderEntity?) {
+    private fun checkDataByFolder(folder: ImageFolderEntity?) {
         addNewRunnable(Runnable {
             onDataChanged(ImageDataModel.instance.getImagesByFolder(folder))
         })
+    }
+
+    private fun onImageSelected(position: Int) {
+        imageAdapter?.getData()?.getOrNull(position)?.let {
+            val isSelected: Boolean = ImageDataModel.instance.hasDataInResult(it)
+
+            if (isSelected) {
+                ImageDataModel.instance.delDataFromResult(it)
+                imageAdapter?.notifyDataSetChanged()
+            } else {
+                if (ImageDataModel.instance.getResultNum() == options.getMaxNum()) {
+                    //todo toast fix
+                    showToast("limit ${options.getMaxNum()}")
+                } else {
+                    ImageDataModel.instance.addDataToResult(it)
+                    imageAdapter?.notifyDataSetChanged()
+                }
+            }
+        }
+
+        doneFab.also {
+            if (ImageDataModel.instance.getResultNum() == 0) it.hide() else it.show()
+        }
+    }
+
+    private fun updateOverlayView(overlayView: View, fullscreenPosition: Int) {
+        val image = imageAdapter?.getData()?.getOrNull(fullscreenPosition)
+        val isSelected = ImageDataModel.instance.hasDataInResult(image)
+
+        overlayView.imagePositionTxt.text =
+            if (isSelected) ImageDataModel.instance.indexOfDataInResult(image).plus(1).toString() else ""
+        overlayView.imagePositionTxt.background =
+            ContextCompat.getDrawable(this@PickerActivity, if (isSelected) R.drawable.circle_selected else R.drawable.circle)
     }
 
     private fun addNewRunnable(runnable: Runnable) {
@@ -260,6 +306,5 @@ class PickerActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
 
 }

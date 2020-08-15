@@ -17,13 +17,8 @@ import kotlinx.android.synthetic.main.item_image.view.*
 class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var images: ArrayList<ImageEntity> = ArrayList()
-    private val imageViews = HashMap<Int, ImageView>()
     var single: Boolean = true
     var listener: OnImageClickListener? = null
-
-    fun getImageViewByPosition(position: Int): ImageView? {
-        return imageViews[position]
-    }
 
     fun getData(): ArrayList<ImageEntity> {
         return images
@@ -66,8 +61,6 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 Glide.with(itemView.context)
                     .load(image.imagePath)
                     .into(itemView.imagePreviewImg)
-
-                imageViews[adapterPosition] = itemView.imagePreviewImg
             }
 
             itemView.imagePreviewImg.setOnClickListener {
@@ -78,9 +71,7 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
         }
 
-        override fun unbindView() {
-            imageViews.remove(adapterPosition)
-        }
+        override fun unbindView() {}
     }
 
 }

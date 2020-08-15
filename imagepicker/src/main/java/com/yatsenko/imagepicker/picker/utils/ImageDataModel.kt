@@ -127,18 +127,17 @@ class ImageDataModel {
             val selection = MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=? or " +
                     MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=? or " +
                     MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?";
-            //只筛选png、jpg、jpeg、PNG、JPG、JPEG
+
             val selectionArgs = arrayOf("image/png", "image/jpg", "image/jpeg", "image/PNG", "image/JPG", "image/JPEG")
             val sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc";
-            //得到一个游标
+
             val contentResolver = context.contentResolver
             val cursor = contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, selection, selectionArgs, sortOrder);
 
             if (cursor != null && cursor.moveToFirst()) {
-                //图片总数
+
                 allImgFolder.num = cursor.count
 
-                // 获取指定列的索引
                 val imageIDIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
                 val imagePathIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 val imageModifyIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)
@@ -166,7 +165,6 @@ class ImageDataModel {
                             continue
                     }
 
-                    //创建图片对象
                     mAllImgList.add(ImageEntity(imageId, imagePath, lastModify?.toLong(), width?.toInt(), height?.toInt(), folderId))
 
                     var folderBean: ImageFolderEntity? = null;

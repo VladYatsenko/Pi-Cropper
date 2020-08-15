@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mirage"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -17,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/colorPrimary"
+            android:background="@color/pickerColorPrimary"
             android:elevation="8dp"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
@@ -56,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_done"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@color/pickerColorPrimary"
             app:tint="@android:color/white" />
 
 
