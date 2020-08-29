@@ -20,6 +20,22 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var single: Boolean = true
     var listener: OnImageClickListener? = null
 
+    fun notifyDataSetChangedWithoutItem(position: Int){
+
+        val indexes = arrayListOf<Int>()
+
+        ImageDataModel.instance.getResultList().forEach {
+            if (images.contains(it)){
+                val index = images.indexOf(it)
+                if (index != position)
+                    indexes.add(index)
+            }
+        }
+        indexes.forEach {
+            this.notifyItemChanged(it)
+        }
+    }
+
     fun getData(): ArrayList<ImageEntity> {
         return images
     }
@@ -72,6 +88,19 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
 
         override fun unbindView() {}
+
+        fun getImageView(): ImageView? {
+            return itemView.imagePreviewImg
+        }
+
+        fun hideItemView() {
+            itemView.visibility = View.GONE
+        }
+
+        fun showItemView(){
+            itemView.visibility = View.VISIBLE
+        }
+
     }
 
 }
