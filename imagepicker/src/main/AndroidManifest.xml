@@ -9,8 +9,7 @@
     <!--todo remove requestLegacyExternalStorage-->
     <application
         android:allowBackup="true"
-        android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true">
+        android:supportsRtl="true">
 
         <activity android:name="com.yatsenko.imagepicker.picker.ui.PickerActivity"
             android:theme="@style/AppTheme"/>

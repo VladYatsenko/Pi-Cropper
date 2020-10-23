@@ -96,4 +96,8 @@ internal class ImageViewerDialog<T>(
             onDismiss = { dialog.dismiss() }
         }
     }
+
+    fun resetScale() {
+        viewerView.resetScale()
+    }
 }

@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.cropper.ui.ImageCropperDialog
 import com.yatsenko.imagepicker.picker.ImagePicker
 import com.yatsenko.imagepicker.picker.listeners.OnImageClickListener
 import com.yatsenko.imagepicker.picker.model.ImageEntity
@@ -105,6 +107,12 @@ class PickerActivity : AppCompatActivity() {
                     val overlayView = LayoutInflater.from(this@PickerActivity).inflate(R.layout.view_overlay, null)
                     overlayView.backBtn.setOnClickListener {
                         viewer.close()
+                    }
+
+                    overlayView.cropBtn.setOnClickListener {
+                        viewer.resetScale()
+                        val uri = Uri.parse(imageAdapter?.getData()?.get(fullscreenPosition)?.imagePath)
+                        ImageCropperDialog.newInstance(supportFragmentManager, uri)
                     }
 
                     overlayView.imagePositionTxt.setOnClickListener {
@@ -258,10 +266,8 @@ class PickerActivity : AppCompatActivity() {
         val image = imageAdapter?.getData()?.getOrNull(fullscreenPosition)
         val isSelected = ImageDataModel.instance.hasDataInResult(image)
 
-        overlayView.imagePositionTxt.text =
-            if (isSelected) ImageDataModel.instance.indexOfDataInResult(image).plus(1).toString() else ""
-        overlayView.imagePositionTxt.background =
-            ContextCompat.getDrawable(this@PickerActivity, if (isSelected) R.drawable.circle_selected else R.drawable.circle)
+        overlayView.imagePositionTxt.text = if (isSelected) ImageDataModel.instance.indexOfDataInResult(image).plus(1).toString() else ""
+        overlayView.imagePositionTxt.background = ContextCompat.getDrawable(this@PickerActivity, if (isSelected) R.drawable.circle_selected else R.drawable.circle)
     }
 
     private fun getTransitionImageView(): ImageView? {
@@ -269,9 +275,7 @@ class PickerActivity : AppCompatActivity() {
     }
 
     private fun getImageViewHolder(): ImageGripAdapter.ImageItemHolder? {
-        val viewHolder = imageRV.getChildAt(fullscreenPosition)?.let {
-            imageRV.getChildViewHolder(it)
-        }
+        val viewHolder = imageRV.findViewHolderForAdapterPosition(fullscreenPosition)
         return if (viewHolder is ImageGripAdapter.ImageItemHolder) {
             viewHolder
         } else null

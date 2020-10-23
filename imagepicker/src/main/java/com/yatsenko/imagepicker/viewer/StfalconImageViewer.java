@@ -100,6 +100,10 @@ public class StfalconImageViewer<T> {
         dialog.updateTransitionImage(imageView);
     }
 
+    public void resetScale(){
+        dialog.resetScale();
+    }
+
     /**
      * Builder class for {@link StfalconImageViewer}
      */
