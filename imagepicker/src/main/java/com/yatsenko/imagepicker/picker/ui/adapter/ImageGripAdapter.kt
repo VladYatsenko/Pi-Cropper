@@ -75,7 +75,7 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     ContextCompat.getDrawable(itemView.context, if (isSelected) R.drawable.circle_selected else R.drawable.circle)
 
                 Glide.with(itemView.context)
-                    .load(image.imagePath)
+                    .load(image.getImage())
                     .into(itemView.imagePreviewImg)
             }
 

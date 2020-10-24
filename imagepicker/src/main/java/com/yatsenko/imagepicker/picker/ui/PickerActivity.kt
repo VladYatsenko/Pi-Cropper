@@ -112,11 +112,17 @@ class PickerActivity : AppCompatActivity() {
                     overlayView.cropBtn.setOnClickListener {
                         viewer.resetScale()
                         val uri = Uri.parse(imageAdapter?.getData()?.get(fullscreenPosition)?.imagePath)
-                        ImageCropperDialog.newInstance(supportFragmentManager, uri)
+                        ImageCropperDialog.show(supportFragmentManager, uri) {
+                            val image = imageAdapter?.getData()?.getOrNull(fullscreenPosition)
+                            image?.croppedImagePath = it.toString()
+                            onImageSelected(fullscreenPosition, false, true)
+                            updateOverlayView(overlayView)
+                            viewer.updateImages(imageAdapter?.getData()?.toMutableList())
+                        }
                     }
 
                     overlayView.imagePositionTxt.setOnClickListener {
-                        onImageSelected(fullscreenPosition, false)
+                        onImageSelected(fullscreenPosition, false, false)
                         updateOverlayView(overlayView)
                     }
 
@@ -144,7 +150,7 @@ class PickerActivity : AppCompatActivity() {
             }
 
             override fun onCheckboxClickListener(position: Int) {
-                onImageSelected(position, true)
+                onImageSelected(position, true, false)
             }
         }
         imageRV?.layoutManager = GridLayoutManager(this, 3, RecyclerView.VERTICAL, false)
@@ -231,34 +237,46 @@ class PickerActivity : AppCompatActivity() {
         })
     }
 
-    private fun onImageSelected(position: Int, updateIncludePosition: Boolean) {
+    private fun onImageSelected(position: Int, updateIncludePosition: Boolean, fromCrop: Boolean) {
         imageAdapter?.getData()?.getOrNull(position)?.let {
+
             val isSelected: Boolean = ImageDataModel.instance.hasDataInResult(it)
 
-            if (isSelected) {
-                ImageDataModel.instance.delDataFromResult(it)
-                if (updateIncludePosition) {
-                    imageAdapter?.notifyDataSetChanged()
+            if (fromCrop && !isSelected){
+                if (ImageDataModel.instance.getResultNum() == options.getMaxNum()) {
+                    //todo toast fix
+                    showToast("limit ${options.getMaxNum()}")
                 } else {
-                    imageAdapter?.notifyDataSetChangedWithoutItem(position)
+                    ImageDataModel.instance.addDataToResult(it)
+                    updateGrid(position, updateIncludePosition)
                 }
+            } else if (fromCrop){
+                updateGrid(position, updateIncludePosition)
+            } else if (isSelected) {
+                it.croppedImagePath = null
+                ImageDataModel.instance.delDataFromResult(it)
+                updateGrid(position, updateIncludePosition)
             } else {
                 if (ImageDataModel.instance.getResultNum() == options.getMaxNum()) {
                     //todo toast fix
                     showToast("limit ${options.getMaxNum()}")
                 } else {
                     ImageDataModel.instance.addDataToResult(it)
-                    if (updateIncludePosition) {
-                        imageAdapter?.notifyDataSetChanged()
-                    } else {
-                        imageAdapter?.notifyDataSetChangedWithoutItem(position)
-                    }
+                    updateGrid(position, updateIncludePosition)
                 }
             }
         }
 
         doneFab.also {
             if (ImageDataModel.instance.getResultNum() == 0) it.hide() else it.show()
+        }
+    }
+
+    private fun updateGrid(position: Int, updateIncludePosition: Boolean){
+        if (updateIncludePosition) {
+            imageAdapter?.notifyDataSetChanged()
+        } else {
+            imageAdapter?.notifyDataSetChangedWithoutItem(position)
         }
     }
 
@@ -306,7 +324,7 @@ class PickerActivity : AppCompatActivity() {
 
     private fun loadImage(imageView: ImageView, image: ImageEntity?) {
         Glide.with(this)
-            .load(image?.imagePath)
+            .load(image?.getImage())
             .into(imageView)
     }
 

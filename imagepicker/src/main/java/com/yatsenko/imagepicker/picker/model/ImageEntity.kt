@@ -7,6 +7,7 @@ class ImageEntity : Parcelable {
 
     var imageId: String? = null
     var imagePath: String? = null
+    var croppedImagePath: String? = null
     var lastModified: Long? = null
     var width: Int? = null
     var height: Int? = null
@@ -41,6 +42,10 @@ class ImageEntity : Parcelable {
 
     override fun describeContents(): Int {
         return 0
+    }
+
+    fun getImage(): String? {
+        return if (croppedImagePath != null) croppedImagePath else imagePath
     }
 
     companion object CREATOR : Parcelable.Creator<ImageEntity> {
