@@ -27,7 +27,7 @@ import com.yatsenko.imagepicker.picker.model.ImageFolderEntity
 import com.yatsenko.imagepicker.picker.model.PickerOptions
 import com.yatsenko.imagepicker.picker.ui.adapter.HeaderStockOverviewAdapter
 import com.yatsenko.imagepicker.picker.ui.adapter.ImageGripAdapter
-import com.yatsenko.imagepicker.picker.utils.ImageDataModel
+import com.yatsenko.imagepicker.picker.datasource.ImageDataSource
 import com.yatsenko.imagepicker.picker.utils.checkPermissions
 import com.yatsenko.imagepicker.picker.utils.checkRequestPermissionsResult
 import com.yatsenko.imagepicker.viewer.StfalconImageViewer
@@ -181,7 +181,7 @@ class PickerActivity : AppCompatActivity() {
     private fun scanData() {
         addNewRunnable(Runnable {
             showLoading()
-            val success: Boolean = ImageDataModel.instance.scanAllData(this)
+            val success: Boolean = ImageDataSource.INSTANCE.scanAllData(this)
             hideLoading()
             if (!success)
                 showToast("Scan failed")
@@ -190,12 +190,12 @@ class PickerActivity : AppCompatActivity() {
                 setupToolbarSpinner()
             }
 
-            onFolderChanged(ImageDataModel.instance.getAllFolderList().firstOrNull())
+            onFolderChanged(ImageDataSource.INSTANCE.getAllFolderList().firstOrNull())
         })
     }
 
     private fun setupToolbarSpinner() {
-        folderAdapter = HeaderStockOverviewAdapter(this, R.layout.item_folder, ImageDataModel.instance.getAllFolderList())
+        folderAdapter = HeaderStockOverviewAdapter(this, R.layout.item_folder, ImageDataSource.INSTANCE.getAllFolderList())
         folderSpinner?.adapter = folderAdapter
 
         folderSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -233,42 +233,42 @@ class PickerActivity : AppCompatActivity() {
 
     private fun checkDataByFolder(folder: ImageFolderEntity?) {
         addNewRunnable(Runnable {
-            onDataChanged(ImageDataModel.instance.getImagesByFolder(folder))
+            onDataChanged(ImageDataSource.INSTANCE.getImagesByFolder(folder))
         })
     }
 
     private fun onImageSelected(position: Int, updateIncludePosition: Boolean, fromCrop: Boolean) {
         imageAdapter?.getData()?.getOrNull(position)?.let {
 
-            val isSelected: Boolean = ImageDataModel.instance.hasDataInResult(it)
+            val isSelected: Boolean = ImageDataSource.INSTANCE.hasDataInResult(it)
 
             if (fromCrop && !isSelected){
-                if (ImageDataModel.instance.getResultNum() == options.getMaxNum()) {
+                if (ImageDataSource.INSTANCE.getResultNum() == options.getMaxNum()) {
                     //todo toast fix
                     showToast("limit ${options.getMaxNum()}")
                 } else {
-                    ImageDataModel.instance.addDataToResult(it)
+                    ImageDataSource.INSTANCE.addDataToResult(it)
                     updateGrid(position, updateIncludePosition)
                 }
             } else if (fromCrop){
                 updateGrid(position, updateIncludePosition)
             } else if (isSelected) {
                 it.croppedImagePath = null
-                ImageDataModel.instance.delDataFromResult(it)
+                ImageDataSource.INSTANCE.deleteDataFromResult(it)
                 updateGrid(position, updateIncludePosition)
             } else {
-                if (ImageDataModel.instance.getResultNum() == options.getMaxNum()) {
+                if (ImageDataSource.INSTANCE.getResultNum() == options.getMaxNum()) {
                     //todo toast fix
                     showToast("limit ${options.getMaxNum()}")
                 } else {
-                    ImageDataModel.instance.addDataToResult(it)
+                    ImageDataSource.INSTANCE.addDataToResult(it)
                     updateGrid(position, updateIncludePosition)
                 }
             }
         }
 
         doneFab.also {
-            if (ImageDataModel.instance.getResultNum() == 0) it.hide() else it.show()
+            if (ImageDataSource.INSTANCE.getResultNum() == 0) it.hide() else it.show()
         }
     }
 
@@ -282,9 +282,9 @@ class PickerActivity : AppCompatActivity() {
 
     private fun updateOverlayView(overlayView: View) {
         val image = imageAdapter?.getData()?.getOrNull(fullscreenPosition)
-        val isSelected = ImageDataModel.instance.hasDataInResult(image)
+        val isSelected = ImageDataSource.INSTANCE.hasDataInResult(image)
 
-        overlayView.imagePositionTxt.text = if (isSelected) ImageDataModel.instance.indexOfDataInResult(image).plus(1).toString() else ""
+        overlayView.imagePositionTxt.text = if (isSelected) ImageDataSource.INSTANCE.indexOfDataInResult(image).plus(1).toString() else ""
         overlayView.imagePositionTxt.background = ContextCompat.getDrawable(this@PickerActivity, if (isSelected) R.drawable.circle_selected else R.drawable.circle)
     }
 
@@ -317,7 +317,7 @@ class PickerActivity : AppCompatActivity() {
 
     private fun returnAllSelectedImages() {
         val intent = Intent()
-        intent.putParcelableArrayListExtra(ImagePicker.INTENT_RESULT_DATA, ImageDataModel.instance.getResultList())
+        intent.putParcelableArrayListExtra(ImagePicker.INTENT_RESULT_DATA, ImageDataSource.INSTANCE.getResultList())
         setResult(RESULT_OK, intent)
         finish()
     }
@@ -345,7 +345,7 @@ class PickerActivity : AppCompatActivity() {
         super.onDestroy()
         try {
             mCachedThreadService.shutdownNow()
-            ImageDataModel.instance.clear()
+            ImageDataSource.INSTANCE.clear()
         } catch (e: Exception) {
             e.printStackTrace()
         }

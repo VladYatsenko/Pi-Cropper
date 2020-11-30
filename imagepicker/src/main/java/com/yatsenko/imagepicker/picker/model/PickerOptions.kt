@@ -16,11 +16,6 @@ class PickerOptions : Parcelable{
         cachePath = parcel.readString()
     }
 
-
-//    private val cropParams: ImagePickerCropParams? = null
-//    private val needCrop = false
-//    private val needCamera = true
-
     fun getType(): ImagePickType? {
         return type
     }

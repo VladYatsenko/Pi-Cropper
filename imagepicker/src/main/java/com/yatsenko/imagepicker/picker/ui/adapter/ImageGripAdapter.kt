@@ -11,7 +11,7 @@ import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.picker.abstractions.IBinder
 import com.yatsenko.imagepicker.picker.listeners.OnImageClickListener
 import com.yatsenko.imagepicker.picker.model.ImageEntity
-import com.yatsenko.imagepicker.picker.utils.ImageDataModel
+import com.yatsenko.imagepicker.picker.datasource.ImageDataSource
 import kotlinx.android.synthetic.main.item_image.view.*
 
 class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -24,7 +24,7 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         val indexes = arrayListOf<Int>()
 
-        ImageDataModel.instance.getResultList().forEach {
+        ImageDataSource.INSTANCE.getResultList().forEach {
             if (images.contains(it)){
                 val index = images.indexOf(it)
                 if (index != position)
@@ -65,12 +65,12 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun bindView() {
             images.getOrNull(adapterPosition)?.let { image ->
-                val isSelected: Boolean = ImageDataModel.instance.hasDataInResult(image)
+                val isSelected: Boolean = ImageDataSource.INSTANCE.hasDataInResult(image)
 
                 itemView.imagePositionTxt.visibility = if (single) View.GONE else View.VISIBLE
 
                 itemView.imagePositionTxt.text =
-                    if (isSelected) ImageDataModel.instance.indexOfDataInResult(image).plus(1).toString() else ""
+                    if (isSelected) ImageDataSource.INSTANCE.indexOfDataInResult(image).plus(1).toString() else ""
                 itemView.imagePositionTxt.background =
                     ContextCompat.getDrawable(itemView.context, if (isSelected) R.drawable.circle_selected else R.drawable.circle)
 

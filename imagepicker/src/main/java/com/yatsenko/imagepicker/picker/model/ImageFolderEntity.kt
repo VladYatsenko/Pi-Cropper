@@ -12,9 +12,4 @@ class ImageFolderEntity constructor(
         num?.plus(1)
     }
 
-//    private val folderId: String? = null
-//    private val folderName: String? = null
-//    private val firstImgPath: String? = null
-//    private val num = 0
-
 }

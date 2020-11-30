@@ -13,6 +13,13 @@ class ImageEntity : Parcelable {
     var height: Int? = null
     var folderId: String? = null
 
+    constructor(imageId: String?, imagePath: String?, lastModified: Long?, folderId: String?){
+        this.imageId = imageId
+        this.imagePath = imagePath
+        this.lastModified = lastModified
+        this.folderId = folderId
+    }
+
     constructor(imageId: String?, imagePath: String?, lastModified: Long?, width: Int?, height: Int?, folderId: String?){
         this.imageId = imageId
         this.imagePath = imagePath
