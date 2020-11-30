@@ -17,6 +17,7 @@ class ImageEntity : Parcelable {
         this.imageId = imageId
         this.imagePath = imagePath
         this.lastModified = lastModified
+        this.height = height
         this.folderId = folderId
     }
 

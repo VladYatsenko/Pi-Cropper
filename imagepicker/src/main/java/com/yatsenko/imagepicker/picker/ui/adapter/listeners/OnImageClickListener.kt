@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.picker.listeners
+package com.yatsenko.imagepicker.picker.ui.adapter.listeners
 
 interface OnImageClickListener {
 

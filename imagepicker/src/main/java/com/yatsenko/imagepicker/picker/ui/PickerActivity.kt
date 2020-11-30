@@ -21,7 +21,7 @@ import com.bumptech.glide.Glide
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.cropper.ui.ImageCropperDialog
 import com.yatsenko.imagepicker.picker.ImagePicker
-import com.yatsenko.imagepicker.picker.listeners.OnImageClickListener
+import com.yatsenko.imagepicker.picker.ui.adapter.listeners.OnImageClickListener
 import com.yatsenko.imagepicker.picker.model.ImageEntity
 import com.yatsenko.imagepicker.picker.model.ImageFolderEntity
 import com.yatsenko.imagepicker.picker.model.PickerOptions
@@ -59,26 +59,23 @@ class PickerActivity : AppCompatActivity() {
         }
     }
 
-    private val mCachedThreadService = Executors.newCachedThreadPool()
-    private var mHandler: Handler? = null
+    private val cachedThreadService = Executors.newCachedThreadPool()
+    private var handler: Handler? = null
 
-    private var mCurFolder: ImageFolderEntity? = null
+    private var currenFolder: ImageFolderEntity? = null
+    private var fullscreenPosition = 0
 
-    private var imageAdapter: ImageGripAdapter? = null
+    private var imageAdapter: ImageGripAdapter = ImageGripAdapter()
     private var folderAdapter: HeaderStockOverviewAdapter? = null
 
     private lateinit var viewer: StfalconImageViewer<ImageEntity>
-
     private lateinit var options: PickerOptions
-
-    private var fullscreenPosition = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
 
-        mHandler = Handler(mainLooper)
+        handler = Handler(mainLooper)
 
         parseIntent()
         setupRV()
@@ -92,11 +89,9 @@ class PickerActivity : AppCompatActivity() {
     }
 
     private fun setupRV() {
+        imageAdapter.single = options.getMaxNum() == 1
 
-        imageAdapter = ImageGripAdapter()
-        imageAdapter?.single = options.getMaxNum() == 1
-
-        imageAdapter?.listener = object : OnImageClickListener {
+        imageAdapter.listener = object : OnImageClickListener {
             override fun onImageClickListener(position: Int) {
                 if (options.getMaxNum() == 1) {
                     //open cropper
@@ -111,13 +106,13 @@ class PickerActivity : AppCompatActivity() {
 
                     overlayView.cropBtn.setOnClickListener {
                         viewer.resetScale()
-                        val uri = Uri.parse(imageAdapter?.getData()?.get(fullscreenPosition)?.imagePath)
+                        val uri = Uri.parse(imageAdapter.getImage(fullscreenPosition).imagePath)
                         ImageCropperDialog.show(supportFragmentManager, uri) {
-                            val image = imageAdapter?.getData()?.getOrNull(fullscreenPosition)
-                            image?.croppedImagePath = it.toString()
+                            val image = imageAdapter.getImage(fullscreenPosition)
+                            image.croppedImagePath = it.toString()
                             onImageSelected(fullscreenPosition, false, true)
                             updateOverlayView(overlayView)
-                            viewer.updateImages(imageAdapter?.getData()?.toMutableList())
+                            viewer.updateImages(imageAdapter.getImages().toMutableList())
                         }
                     }
 
@@ -126,22 +121,22 @@ class PickerActivity : AppCompatActivity() {
                         updateOverlayView(overlayView)
                     }
 
-                    viewer = StfalconImageViewer.Builder<ImageEntity>(this@PickerActivity, imageAdapter?.getData()?.toMutableList(), ::loadImage)
+                    viewer = StfalconImageViewer.Builder<ImageEntity>(this@PickerActivity, imageAdapter.getImages().toMutableList(), ::loadImage)
                         .withHiddenStatusBar(false)
                         .withStartPosition(position)
                         .withOverlayView(overlayView)
                         .withTransitionFrom(getTransitionImageView())
-                        .withImageChangeListener { position ->
+                        .withImageChangeListener { viewerPosition ->
                             getImageViewHolder()?.showItemView()
-                            fullscreenPosition = position
+                            fullscreenPosition = viewerPosition
                             getImageViewHolder()?.hideItemView()
-                            imageAdapter?.notifyDataSetChangedWithoutItem(position)
+                            imageAdapter.notifyDataSetChangedWithoutItem(viewerPosition)
                             updateOverlayView(overlayView)
                             viewer.updateTransitionImage(getTransitionImageView())
                         }
                         .withDismissListener {
                             getImageViewHolder()?.showItemView()
-                            imageAdapter?.notifyDataSetChanged()
+                            imageAdapter.notifyDataSetChanged()
                         }
                         .show()
                     getImageViewHolder()?.hideItemView()
@@ -178,6 +173,7 @@ class PickerActivity : AppCompatActivity() {
         }
     }
 
+    //done
     private fun scanData() {
         addNewRunnable(Runnable {
             showLoading()
@@ -186,7 +182,7 @@ class PickerActivity : AppCompatActivity() {
             if (!success)
                 showToast("Scan failed")
 
-            mHandler?.post {
+            handler?.post {
                 setupToolbarSpinner()
             }
 
@@ -194,6 +190,7 @@ class PickerActivity : AppCompatActivity() {
         })
     }
 
+    //done
     private fun setupToolbarSpinner() {
         folderAdapter = HeaderStockOverviewAdapter(this, R.layout.item_folder, ImageDataSource.INSTANCE.getAllFolderList())
         folderSpinner?.adapter = folderAdapter
@@ -210,19 +207,19 @@ class PickerActivity : AppCompatActivity() {
     }
 
     private fun onDataChanged(imagesByFolder: ArrayList<ImageEntity>?) {
-        mHandler?.post {
-            imageAdapter?.refreshData(imagesByFolder)
+        handler?.post {
+            imageAdapter.refreshData(imagesByFolder)
             imageRV?.scrollTo(0, 0)
         }
     }
 
     private fun onFolderChanged(folder: ImageFolderEntity?) {
-        if (mCurFolder != null && folder != null && mCurFolder?.equals(folder) == true)
+        if (currenFolder != null && folder != null && currenFolder?.equals(folder) == true)
             return
 
-        mCurFolder = folder
+        currenFolder = folder
 
-        mHandler?.post {
+        handler?.post {
             folderAdapter?.getPosition(folder)?.let {
                 folderSpinner?.setSelection(it)
             }
@@ -238,7 +235,7 @@ class PickerActivity : AppCompatActivity() {
     }
 
     private fun onImageSelected(position: Int, updateIncludePosition: Boolean, fromCrop: Boolean) {
-        imageAdapter?.getData()?.getOrNull(position)?.let {
+        imageAdapter.getImage(position).let {
 
             val isSelected: Boolean = ImageDataSource.INSTANCE.hasDataInResult(it)
 
@@ -274,14 +271,14 @@ class PickerActivity : AppCompatActivity() {
 
     private fun updateGrid(position: Int, updateIncludePosition: Boolean){
         if (updateIncludePosition) {
-            imageAdapter?.notifyDataSetChanged()
+            imageAdapter.notifyDataSetChanged()
         } else {
-            imageAdapter?.notifyDataSetChangedWithoutItem(position)
+            imageAdapter.notifyDataSetChangedWithoutItem(position)
         }
     }
 
     private fun updateOverlayView(overlayView: View) {
-        val image = imageAdapter?.getData()?.getOrNull(fullscreenPosition)
+        val image = imageAdapter.getImage(fullscreenPosition)
         val isSelected = ImageDataSource.INSTANCE.hasDataInResult(image)
 
         overlayView.imagePositionTxt.text = if (isSelected) ImageDataSource.INSTANCE.indexOfDataInResult(image).plus(1).toString() else ""
@@ -289,30 +286,27 @@ class PickerActivity : AppCompatActivity() {
     }
 
     private fun getTransitionImageView(): ImageView? {
-        return getImageViewHolder()?.getImageView()
+        return imageAdapter.getTransitionImageView(fullscreenPosition)
     }
 
     private fun getImageViewHolder(): ImageGripAdapter.ImageItemHolder? {
-        val viewHolder = imageRV.findViewHolderForAdapterPosition(fullscreenPosition)
-        return if (viewHolder is ImageGripAdapter.ImageItemHolder) {
-            viewHolder
-        } else null
+        return imageAdapter.getViewHolderByPosition(fullscreenPosition)
     }
 
     private fun addNewRunnable(runnable: Runnable) {
-        mCachedThreadService.execute(runnable)
+        cachedThreadService.execute(runnable)
     }
 
     private fun showToast(text: String?) {
-        mHandler?.post { Toast.makeText(this, text ?: "", Toast.LENGTH_SHORT).show() }
+        handler?.post { Toast.makeText(this, text ?: "", Toast.LENGTH_SHORT).show() }
     }
 
     private fun showLoading() {
-        mHandler?.post { placeholderProgress?.visibility = View.VISIBLE }
+        handler?.post { placeholderProgress?.visibility = View.VISIBLE }
     }
 
     private fun hideLoading() {
-        mHandler?.post { placeholderProgress?.visibility = View.GONE }
+        handler?.post { placeholderProgress?.visibility = View.GONE }
     }
 
     private fun returnAllSelectedImages() {
@@ -344,7 +338,7 @@ class PickerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         try {
-            mCachedThreadService.shutdownNow()
+            cachedThreadService.shutdownNow()
             ImageDataSource.INSTANCE.clear()
         } catch (e: Exception) {
             e.printStackTrace()

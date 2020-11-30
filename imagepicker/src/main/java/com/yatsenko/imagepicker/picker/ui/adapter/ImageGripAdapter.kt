@@ -8,8 +8,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yatsenko.imagepicker.R
-import com.yatsenko.imagepicker.picker.abstractions.IBinder
-import com.yatsenko.imagepicker.picker.listeners.OnImageClickListener
+import com.yatsenko.imagepicker.picker.ui.adapter.abstractions.IBinder
+import com.yatsenko.imagepicker.picker.ui.adapter.listeners.OnImageClickListener
 import com.yatsenko.imagepicker.picker.model.ImageEntity
 import com.yatsenko.imagepicker.picker.datasource.ImageDataSource
 import kotlinx.android.synthetic.main.item_image.view.*
@@ -19,6 +19,8 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var images: ArrayList<ImageEntity> = ArrayList()
     var single: Boolean = true
     var listener: OnImageClickListener? = null
+
+    private var recyclerView: RecyclerView? = null
 
     fun notifyDataSetChangedWithoutItem(position: Int){
 
@@ -36,8 +38,16 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    fun getData(): ArrayList<ImageEntity> {
+    fun getImages(): ArrayList<ImageEntity> {
         return images
+    }
+
+    fun getImage(position: Int): ImageEntity{
+        return images[position]
+    }
+
+    fun getRecyclerView(): RecyclerView? {
+        return recyclerView
     }
 
     fun refreshData(images: ArrayList<ImageEntity>?) {
@@ -89,7 +99,7 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun unbindView() {}
 
-        fun getImageView(): ImageView? {
+        fun getTransitionImageView(): ImageView? {
             return itemView.imagePreviewImg
         }
 
@@ -103,4 +113,22 @@ class ImageGripAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     }
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = null
+    }
+
+    fun getTransitionImageView(position: Int): ImageView? {
+        return getViewHolderByPosition(position)?.getTransitionImageView()
+    }
+
+    fun getViewHolderByPosition(position: Int): ImageGripAdapter.ImageItemHolder? {
+        val viewHolder = getRecyclerView()?.findViewHolderForAdapterPosition(position)
+        return if (viewHolder is ImageGripAdapter.ImageItemHolder) viewHolder  else null
+    }
 }
