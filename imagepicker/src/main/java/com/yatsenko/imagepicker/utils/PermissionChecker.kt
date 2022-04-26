@@ -1,5 +1,6 @@
-package com.yatsenko.imagepicker.picker.utils
+package com.yatsenko.imagepicker.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity

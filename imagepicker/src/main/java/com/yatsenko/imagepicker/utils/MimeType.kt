@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.picker.utils
+package com.yatsenko.imagepicker.utils
 
 enum class MimeType(val type: String) {
     GIF("image/gif"),

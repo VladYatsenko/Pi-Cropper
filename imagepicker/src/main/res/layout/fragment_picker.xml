@@ -7,39 +7,18 @@
     android:background="@color/mirage"
     android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/profileAppBar"
+    <com.yatsenko.imagepicker.widgets.DropdownToolbar
+        android:id="@+id/dropdown_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:elevation="8dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize"
-            android:background="@color/pickerColorPrimary"
-            android:elevation="8dp"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:navigationIcon="@drawable/ic_arrow_back">
-
-            <Spinner
-                android:id="@+id/folderSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="wrap_content" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".picker.ui.PickerActivity">
+        tools:context=".picker.PickerActivity">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/imageRV"
+            android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -59,11 +38,6 @@
             app:srcCompat="@drawable/ic_done"
             app:backgroundTint="@color/pickerColorPrimary"
             app:tint="@android:color/white" />
-
-
-        <include
-            layout="@layout/placeholder_progress_loader"
-            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

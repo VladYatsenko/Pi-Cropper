@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/backBtn"
+            android:id="@+id/back"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="16dp"
@@ -30,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/imagePositionTxt"
+            android:id="@+id/position"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_margin="12dp"
@@ -51,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
-        android:background="#59000000"
+        android:background="@color/transparent_gray"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -59,7 +60,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/cropBtn"
+            android:id="@+id/crop"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:background="?selectableItemBackgroundBorderless"
@@ -68,12 +69,12 @@
             android:padding="16dp"
             android:src="@drawable/ic_crop"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/brushBtn"
+            app:layout_constraintEnd_toStartOf="@id/brush"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/brushBtn"
+            android:id="@+id/brush"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:background="?selectableItemBackgroundBorderless"
@@ -84,9 +85,9 @@
             android:src="@drawable/ic_brush"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/cropBtn"
+            app:layout_constraintStart_toEndOf="@id/crop"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</merge>

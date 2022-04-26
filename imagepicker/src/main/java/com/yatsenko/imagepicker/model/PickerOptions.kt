@@ -1,11 +1,10 @@
-package com.yatsenko.imagepicker.picker.model
+package com.yatsenko.imagepicker.model
 
 import android.os.Parcel
 import android.os.Parcelable
 
-class PickerOptions : Parcelable{
+class PickerOptions : Parcelable {
 
-    private var type: ImagePickType = ImagePickType.GALLERY
     private var maxNum = 1
     private var cachePath: String? = null
 
@@ -14,14 +13,6 @@ class PickerOptions : Parcelable{
     constructor(parcel: Parcel) : this() {
         maxNum = parcel.readInt()
         cachePath = parcel.readString()
-    }
-
-    fun getType(): ImagePickType? {
-        return type
-    }
-
-    fun setType(type: ImagePickType) {
-        this.type = type
     }
 
     fun getMaxNum(): Int {
