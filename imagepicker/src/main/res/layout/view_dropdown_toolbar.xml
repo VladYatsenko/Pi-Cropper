@@ -16,12 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="@color/pickerColorPrimary"
-        android:elevation="8dp">
+        app:elevation="8dp">
 
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/pickerColorPrimary"/>
 
     </androidx.appcompat.widget.Toolbar>
 

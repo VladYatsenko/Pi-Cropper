@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
-        <activity android:name="com.yatsenko.imagepicker.picker.PickerActivity"
+        <activity android:name="com.yatsenko.imagepicker.ui.picker.PickerActivity"
             android:theme="@style/AppTheme"/>
 
     </application>

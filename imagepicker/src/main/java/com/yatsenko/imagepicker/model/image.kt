@@ -1,6 +1,6 @@
 package com.yatsenko.imagepicker.model
 
-class Image (
+data class Image (
     val id: String,
     val path: String,
     val lastModified: Long,
@@ -14,7 +14,7 @@ class Image (
         get() = croppedPath ?: path
 
     val index: String
-        get() = if (isSelected) indexInResult.toString() else ""
+        get() = if (isSelected) indexInResult.plus(1).toString() else ""
 
 }
 

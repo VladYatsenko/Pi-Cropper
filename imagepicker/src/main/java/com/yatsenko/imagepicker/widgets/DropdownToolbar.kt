@@ -4,19 +4,21 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
-import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.ViewCompat
+import com.google.android.material.appbar.AppBarLayout
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Folder
-import com.yatsenko.imagepicker.picker.adapter.HeaderStockOverviewAdapter
+import com.yatsenko.imagepicker.ui.picker.adapter.HeaderStockOverviewAdapter
+import com.yatsenko.imagepicker.utils.dpToPx
 
 class DropdownToolbar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
-) : LinearLayout(context, attrs, defStyle) {
+) : AppBarLayout(context, attrs, defStyle) {
 
     private val toolbar: Toolbar
     private val spinner: Spinner
@@ -37,6 +39,7 @@ class DropdownToolbar @JvmOverloads constructor(
 
     init {
         inflate(context, R.layout.view_dropdown_toolbar, this)
+        ViewCompat.setElevation(this, dpToPx(8))
 
         toolbar = findViewById(R.id.toolbar)
         spinner = findViewById(R.id.spinner)

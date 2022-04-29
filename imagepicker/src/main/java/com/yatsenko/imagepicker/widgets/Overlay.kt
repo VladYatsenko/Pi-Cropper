@@ -40,10 +40,6 @@ class Overlay @JvmOverloads constructor(
         back.setOnClickListener {
             result(AdapterResult.GoBack)
         }
-        position.setOnClickListener {
-            val image = data?.image ?: return@setOnClickListener
-            result(AdapterResult.OnSelectImageClicked(image))
-        }
         crop.setOnClickListener {
 //            viewer.resetScale()
         }
@@ -52,7 +48,9 @@ class Overlay @JvmOverloads constructor(
 
     private fun refreshLayout() {
         data?.let {
-            position.checkboxPosition(it.image, it.single, result)
+            position.checkboxPosition(it.image, it.single) { adapterResult ->
+                result(adapterResult)
+            }
         }
     }
 

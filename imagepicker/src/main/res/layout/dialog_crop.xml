@@ -60,7 +60,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <com.yatsenko.imagepicker.cropper.CropImageView
+    <com.yatsenko.imagepicker.ui.cropper.CropImageView
         android:id="@+id/cropImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

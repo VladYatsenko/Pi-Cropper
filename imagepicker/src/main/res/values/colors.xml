@@ -3,6 +3,6 @@
     <color name="pickerColorPrimary">#212D3B</color>
     <color name="pickerColorPrimaryDark">#1A242E</color>
     <color name="pickerColorAccent">#ffffff</color>
-    <color name="transparent_gray">#73000000</color>
+    <color name="transparent_gray">#59000000</color>
     <color name="mirage">#1D2733</color>
 </resources>
