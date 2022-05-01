@@ -7,7 +7,7 @@
     android:background="@color/mirage"
     android:orientation="vertical">
 
-    <com.yatsenko.imagepicker.widgets.DropdownToolbar
+    <com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
         android:id="@+id/dropdown_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

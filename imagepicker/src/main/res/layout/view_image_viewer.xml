@@ -47,7 +47,7 @@
 
         </FrameLayout>
 
-        <com.yatsenko.imagepicker.ui.viewer.common.pager.MultiTouchViewPager
+        <com.yatsenko.imagepicker.widgets.pager.MultiTouchViewPager
             android:id="@+id/imagesPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -12,12 +12,12 @@ import com.yatsenko.imagepicker.ui.picker.adapter.ImageGripAdapter
 import com.yatsenko.imagepicker.ui.picker.adapter.ImageViewHolder
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
-import com.yatsenko.imagepicker.utils.BaseFragment
 import com.yatsenko.imagepicker.utils.PermissionHelper
-import com.yatsenko.imagepicker.ui.viewer.ImageViewer
-import com.yatsenko.imagepicker.widgets.DropdownToolbar
+import com.yatsenko.imagepicker.ui.viewer.ImageViewerContract
+import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
+import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
-class PickerFragment : BaseFragment() {
+class PickerFragment : BaseChildFragment() {
 
     override val layoutId: Int = R.layout.fragment_picker
 
@@ -26,11 +26,11 @@ class PickerFragment : BaseFragment() {
 
     private val imageAdapter by lazy { ImageGripAdapter(false) }
 
-    private val viewModel: PickerViewModel by viewModels { ViewModelFactory(requireActivity().application) }
+    private val viewModel: PickerViewModel by viewModels (ownerProducer = ::requireParentFragment, factoryProducer = { ViewModelFactory(requireActivity().application) })
 
     private val permissionHelper by lazy { PermissionHelper(this, viewModel::extractImages) }
 
-    private val imageViewer by lazy { ImageViewer(requireActivity(), false, transitionImageView, ::handleAdapterResult) }
+    private val imageViewer by lazy { ImageViewerContract(requireActivity(), false, transitionImageView, ::handleAdapterResult) }
 
     private val transitionImageView: (position: Int) -> ImageView? = {
         (recycler.findViewHolderForAdapterPosition(it) as? ImageViewHolder)?.transitionImageView
@@ -61,9 +61,12 @@ class PickerFragment : BaseFragment() {
         when (result) {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
-            is AdapterResult.OnImageClicked -> imageViewer.open(imageAdapter.list, result.position)
+            is AdapterResult.OnImageClicked -> {
+                imageViewer.open(imageAdapter.list, result.position)
+//                router.openViewer(result.view, result.image)
+            }
+            is AdapterResult.ImageLoaded -> startPostponedEnterTransition()
             is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.image)
-            is AdapterResult.OnBindImage -> imageViewer.refreshTransitionImage(result.imageView)
         }
     }
 

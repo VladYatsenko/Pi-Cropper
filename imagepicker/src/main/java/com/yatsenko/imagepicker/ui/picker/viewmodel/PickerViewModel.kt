@@ -1,6 +1,7 @@
 package com.yatsenko.imagepicker.ui.picker.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,6 +30,12 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     private val _state: MutableLiveData<PickerState> = MutableLiveData()
     val state: LiveData<PickerState> = _state
+
+    var fullscreenPosition: Int = -1
+
+    init {
+        Log.i("PickerViewModel", "init()")
+    }
 
     fun extractImages() {
         viewModelScope.launch(errorHandler {}) {
@@ -78,7 +85,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun remapSelectedImage(image: Image): Image {
-        val isSelected = selectedImages.firstOrNull{ it.id == image.id } != null
+        val isSelected = selectedImages.firstOrNull { it.id == image.id } != null
         val index = selectedImages.indexOfFirst { it.id == image.id }
 
         return if (image.isSelected == isSelected && image.indexInResult == index)

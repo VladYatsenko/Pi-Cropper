@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.ui.cropper.CropImage
 import com.yatsenko.imagepicker.ui.cropper.CropImageView
-import com.yatsenko.imagepicker.ui.viewer.common.extensions.makeVisible
+import com.yatsenko.imagepicker.utils.extensions.visible
 import kotlinx.android.synthetic.main.dialog_crop.view.*
 import java.io.File
 import java.io.FileOutputStream
@@ -70,7 +70,7 @@ class ImageCropperDialog : DialogFragment() {
     override fun onResume() {
         super.onResume()
         if(dialogView?.toolbar?.visibility != View.VISIBLE)
-            dialogView?.toolbar?.makeVisible()
+            dialogView?.toolbar?.visible()
     }
 
     private fun handleResult(result: CropImageView.CropResult) {

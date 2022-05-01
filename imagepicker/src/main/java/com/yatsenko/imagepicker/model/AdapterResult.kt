@@ -7,7 +7,7 @@ sealed class AdapterResult {
     object GoBack: AdapterResult()
 
     data class OnSelectImageClicked(val image: Image): AdapterResult()
-    data class OnImageClicked(val image: Image, val position: Int) : AdapterResult()
-    data class OnBindImage(val imageView: ImageView?) : AdapterResult()
+    data class OnImageClicked(val view: ImageView, val image: Image, val position: Int) : AdapterResult()
+    object ImageLoaded : AdapterResult()
 
 }

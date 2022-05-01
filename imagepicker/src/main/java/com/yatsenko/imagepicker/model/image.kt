@@ -1,5 +1,7 @@
 package com.yatsenko.imagepicker.model
 
+import java.io.Serializable
+
 data class Image (
     val id: String,
     val path: String,
@@ -8,7 +10,7 @@ data class Image (
     val isSelected: Boolean = false,
     val indexInResult: Int = -1,
     private val croppedPath: String? = null
-) {
+): Serializable {
 
     val imagePath: String
         get() = croppedPath ?: path
