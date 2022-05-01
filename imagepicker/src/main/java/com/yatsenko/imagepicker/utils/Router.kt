@@ -2,10 +2,8 @@ package com.yatsenko.imagepicker.utils
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.yatsenko.imagepicker.model.Image
 import com.yatsenko.imagepicker.ui.picker.PickerFragment
 
 class Router(private val containerId: Int, private val fragmentManager: FragmentManager) {
@@ -18,10 +16,6 @@ class Router(private val containerId: Int, private val fragmentManager: Fragment
 
     fun openPicker() {
         showFragment(PickerFragment::class.java)
-    }
-
-    fun openViewer(view: ImageView, image: Image) {
-//        showFragment(ViewerFragment::class.java, ViewerFragment.prepareArgs(image), sharedElement = view)
     }
 
     private fun showFragment(
@@ -41,7 +35,6 @@ class Router(private val containerId: Int, private val fragmentManager: Fragment
         val fragmentTransaction = fragmentManager.beginTransaction().setReorderingAllowed(true)
 
         if (!fragmentManager.isStateSaved) {
-
             sharedElement?.let {
                 fragmentTransaction.addSharedElement(sharedElement, sharedElement.transitionName)
             }

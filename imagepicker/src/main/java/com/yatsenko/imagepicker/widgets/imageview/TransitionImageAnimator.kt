@@ -5,14 +5,8 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.transition.AutoTransition
-import androidx.transition.Transition
-import androidx.transition.TransitionManager
+import androidx.transition.*
 import com.yatsenko.imagepicker.utils.extensions.*
-import com.yatsenko.imagepicker.utils.extensions.addListener
-import com.yatsenko.imagepicker.utils.extensions.globalVisibleRect
-import com.yatsenko.imagepicker.utils.extensions.isRectVisible
-import com.yatsenko.imagepicker.utils.extensions.localVisibleRect
 
 internal class TransitionImageAnimator(
     private val externalImage: ImageView?,
@@ -79,6 +73,7 @@ internal class TransitionImageAnimator(
 
             internalImageContainer.makeViewMatchParent()
             internalImage.makeViewMatchParent()
+            internalImage.scaleType = ImageView.ScaleType.FIT_CENTER
 
             internalRoot.applyMargin(
                 containerPadding[0],
@@ -113,6 +108,7 @@ internal class TransitionImageAnimator(
                     internalImageContainer.applyMargin(left, top, right, bottom)
                 }
             }
+            internalImage.scaleType = it.scaleType
 
             resetRootTranslation()
         }
@@ -132,9 +128,19 @@ internal class TransitionImageAnimator(
             .start()
     }
 
-    private fun createTransition(onTransitionEnd: (() -> Unit)? = null): Transition =
-        AutoTransition()
+    private fun createTransition(onTransitionEnd: (() -> Unit)? = null): Transition {
+        val transition =
+            TransitionSet()
+                .setOrdering(TransitionSet.ORDERING_TOGETHER)
+                .addTransition(ChangeBounds())
+                .addTransition(ChangeTransform())
+                .addTransition(ChangeClipBounds())
+                .addTransition(ChangeImageTransform())
+
+        return transition
             .setDuration(transitionDuration)
             .setInterpolator(DecelerateInterpolator())
             .addListener(onTransitionEnd = { onTransitionEnd?.invoke() })
+    }
+
 }

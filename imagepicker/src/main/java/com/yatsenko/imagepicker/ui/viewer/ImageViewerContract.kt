@@ -56,6 +56,7 @@ class ImageViewerContract(
     private fun loadImage(imageView: ImageView, image: Image?) {
         Glide.with(imageView.context)
             .load(image?.imagePath)
+            .dontTransform()
             .into(imageView)
     }
 
