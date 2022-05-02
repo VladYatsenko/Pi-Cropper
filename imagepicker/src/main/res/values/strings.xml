@@ -1,15 +1,6 @@
 <resources>
-    <string name="app_name">imagepicker</string>
 
     <string name="all_image_folder">All Images</string>
-
-    <string name="dialog_imagepicker_permission_title">Permissions prompt</string>
-    <string name="dialog_imagepicker_permission_confirm">I understand</string>
-    <string name="toast_imagepicker_permission_denied">Unable to access the permissions</string>
-    <string name="dialog_imagepicker_permission_nerver_ask_cancel">Cancel</string>
-    <string name="dialog_imagepicker_permission_nerver_ask_confirm">To authorize</string>
-    <string name="dialog_imagepicker_permission_sdcard_nerver_ask_message">App cannot access the SdCard permissions, you can authorize permissions through the System Settings</string>
-    <string name="dialog_imagepicker_permission_sdcard_message">App needs the SdCard permissions,otherwise the image data cannot be accessed</string>
 
 
 </resources>
