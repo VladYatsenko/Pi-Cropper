@@ -33,6 +33,9 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     var fullscreenPosition: Int = -1
 
+    val images: List<Image>
+        get() = imageState.images
+
     init {
         Log.i("PickerViewModel", "init()")
     }

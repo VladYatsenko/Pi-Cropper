@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.ui.t.ViewerTransitionHelper
 
 class ImageGripAdapter(
     private val single: Boolean = true
@@ -48,6 +49,14 @@ class ImageGripAdapter(
             is ImageViewHolder -> list[position].let { image ->
                 holder.bind(image, single, viewerPosition) { result(it) }
             }
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        if (holder is ImageViewHolder) {
+            val photoId = holder.imageId ?: return
+            ViewerTransitionHelper.put(photoId, holder.transitionImageView)
         }
     }
 

@@ -1,8 +1,10 @@
 package com.yatsenko.imagepicker.model
 
+import com.github.iielse.imageviewer.adapter.ItemType
+import com.github.iielse.imageviewer.core.Photo
 import java.io.Serializable
 
-data class Image (
+data class Image(
     val id: String,
     val path: String,
     val lastModified: Long,
@@ -10,13 +12,17 @@ data class Image (
     val isSelected: Boolean = false,
     val indexInResult: Int = -1,
     private val croppedPath: String? = null
-): Serializable {
+) : Serializable, Photo {
 
     val imagePath: String
         get() = croppedPath ?: path
 
     val index: String
         get() = if (isSelected) indexInResult.plus(1).toString() else ""
+
+    override fun id(): Long = lastModified
+
+    override fun itemType(): Int = ItemType.PHOTO
 
 }
 

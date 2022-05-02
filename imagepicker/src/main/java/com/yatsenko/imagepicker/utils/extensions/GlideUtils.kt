@@ -12,6 +12,36 @@ import com.bumptech.glide.request.target.Target
 import com.github.chrisbanes.photoview.PhotoView
 import com.yatsenko.imagepicker.model.Image
 
+fun ImageView.loadImage(url: String?) {
+    val listener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            return false
+        }
+
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: Target<Drawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            setImageDrawable(resource)
+            return false
+        }
+
+    }
+    Glide.with(this)
+        .load(url)
+        .placeholder(this.drawable)
+        .addListener(listener)
+        .into(this)
+}
+
 fun ImageView.loadImage(image: Image?) {
     Glide.with(this)
         .load(image?.imagePath)

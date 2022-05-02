@@ -15,6 +15,7 @@ import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.PermissionHelper
 import com.yatsenko.imagepicker.ui.viewer.ImageViewerContract
 import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
+import com.yatsenko.imagepicker.ui.t.Viewer
 import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
 class PickerFragment : BaseChildFragment() {
@@ -62,8 +63,10 @@ class PickerFragment : BaseChildFragment() {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
             is AdapterResult.OnImageClicked -> {
-                imageViewer.open(imageAdapter.list, result.position)
+//                imageViewer.open(imageAdapter.list, result.position)
 //                router.openViewer(result.view, result.image)
+
+                Viewer(requireContext()).show(result.image, viewModel.images)
             }
             is AdapterResult.ImageLoaded -> startPostponedEnterTransition()
             is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.image)

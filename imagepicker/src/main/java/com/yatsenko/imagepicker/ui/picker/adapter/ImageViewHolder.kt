@@ -30,7 +30,10 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val transitionImageView: ImageView
         get() = imageView
 
+    var imageId: Long? = null
+
     fun bind(image: Image, single: Boolean, viewerPosition: () -> Int, result: (AdapterResult) -> Unit) {
+        imageId = image.id()
         position.checkboxPosition(image, single, result)
         imageView.loadImage(image) {
             if (viewerPosition() != bindingAdapterPosition) return@loadImage
