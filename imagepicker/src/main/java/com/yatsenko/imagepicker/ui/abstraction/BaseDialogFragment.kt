@@ -1,9 +1,11 @@
 package com.yatsenko.imagepicker.ui.abstraction
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.yatsenko.imagepicker.R
@@ -35,6 +37,10 @@ open class BaseDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         view?.setOnKeyListener(null)
+
+        //todo appbar color
+        activity?.window?.statusBarColor = context?.let { ContextCompat.getColor(it, R.color.pickerColorPrimaryDark) }
+            ?: Color.TRANSPARENT
     }
 
     open fun setWindow(win: Window) {
@@ -45,6 +51,10 @@ open class BaseDialogFragment : DialogFragment() {
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         win.attributes = lp
         win.setGravity(Gravity.CENTER)
+
+        //todo appbar color
+        win.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+        activity?.window?.statusBarColor = Color.BLACK
     }
 
     fun show(fragmentManager: FragmentManager?) {
@@ -60,4 +70,5 @@ open class BaseDialogFragment : DialogFragment() {
 
     open fun onBackPressed() {
     }
+
 }
