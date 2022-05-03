@@ -9,7 +9,7 @@ import android.util.Log
 import androidx.core.database.getStringOrNull
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Folder
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 import java.util.*
 
 class ImageReaderContract(private val context: Context) {
@@ -30,8 +30,8 @@ class ImageReaderContract(private val context: Context) {
     private val sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc";
 
 
-    suspend fun extractImages(): Pair<List<Folder>, List<Image>> {
-        val images = mutableListOf<Image>()
+    suspend fun extractImages(): Pair<List<Folder>, List<Media>> {
+        val images = mutableListOf<Media>()
         val folders = HashMap<String, Folder>()
 
         try {
@@ -78,14 +78,14 @@ class ImageReaderContract(private val context: Context) {
         return Pair(folders.map { it.value }, images)
     }
 
-    private fun Cursor.getImageOrNull(imageIDIndex: Int, folderIdIndex: Int, imageModifyIndex: Int, folderNameIndex: Int): Image? {
+    private fun Cursor.getImageOrNull(imageIDIndex: Int, folderIdIndex: Int, imageModifyIndex: Int, folderNameIndex: Int): Media.Image? {
         val imageId = this.getStringOrNull(imageIDIndex) ?: return null
         val folderId = this.getStringOrNull(folderIdIndex) ?: return null
         val lastModify = this.getStringOrNull(imageModifyIndex)?.toLongOrNull() ?: 0L
 
         val imagePath = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + imageId).toString()
 
-        return Image(imageId, imagePath, lastModify, folderId)
+        return Media.Image(imageId, imagePath, lastModify, folderId)
     }
 
     private fun Cursor.getFolderOrNull(folderIdIndex: Int, folderNameIndex: Int): Folder.Common? {

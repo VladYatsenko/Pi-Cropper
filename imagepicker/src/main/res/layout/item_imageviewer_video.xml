@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.iielse.imageviewer.widgets.video.ExoVideoView2
-        android:id="@+id/videoView"
+    <com.yatsenko.imagepicker.widgets.video.ExoVideoView2
+        android:id="@+id/video_view"
         android:background="@null"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

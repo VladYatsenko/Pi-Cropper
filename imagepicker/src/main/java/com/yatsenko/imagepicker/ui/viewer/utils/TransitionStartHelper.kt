@@ -2,27 +2,35 @@ package com.yatsenko.imagepicker.ui.viewer.utils
 
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.DecelerateInterpolator
-import android.widget.ImageView
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.*
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.transition.*
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireImageLoader
-import com.yatsenko.imagepicker.ui.viewer.core.Photo
-import com.yatsenko.imagepicker.ui.viewer.viewholders.PhotoViewHolder
-import com.yatsenko.imagepicker.ui.viewer.viewholders.SubsamplingViewHolder
-import com.yatsenko.imagepicker.ui.viewer.viewholders.VideoViewHolder
+import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 
 object TransitionStartHelper {
-    val transitionAnimating get() = animating
+
+    val transitionAnimating: Boolean
+        get() = animating
+
     private var animating = false
 
-    fun start(owner: LifecycleOwner, startView: View?, holder: RecyclerView.ViewHolder) {
-        beforeTransition(startView, holder)
+    private val transitionSet: Transition
+        get() = TransitionSet().apply {
+            addTransition(ChangeBounds())
+            addTransition(ChangeImageTransform())
+            // https://github.com/davemorrissey/subsampling-scale-image-view/issues/313
+            duration = Config.durationTransition
+            interpolator = DecelerateInterpolator()
+        }
+
+    fun start(owner: LifecycleOwner, startView: View?, holder: FullscreenViewHolder) {
+        holder.beforeTransitionStart(startView)
         val doTransition = {
-            TransitionManager.beginDelayedTransition(holder.itemView as ViewGroup, transitionSet().also {
+            TransitionManager.beginDelayedTransition(holder.itemView as ViewGroup, transitionSet.also {
                 it.addListener(object : TransitionListenerAdapter() {
                     override fun onTransitionStart(transition: Transition) {
                         animating = true
@@ -31,11 +39,11 @@ object TransitionStartHelper {
                     override fun onTransitionEnd(transition: Transition) {
                         if (!animating) return
                         animating = false
-                        afterTransition(holder)
+                        holder.afterTransitionStart()
                     }
                 })
             })
-            transition(holder)
+            holder.transitionStart()
         }
         holder.itemView.postDelayed(doTransition, 50)
 
@@ -51,96 +59,7 @@ object TransitionStartHelper {
         })
     }
 
-    private fun beforeTransition(startView: View?, holder: RecyclerView.ViewHolder) {
-        when (holder) {
-            is PhotoViewHolder -> {
-                holder.binding.photoView.scaleType = (startView as? ImageView?)?.scaleType
-                        ?: ImageView.ScaleType.FIT_CENTER
-                holder.binding.photoView.layoutParams = holder.binding.photoView.layoutParams.apply {
-                    width = startView?.width ?: width
-                    height = startView?.height ?: height
-                    val location = IntArray(2)
-                    getLocationOnScreen(startView, location)
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        marginStart = location[0]
-                        topMargin = location[1] - Config.transitionOffsetY
-                    }
-                }
-            }
-            is SubsamplingViewHolder -> {
-                holder.binding.subsamplingView.layoutParams = holder.binding.subsamplingView.layoutParams.apply {
-                    width = startView?.width ?: width
-                    height = startView?.height ?: height
-                    val location = IntArray(2)
-                    getLocationOnScreen(startView, location)
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        marginStart = location[0]
-                        topMargin = location[1] - Config.transitionOffsetY
-                    }
-                }
-            }
-            is VideoViewHolder -> {
-                holder.binding.imageView.layoutParams = holder.binding.imageView.layoutParams.apply {
-                    width = startView?.width ?: width
-                    height = startView?.height ?: height
-                    val location = IntArray(2)
-                    getLocationOnScreen(startView, location)
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        marginStart = location[0]
-                        topMargin = location[1] - Config.transitionOffsetY
-                    }
-                }
-            }
-        }
-    }
-
-    private fun transition(holder: RecyclerView.ViewHolder) {
-        when (holder) {
-            is PhotoViewHolder -> {
-                holder.binding.photoView.scaleType = ImageView.ScaleType.FIT_CENTER
-                holder.binding.photoView.layoutParams = holder.binding.photoView.layoutParams.apply {
-                    width = MATCH_PARENT
-                    height = MATCH_PARENT
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        marginStart = 0
-                        topMargin = 0
-                    }
-                }
-            }
-            is SubsamplingViewHolder -> {
-                holder.binding.subsamplingView.layoutParams = holder.binding.subsamplingView.layoutParams.apply {
-                    width = MATCH_PARENT
-                    height = MATCH_PARENT
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        marginStart = 0
-                        topMargin = 0
-                    }
-                }
-            }
-            is VideoViewHolder -> {
-                holder.binding.imageView.layoutParams = holder.binding.imageView.layoutParams.apply {
-                    width = MATCH_PARENT
-                    height = MATCH_PARENT
-                    if (this is ViewGroup.MarginLayoutParams) {
-                        marginStart = 0
-                        topMargin = 0
-                    }
-                }
-            }
-        }
-    }
-
-    private fun transitionSet(): Transition {
-        return TransitionSet().apply {
-            addTransition(ChangeBounds())
-            addTransition(ChangeImageTransform())
-            // https://github.com/davemorrissey/subsampling-scale-image-view/issues/313
-            duration = Config.durationTransition
-            interpolator = DecelerateInterpolator()
-        }
-    }
-
-    private fun getLocationOnScreen(startView: View?, location: IntArray) {
+    fun getLocationOnScreen(startView: View?, location: IntArray) {
         startView?.getLocationOnScreen(location)
 
         if (location[0] == 0) {
@@ -155,12 +74,4 @@ object TransitionStartHelper {
         }
     }
 
-    private fun afterTransition(holder: RecyclerView.ViewHolder) {
-        when (holder) {
-            is PhotoViewHolder -> {
-                val photo = holder.binding.photoView.getTag(R.id.viewer_adapter_item_data) as Photo
-                requireImageLoader().load(holder.binding.photoView, photo, holder)
-            }
-        }
-    }
 }

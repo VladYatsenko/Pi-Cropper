@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer.widgets.video
+package com.yatsenko.imagepicker.widgets.video
 
 import android.content.Context
 import android.util.AttributeSet
@@ -50,7 +50,8 @@ class ExoVideoView2 @JvmOverloads constructor(context: Context, attrs: Attribute
     }
 
     override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
-        if (Config.isSwipeToDismiss && Config.VIEWER_ORIENTATION == ViewPager2.ORIENTATION_HORIZONTAL) {
+//        && Config.VIEWER_ORIENTATION == ViewPager2.ORIENTATION_HORIZONTAL
+        if (Config.isSwipeToDismiss ) {
             handleDispatchTouchEvent(event)
         }
         return super.dispatchTouchEvent(event)

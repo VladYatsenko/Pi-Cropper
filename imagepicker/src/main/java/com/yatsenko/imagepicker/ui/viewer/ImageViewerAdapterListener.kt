@@ -1,11 +1,11 @@
 package com.yatsenko.imagepicker.ui.viewer
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 
 interface ImageViewerAdapterListener {
-    fun onInit(viewHolder: RecyclerView.ViewHolder)
-    fun onDrag(viewHolder: RecyclerView.ViewHolder, view: View, fraction: Float)
-    fun onRestore(viewHolder: RecyclerView.ViewHolder, view: View, fraction: Float)
-    fun onRelease(viewHolder: RecyclerView.ViewHolder, view: View)
+    fun onInit(viewHolder: FullscreenViewHolder)
+    fun onDrag(viewHolder: FullscreenViewHolder, view: View, fraction: Float)
+    fun onRestore(viewHolder: FullscreenViewHolder, view: View, fraction: Float)
+    fun onRelease(viewHolder: FullscreenViewHolder, view: View)
 }

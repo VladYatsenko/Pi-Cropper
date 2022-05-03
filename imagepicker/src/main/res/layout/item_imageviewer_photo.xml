@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.yatsenko.imagepicker.ui.viewer.widgets.PhotoView2
+    <com.yatsenko.imagepicker.widgets.imageview.PhotoView2
         android:id="@+id/photo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

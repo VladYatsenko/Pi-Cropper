@@ -3,7 +3,7 @@ package com.yatsenko.imagepicker.ui.viewer.core
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.yatsenko.imagepicker.ui.viewer.widgets.video.ExoVideoView2
+import com.yatsenko.imagepicker.widgets.video.ExoVideoView2
 
 interface ImageLoader {
     fun load(view: ImageView, data: Photo, viewHolder: RecyclerView.ViewHolder) {}

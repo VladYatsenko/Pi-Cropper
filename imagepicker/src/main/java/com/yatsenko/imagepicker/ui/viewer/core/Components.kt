@@ -1,18 +1,20 @@
 package com.yatsenko.imagepicker.ui.viewer.core
 
-import javax.xml.transform.Transformer
+import android.widget.ImageView
+
 
 object Components {
     private var initialize = false
     val working get() = initialize
     private var imageLoader: ImageLoader? = null
+    private var dataProvider: DataProvider? = null
     private var transformer: Transformer? = null
-    private var initKey: Long? = null
+    private var initKey: String? = null
     private var vhCustomizer: VHCustomizer? = null
     private var overlayCustomizer: OverlayCustomizer? = null
     private var viewerCallback: ViewerCallback? = null
 
-    fun initialize(imageLoader: ImageLoader, dataProvider: DataProvider, transformer: Transformer, initKey: Long) {
+    fun initialize(imageLoader: ImageLoader, dataProvider: DataProvider, transformer: Transformer, initKey: String) {
         if (initialize) throw IllegalStateException()
         Components.imageLoader = imageLoader
         Components.dataProvider = dataProvider
@@ -36,7 +38,7 @@ object Components {
     fun requireImageLoader() = imageLoader ?: object : ImageLoader {}
     fun requireDataProvider() = dataProvider ?: object : DataProvider {}
     fun requireTransformer() = transformer ?: object : Transformer {}
-    fun requireInitKey() = initKey ?: 0
+    fun requireInitKey() = initKey ?: ""
     fun requireVHCustomizer() = vhCustomizer ?: object : VHCustomizer {}
     fun requireViewerCallback() = viewerCallback ?: object : ViewerCallback {}
     fun requireOverlayCustomizer() = overlayCustomizer ?: object : OverlayCustomizer {}
@@ -51,4 +53,14 @@ object Components {
         viewerCallback = null
         overlayCustomizer = null
     }
+}
+
+interface Transformer {
+    fun getView(key: String): ImageView? = null
+}
+
+interface DataProvider {
+    fun loadInitial(): List<Photo> = emptyList()
+    fun loadAfter(key: Long, callback: (List<Photo>) -> Unit) {}
+    fun loadBefore(key: Long, callback: (List<Photo>) -> Unit) {}
 }

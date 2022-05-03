@@ -6,20 +6,20 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.AdapterResult
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 
 class ImageGripAdapter(
     private val single: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val callback = object : DiffUtil.ItemCallback<Image>() {
+    private val callback = object : DiffUtil.ItemCallback<Media>() {
 
-        override fun areItemsTheSame(oldItem: Image, newItem: Image): Boolean {
+        override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
             return oldItem == newItem
         }
 
         @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(oldItem: Image, newItem: Image): Boolean {
+        override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
             return oldItem === newItem
         }
 
@@ -27,13 +27,13 @@ class ImageGripAdapter(
 
     private val differ = AsyncListDiffer(this, callback)
 
-    val list: List<Image>
+    val list: List<Media>
         get() = differ.currentList
 
     var viewerPosition: () -> Int = { -1 }
     var result: (AdapterResult) -> Unit = {}
 
-    fun submitList(list: List<Image>) {
+    fun submitList(list: List<Media>) {
         differ.submitList(list)
     }
 

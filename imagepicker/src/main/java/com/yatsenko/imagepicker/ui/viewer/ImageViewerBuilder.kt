@@ -3,13 +3,12 @@ package com.yatsenko.imagepicker.ui.viewer
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import com.yatsenko.imagepicker.ui.viewer.core.*
-import javax.xml.transform.Transformer
 
 class ImageViewerBuilder(private val context: Context?,
                          private val imageLoader: ImageLoader,
                          private val dataProvider: DataProvider,
                          private val transformer: Transformer,
-                         private val initKey: Long = 0
+                         private val initKey: String = ""
 ) {
     private var vhCustomizer: VHCustomizer? = null
     private var viewerCallback: ViewerCallback? = null

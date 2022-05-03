@@ -5,8 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
+import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapter
 import com.yatsenko.imagepicker.ui.viewer.core.Components
 import com.yatsenko.imagepicker.ui.viewer.core.Components.requireInitKey
@@ -17,6 +22,9 @@ import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.Config.offscreenPageLimit
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
+import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
+import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
+import com.yatsenko.imagepicker.widgets.BackgroundView
 
 open class ImageViewerDialogFragment : BaseDialogFragment() {
 
@@ -26,46 +34,55 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private val adapter by lazy { ImageViewerAdapter(initKey) }
     private var initPosition = RecyclerView.NO_POSITION
 
+    private lateinit var pager: ViewPager2
+    private lateinit var overlayView: ConstraintLayout
+    private lateinit var background: BackgroundView
+
+    private val viewModel: PickerViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+        factoryProducer = { ViewModelFactory(requireActivity().application) })
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (!Components.working) dismissAllowingStateLoss()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        super.onCreateView(inflater, container, savedInstanceState)
+        val view = layoutInflater.inflate(R.layout.fragment_image_viewer_dialog, container, false)
 
-        return inflater.
+        pager = view.findViewById(R.id.pager)
+        overlayView = view.findViewById(R.id.overlay)
+        background = view.findViewById(R.id.background)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter.setListener(adapterListener)
-        (viewer.getChildAt(0) as? RecyclerView?)?.let {
+        adapter.listener = adapterListener
+        (pager.getChildAt(0) as? RecyclerView?)?.let {
             it.clipChildren = false
             it.itemAnimator = null
         }
-        viewer.orientation = Config.VIEWER_ORIENTATION
-        viewer.registerOnPageChangeCallback(pagerCallback)
-        viewer.offscreenPageLimit = offscreenPageLimit
-        viewer.adapter = adapter
+        pager.orientation = Config.VIEWER_ORIENTATION
+        pager.registerOnPageChangeCallback(pagerCallback)
+        pager.offscreenPageLimit = offscreenPageLimit
+        pager.adapter = adapter
 
         requireOverlayCustomizer().provideView(overlayView)?.let(overlayView::addView)
 
-        viewModel.dataList.observe(viewLifecycleOwner) { list ->
+        viewModel.state.observe(viewLifecycleOwner) {
+            val list = it.media
             adapter.submitList(list)
             initPosition = list.indexOfFirst { it.id == initKey }
-            viewer.setCurrentItem(initPosition, false)
+            pager.setCurrentItem(initPosition, false)
         }
-
-        viewModel.viewerUserInputEnabled.observe(viewLifecycleOwner) {
-            viewer.isUserInputEnabled = it ?: true
-        }
-
     }
 
 
     private val adapterListener by lazy {
         object : ImageViewerAdapterListener {
-            override fun onInit(viewHolder: RecyclerView.ViewHolder) {
+            override fun onInit(viewHolder: FullscreenViewHolder) {
                 TransitionStartHelper.start(this@ImageViewerDialogFragment, transformer.getView(initKey), viewHolder)
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
                 userCallback.onInit(viewHolder)
@@ -73,18 +90,19 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                 if (initPosition > 0) userCallback.onPageSelected(initPosition, viewHolder)
             }
 
-            override fun onDrag(viewHolder: RecyclerView.ViewHolder, view: View, fraction: Float) {
+            override fun onDrag(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {
                 background.updateBackgroundColor(fraction, Config.viewBackgroundColor, Color.TRANSPARENT)
                 userCallback.onDrag(viewHolder, view, fraction)
             }
 
-            override fun onRestore(viewHolder: RecyclerView.ViewHolder, view: View, fraction: Float) {
+            override fun onRestore(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
                 userCallback.onRestore(viewHolder, view, fraction)
             }
 
-            override fun onRelease(viewHolder: RecyclerView.ViewHolder, view: View) {
-                val startView = (view.getTag(R.id.viewer_adapter_item_key) as? Long?)?.let { transformer.getView(it) }
+            override fun onRelease(viewHolder: FullscreenViewHolder, view: View) {
+                val id = viewHolder.data?.id ?: return
+                val startView = transformer.getView(id)
                 TransitionEndHelper.end(this@ImageViewerDialogFragment, startView, viewHolder)
                 background.changeToBackgroundColor(Color.TRANSPARENT)
                 userCallback.onRelease(viewHolder, view)
@@ -103,11 +121,9 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                val currentKey = adapter.getItemId(position)
-                val holder = viewer.findViewWithKeyTag(R.id.viewer_adapter_item_key, currentKey)
-                        ?.getTag(R.id.viewer_adapter_item_holder) as? RecyclerView.ViewHolder?
-                        ?: return
-                userCallback.onPageSelected(position, holder)
+                pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position)?.let { holder ->
+                    userCallback.onPageSelected(position, holder)
+                }
             }
         }
     }
@@ -119,25 +135,26 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        adapter.setListener(null)
-        viewer.unregisterOnPageChangeCallback(pagerCallback)
-        viewer.adapter = null
-        innerBinding = null
+        adapter.listener = null
+        pager.unregisterOnPageChangeCallback(pagerCallback)
+        pager.adapter = null
         Components.release()
     }
 
     override fun onBackPressed() {
-        if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating) return
+        if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
+            return
 
-        val currentKey = adapter.getItemId(viewer.currentItem)
-        viewer.findViewWithKeyTag(R.id.viewer_adapter_item_key, currentKey)?.let { endView ->
-            val startView = transformer.getView(currentKey)
+        pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { holder ->
+            val startView = transformer.getView(holder.data?.id ?: return@let)
             background.changeToBackgroundColor(Color.TRANSPARENT)
 
-            (endView.getTag(R.id.viewer_adapter_item_holder) as? RecyclerView.ViewHolder?)?.let {
-                TransitionEndHelper.end(this, startView, it)
-                userCallback.onRelease(it, endView)
-            }
+            val endView = holder.endView
+            TransitionEndHelper.end(this, startView, holder)
+            userCallback.onRelease(holder, holder.itemView)
+
+            TransitionEndHelper.end(this, startView, holder)
+            userCallback.onRelease(holder, endView)
         }
     }
 

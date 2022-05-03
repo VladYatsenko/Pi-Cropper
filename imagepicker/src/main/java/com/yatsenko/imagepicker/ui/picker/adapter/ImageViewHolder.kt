@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.extensions.checkboxPosition
 import com.yatsenko.imagepicker.utils.extensions.loadImage
 import java.util.concurrent.atomic.AtomicBoolean
@@ -30,7 +30,7 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val transitionImageView: ImageView
         get() = imageView
 
-    fun bind(image: Image, single: Boolean, viewerPosition: () -> Int, result: (AdapterResult) -> Unit) {
+    fun bind(image: Media, single: Boolean, viewerPosition: () -> Int, result: (AdapterResult) -> Unit) {
         position.checkboxPosition(image, single, result)
         imageView.loadImage(image) {
             if (viewerPosition() != bindingAdapterPosition) return@loadImage

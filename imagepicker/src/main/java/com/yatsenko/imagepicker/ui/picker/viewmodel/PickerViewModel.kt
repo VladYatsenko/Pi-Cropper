@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.yatsenko.imagepicker.data.ImageReaderContract
 import com.yatsenko.imagepicker.model.Folder
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.model.PickerState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -18,20 +18,18 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     private val imageReader by lazy { ImageReaderContract(application) }
 
-    private var rawData: Pair<List<Folder>, List<Image>> = Pair(emptyList(), emptyList())
+    private var rawData: Pair<List<Folder>, List<Media>> = Pair(emptyList(), emptyList())
     private val noopFolder = Folder.All("")
     private var imageState = PickerState(
         folders = emptyList(),
         selectedFolder = noopFolder,
-        images = emptyList()
+        media = emptyList()
     )
 
-    private val selectedImages = mutableListOf<Image>()
+    private val selectedImages = mutableListOf<Media>()
 
     private val _state: MutableLiveData<PickerState> = MutableLiveData()
     val state: LiveData<PickerState> = _state
-
-    var fullscreenPosition: Int = -1
 
     init {
         Log.i("PickerViewModel", "init()")
@@ -44,7 +42,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             if (imageState.selectedFolder == noopFolder) {
                 imageState = imageState.copy(
                     folders = rawData.first,
-                    images = rawData.second
+                    media = rawData.second
                 )
                 changeFolder(rawData.first.first())
             }
@@ -58,7 +56,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         refreshFolderImages(folder)
     }
 
-    fun selectImage(image: Image) {
+    fun selectImage(image: Media) {
         when (image.isSelected) {
             true -> {
                 val withoutImage = selectedImages.filterNot { it.id == image.id }
@@ -79,18 +77,24 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         }
         imageState = imageState.copy(
             selectedFolder = folder,
-            images = images
+            media = images
         )
         _state.postValue(imageState)
     }
 
-    private fun remapSelectedImage(image: Image): Image {
+    private fun remapSelectedImage(image: Media): Media {
         val isSelected = selectedImages.firstOrNull { it.id == image.id } != null
         val index = selectedImages.indexOfFirst { it.id == image.id }
 
         return if (image.isSelected == isSelected && image.indexInResult == index)
-            image
-        else image.copy(isSelected = isSelected, indexInResult = index)
+             image
+        else {
+            return when(image) {
+                is Media.Image -> image.copy(isSelected = isSelected, indexInResult = index)
+                is Media.SubsamplingImage -> image.copy(isSelected = isSelected, indexInResult = index)
+                is Media.Video -> image.copy(isSelected = isSelected, indexInResult = index)
+            }
+        }
     }
 
     private fun errorHandler(callback: (Throwable) -> Unit): CoroutineExceptionHandler {

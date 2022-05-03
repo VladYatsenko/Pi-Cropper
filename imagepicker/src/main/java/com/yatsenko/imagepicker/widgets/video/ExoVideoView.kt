@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer.widgets.video
+package com.yatsenko.imagepicker.widgets.video
 
 import android.content.Context
 import android.util.AttributeSet

@@ -14,6 +14,7 @@ import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.PermissionHelper
 import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
+import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
 import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
 class PickerFragment : BaseChildFragment() {
@@ -23,14 +24,13 @@ class PickerFragment : BaseChildFragment() {
     private lateinit var toolbar: DropdownToolbar
     private lateinit var recycler: RecyclerView
 
-
     private val viewModel: PickerViewModel by viewModels (ownerProducer = ::requireParentFragment, factoryProducer = { ViewModelFactory(requireActivity().application) })
 
     private val imageAdapter by lazy { ImageGripAdapter(false) }
     private val permissionHelper by lazy { PermissionHelper(this, viewModel::extractImages) }
 
     private val transitionImageView: (position: Int) -> ImageView? = {
-        (recycler.findViewHolderForAdapterPosition(it) as? ImageViewHolder)?.transitionImageView
+        recycler.findViewHolderByAdapterPosition<ImageViewHolder>(it)?.transitionImageView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class PickerFragment : BaseChildFragment() {
 
         viewModel.state.observe(this) { state ->
             toolbar.data = DropdownToolbar.Data(state.selectedFolder, state.folders)
-            imageAdapter.submitList(state.images)
+            imageAdapter.submitList(state.media)
         }
         permissionHelper.checkPermission()
     }
@@ -56,6 +56,7 @@ class PickerFragment : BaseChildFragment() {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
             is AdapterResult.OnImageClicked -> {
+
             }
             is AdapterResult.ImageLoaded -> startPostponedEnterTransition()
             is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.image)
