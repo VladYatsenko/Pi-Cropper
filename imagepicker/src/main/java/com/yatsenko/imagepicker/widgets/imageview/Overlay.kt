@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.extensions.checkboxPosition
 
 class Overlay @JvmOverloads constructor(
@@ -55,7 +55,7 @@ class Overlay @JvmOverloads constructor(
     }
 
     data class Data(
-        val image: Image,
+        val image: Media,
         val single: Boolean
     )
 

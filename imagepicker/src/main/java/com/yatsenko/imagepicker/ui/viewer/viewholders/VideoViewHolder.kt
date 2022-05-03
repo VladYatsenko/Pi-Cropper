@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.ImageViewerAdapterListener
-import com.yatsenko.imagepicker.ui.viewer.adapter.ItemType
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireVHCustomizer
-import com.yatsenko.imagepicker.ui.viewer.core.Photo
+import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
+import com.yatsenko.imagepicker.ui.viewer.core.ImageLoader
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
@@ -24,7 +22,7 @@ class VideoViewHolder(
     companion object {
         val ITEM_TYPE: Int = R.layout.item_imageviewer_video
 
-        fun create(parent: ViewGroup, callback: ImageViewerAdapterListener) = ImageViewHolder(
+        fun create(parent: ViewGroup, callback: ImageViewerAdapterListener) = VideoViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_imageviewer_video, parent, false),
             callback
         )
@@ -40,7 +38,6 @@ class VideoViewHolder(
 
             override fun onRelease(view: ExoVideoView2) = callback.onRelease(this@VideoViewHolder, view)
         })
-        requireVHCustomizer().initialize(ItemType.VIDEO, this@VideoViewHolder)
     }
     private val imageView = view.findViewById<ImageView>(R.id.image_view)
 
@@ -49,12 +46,7 @@ class VideoViewHolder(
 
     fun bind(data: Media.Video) {
         this.data = data
-//        binding.videoView.setTag(R.id.viewer_adapter_item_key, item.id())
-//        binding.videoView.setTag(R.id.viewer_adapter_item_data, item)
-//        binding.videoView.setTag(R.id.viewer_adapter_item_holder, this)
-
-//        requireVHCustomizer().bind(ItemType.VIDEO, item, this)
-//        requireImageLoader().load(videoView, item, this)
+        ImageLoader.load(videoView, data, this)
     }
 
     override fun beforeTransitionStart(startView: View?) {

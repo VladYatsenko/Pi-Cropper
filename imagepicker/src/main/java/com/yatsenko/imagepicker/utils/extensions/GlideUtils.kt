@@ -10,9 +10,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.github.chrisbanes.photoview.PhotoView
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 
-fun ImageView.loadImage(image: Image?) {
+fun ImageView.loadImage(image: Media?) {
     Glide.with(this)
         .load(image?.imagePath)
         .addListener(object : RequestListener<Drawable> {
@@ -40,7 +40,7 @@ fun ImageView.loadImage(image: Image?) {
         .into(this)
 }
 
-fun ImageView.loadImage(image: Image, onLoadingFinished: () -> Unit) {
+fun ImageView.loadImage(image: Media, onLoadingFinished: () -> Unit) {
     val listener = object : RequestListener<Drawable> {
         override fun onLoadFailed(
             e: GlideException?,

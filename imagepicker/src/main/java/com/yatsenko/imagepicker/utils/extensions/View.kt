@@ -15,15 +15,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
-import com.yatsenko.imagepicker.model.Image
+import com.yatsenko.imagepicker.model.Media
 
 fun dpToPx(@Dimension(unit = Dimension.DP) dp: Int): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), Resources.getSystem().displayMetrics)
 }
 
-fun TextView.checkboxPosition(image: Image?, single: Boolean, result: (AdapterResult) -> Unit) {
+fun TextView.checkboxPosition(image: Media?, single: Boolean, result: (AdapterResult) -> Unit) {
     isGone = single
-    text = image?.index
+    text = image?.indexString
     val circle = if (image?.isSelected == true) R.drawable.circle_selected else R.drawable.circle
     background = ContextCompat.getDrawable(context, circle)
 

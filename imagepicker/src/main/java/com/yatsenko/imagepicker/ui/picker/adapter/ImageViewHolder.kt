@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
+import com.yatsenko.imagepicker.ui.viewer.core.ViewerTransitionHelper
 import com.yatsenko.imagepicker.utils.extensions.checkboxPosition
 import com.yatsenko.imagepicker.utils.extensions.loadImage
 import java.util.concurrent.atomic.AtomicBoolean
@@ -21,29 +22,27 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         )
     }
 
-    private val enterTransitionStarted = AtomicBoolean()
-
-
     private val imageView = view.findViewById<ImageView>(R.id.image)
     private val position = view.findViewById<TextView>(R.id.position)
 
-    val transitionImageView: ImageView
-        get() = imageView
+    private var media: Media? = null
 
-    fun bind(image: Media, single: Boolean, viewerPosition: () -> Int, result: (AdapterResult) -> Unit) {
-        position.checkboxPosition(image, single, result)
-        imageView.loadImage(image) {
-            if (viewerPosition() != bindingAdapterPosition) return@loadImage
-            if (enterTransitionStarted.getAndSet(true)) return@loadImage
+    fun bind(media: Media, single: Boolean, result: (AdapterResult) -> Unit) {
+        this.media = media
 
-            result(AdapterResult.ImageLoaded)
-        }
-
-        imageView.transitionName = image.id
+        position.checkboxPosition(media, single, result)
+        imageView.loadImage(media) {}
 
         itemView.setOnClickListener {
-            result(AdapterResult.OnImageClicked(imageView, image, bindingAdapterPosition))
+            result(AdapterResult.OnImageClicked(imageView, media, bindingAdapterPosition))
         }
+
+        ViewerTransitionHelper.put(media.id, imageView)
+    }
+
+    fun refreshTransitionView() {
+        val id = media?.id ?: return
+        ViewerTransitionHelper.put(id, imageView)
     }
 
 }

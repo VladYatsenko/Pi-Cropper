@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer
+package com.yatsenko.imagepicker.ui.abstraction
 
 import android.app.Dialog
 import android.os.Bundle

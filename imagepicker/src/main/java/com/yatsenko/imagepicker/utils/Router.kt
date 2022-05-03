@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.picker.PickerFragment
+import com.yatsenko.imagepicker.ui.viewer.ImageViewerDialogFragment
 
 class Router(private val containerId: Int, private val fragmentManager: FragmentManager) {
 
@@ -16,6 +18,11 @@ class Router(private val containerId: Int, private val fragmentManager: Fragment
 
     fun openPicker() {
         showFragment(PickerFragment::class.java)
+    }
+
+    fun openViewer(media: Media) {
+        val dialog = ImageViewerDialogFragment.create(media.id)
+        dialog.show(fragmentManager)
     }
 
     private fun showFragment(

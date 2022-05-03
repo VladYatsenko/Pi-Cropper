@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer
+package com.yatsenko.imagepicker.ui.viewer.adapter
 
 import android.view.View
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder

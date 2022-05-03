@@ -5,10 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.ImageViewerAdapterListener
-import com.yatsenko.imagepicker.ui.viewer.adapter.ItemType
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireVHCustomizer
-import com.yatsenko.imagepicker.ui.viewer.core.Photo
+import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
+import com.yatsenko.imagepicker.ui.viewer.core.ImageLoader
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
@@ -32,7 +30,6 @@ class SubsamplingViewHolder(view: View, callback: ImageViewerAdapterListener) : 
             override fun onRestore(view: SubsamplingScaleImageView2, fraction: Float) = callback.onRestore(this@SubsamplingViewHolder, view, fraction)
             override fun onRelease(view: SubsamplingScaleImageView2) = callback.onRelease(this@SubsamplingViewHolder, view)
         })
-        requireVHCustomizer().initialize(ItemType.SUBSAMPLING, this@SubsamplingViewHolder)
     }
 
     override var data: Media? = null
@@ -40,12 +37,7 @@ class SubsamplingViewHolder(view: View, callback: ImageViewerAdapterListener) : 
 
     fun bind(data: Media.SubsamplingImage) {
         this.data = data
-//        subsamplingView.setTag(R.id.viewer_adapter_item_key, item.id())
-//        subsamplingView.setTag(R.id.viewer_adapter_item_data, item)
-//        subsamplingView.setTag(R.id.viewer_adapter_item_holder, this)
-
-//        requireVHCustomizer().bind(ItemType.SUBSAMPLING, item, this)
-//        requireImageLoader().load(subsamplingView, item, this)
+        ImageLoader.load(subsamplingView, data, this)
     }
 
     override fun beforeTransitionStart(startView: View?) {

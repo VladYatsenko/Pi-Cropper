@@ -3,7 +3,6 @@ package com.yatsenko.imagepicker.ui.viewer.viewholders
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.core.Photo
 
 abstract class FullscreenViewHolder(view: View): RecyclerView.ViewHolder(view) {
 

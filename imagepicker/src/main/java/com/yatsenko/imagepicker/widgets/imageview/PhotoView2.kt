@@ -6,9 +6,7 @@ import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.viewpager2.widget.ViewPager2
 import com.github.chrisbanes.photoview.PhotoView
-import com.yatsenko.imagepicker.ui.viewer.ImageViewerViewModel
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
-import com.yatsenko.imagepicker.ui.viewer.utils.ViewModelUtils.provideViewModel
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
@@ -21,7 +19,7 @@ class PhotoView2 @JvmOverloads constructor(context: Context, attrs: AttributeSet
         fun onRelease(view: PhotoView2)
     }
 
-    private val viewModel by lazy { provideViewModel(this, ImageViewerViewModel::class.java) }
+//    private val viewModel by lazy { provideViewModel(this, ImageViewerViewModel::class.java) }
 
     private val scaledTouchSlop by lazy { ViewConfiguration.get(context).scaledTouchSlop * Config.swipeTouchSlop }
     private val dismissEdge by lazy { height * Config.dismissFraction }
@@ -101,7 +99,7 @@ class PhotoView2 @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     private fun setSingleTouch(value: Boolean) {
         singleTouch = value
-        viewModel?.setViewerUserInputEnabled(value)
+//        viewModel?.setViewerUserInputEnabled(value)
     }
 
     override fun onDetachedFromWindow() {

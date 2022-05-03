@@ -6,11 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.ImageViewerAdapterListener
-import com.yatsenko.imagepicker.ui.viewer.adapter.ItemType
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireImageLoader
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireVHCustomizer
-import com.yatsenko.imagepicker.ui.viewer.core.Photo
+import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
+import com.yatsenko.imagepicker.ui.viewer.core.ImageLoader
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
@@ -34,7 +31,6 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
             override fun onRestore(view: PhotoView2, fraction: Float) = callback.onRestore(this@ImageViewHolder, view, fraction)
             override fun onRelease(view: PhotoView2) = callback.onRelease(this@ImageViewHolder, view)
         })
-        requireVHCustomizer().initialize(ItemType.SUBSAMPLING, this@ImageViewHolder)
     }
 
     override var data: Media? = null
@@ -42,17 +38,13 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
 
     fun bind(data: Media.Image) {
         this.data = data
-//        photoView.setTag(R.id.viewer_adapter_item_key, item.id())
-//        photoView.setTag(R.id.viewer_adapter_item_data, item)
-//        photoView.setTag(R.id.viewer_adapter_item_holder, this)
-
-//        requireVHCustomizer().bind(ItemType.PHOTO, item, this)
-//        requireImageLoader().load(photoView, item, this)
+        ImageLoader.load(photoView, data, this)
     }
 
     override fun afterTransitionStart() {
-        val photo = photoView.getTag(R.id.viewer_adapter_item_data) as? Photo ?: return
-        requireImageLoader().load(photoView, photo, this)
+        (data as? Media.Image)?.let {
+            ImageLoader.load(photoView, it, this)
+        }
     }
 
     override fun beforeTransitionStart(startView: View?) {

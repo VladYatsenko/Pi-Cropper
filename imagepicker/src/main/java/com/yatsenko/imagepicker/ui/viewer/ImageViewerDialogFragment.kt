@@ -10,14 +10,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.ui.abstraction.BaseDialogFragment
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapter
-import com.yatsenko.imagepicker.ui.viewer.core.Components
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireInitKey
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireOverlayCustomizer
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireTransformer
-import com.yatsenko.imagepicker.ui.viewer.core.Components.requireViewerCallback
+import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
+import com.yatsenko.imagepicker.ui.viewer.core.*
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.Config.offscreenPageLimit
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
@@ -28,9 +26,22 @@ import com.yatsenko.imagepicker.widgets.BackgroundView
 
 open class ImageViewerDialogFragment : BaseDialogFragment() {
 
-    private val userCallback by lazy { requireViewerCallback() }
-    private val initKey by lazy { requireInitKey() }
-    private val transformer by lazy { requireTransformer() }
+    companion object {
+        private const val MEDIA_ID = "media_id"
+
+        fun create(mediaId: String) = ImageViewerDialogFragment().also {
+            it.arguments = getBundle(mediaId)
+        }
+
+        private fun getBundle(mediaId: String) = Bundle().apply {
+            putString(MEDIA_ID, mediaId)
+        }
+    }
+
+//    private val imageLoader by lazy { ImageLoader() }
+//    private val transformer by lazy { SimpleTransformer() }
+
+    private val initKey by lazy { requireArguments().getString(MEDIA_ID, "") }
     private val adapter by lazy { ImageViewerAdapter(initKey) }
     private var initPosition = RecyclerView.NO_POSITION
 
@@ -44,7 +55,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!Components.working) dismissAllowingStateLoss()
+//        if (!Viewer.working) dismissAllowingStateLoss()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,7 +80,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         pager.offscreenPageLimit = offscreenPageLimit
         pager.adapter = adapter
 
-        requireOverlayCustomizer().provideView(overlayView)?.let(overlayView::addView)
+//        requireOverlayCustomizer().provideView(overlayView)?.let(overlayView::addView)
 
         viewModel.state.observe(viewLifecycleOwner) {
             val list = it.media
@@ -83,29 +94,29 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private val adapterListener by lazy {
         object : ImageViewerAdapterListener {
             override fun onInit(viewHolder: FullscreenViewHolder) {
-                TransitionStartHelper.start(this@ImageViewerDialogFragment, transformer.getView(initKey), viewHolder)
+                TransitionStartHelper.start(this@ImageViewerDialogFragment, ViewerTransitionHelper.provide(initKey), viewHolder)
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
-                userCallback.onInit(viewHolder)
+//                userCallback.onInit(viewHolder)
 
-                if (initPosition > 0) userCallback.onPageSelected(initPosition, viewHolder)
+//                if (initPosition > 0) userCallback.onPageSelected(initPosition, viewHolder)
             }
 
             override fun onDrag(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {
                 background.updateBackgroundColor(fraction, Config.viewBackgroundColor, Color.TRANSPARENT)
-                userCallback.onDrag(viewHolder, view, fraction)
+//                userCallback.onDrag(viewHolder, view, fraction)
             }
 
             override fun onRestore(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
-                userCallback.onRestore(viewHolder, view, fraction)
+//                userCallback.onRestore(viewHolder, view, fraction)
             }
 
             override fun onRelease(viewHolder: FullscreenViewHolder, view: View) {
                 val id = viewHolder.data?.id ?: return
-                val startView = transformer.getView(id)
+                val startView = ViewerTransitionHelper.provide(id)
                 TransitionEndHelper.end(this@ImageViewerDialogFragment, startView, viewHolder)
                 background.changeToBackgroundColor(Color.TRANSPARENT)
-                userCallback.onRelease(viewHolder, view)
+//                userCallback.onRelease(viewHolder, view)
             }
         }
     }
@@ -113,16 +124,16 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private val pagerCallback by lazy {
         object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
-                userCallback.onPageScrollStateChanged(state)
+//                userCallback.onPageScrollStateChanged(state)
             }
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                userCallback.onPageScrolled(position, positionOffset, positionOffsetPixels)
+//                userCallback.onPageScrolled(position, positionOffset, positionOffsetPixels)
             }
 
             override fun onPageSelected(position: Int) {
                 pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position)?.let { holder ->
-                    userCallback.onPageSelected(position, holder)
+//                    userCallback.onPageSelected(position, holder)
                 }
             }
         }
@@ -130,7 +141,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     override fun showFailure(message: String?) {
         super.showFailure(message)
-        Components.release()
+//        Viewer.release()
     }
 
     override fun onDestroyView() {
@@ -138,7 +149,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         adapter.listener = null
         pager.unregisterOnPageChangeCallback(pagerCallback)
         pager.adapter = null
-        Components.release()
+//        Viewer.release()
     }
 
     override fun onBackPressed() {
@@ -146,19 +157,10 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             return
 
         pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { holder ->
-            val startView = transformer.getView(holder.data?.id ?: return@let)
+            val startView = ViewerTransitionHelper.provide(holder.data?.id ?: return@let)
             background.changeToBackgroundColor(Color.TRANSPARENT)
-
-            val endView = holder.endView
             TransitionEndHelper.end(this, startView, holder)
-            userCallback.onRelease(holder, holder.itemView)
-
-            TransitionEndHelper.end(this, startView, holder)
-            userCallback.onRelease(holder, endView)
         }
     }
 
-    open class Factory {
-        open fun build(): ImageViewerDialogFragment = ImageViewerDialogFragment()
-    }
 }

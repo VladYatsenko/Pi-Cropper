@@ -30,7 +30,6 @@ class ImageGripAdapter(
     val list: List<Media>
         get() = differ.currentList
 
-    var viewerPosition: () -> Int = { -1 }
     var result: (AdapterResult) -> Unit = {}
 
     fun submitList(list: List<Media>) {
@@ -46,8 +45,15 @@ class ImageGripAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ImageViewHolder -> list[position].let { image ->
-                holder.bind(image, single, viewerPosition) { result(it) }
+                holder.bind(image, single) { result(it) }
             }
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        when (holder) {
+            is ImageViewHolder -> holder.refreshTransitionView()
         }
     }
 

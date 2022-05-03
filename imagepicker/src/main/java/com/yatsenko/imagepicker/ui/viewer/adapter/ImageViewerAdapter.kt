@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.ImageViewerAdapterListener
 import com.yatsenko.imagepicker.ui.viewer.viewholders.*
-import java.util.*
 
 class ImageViewerAdapter(
     initKey: String,
@@ -62,9 +60,9 @@ class ImageViewerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FullscreenViewHolder {
         return when (viewType) {
-            ImageViewHolder.ITEM_TYPE -> ImageViewHolder(parent, internalListener)
-            SubsamplingViewHolder.ITEM_TYPE -> SubsamplingViewHolder(parent, internalListener)
-            VideoViewHolder.ITEM_TYPE -> VideoViewHolder(parent, internalListener)
+            ImageViewHolder.ITEM_TYPE -> ImageViewHolder.create(parent, internalListener)
+            SubsamplingViewHolder.ITEM_TYPE -> SubsamplingViewHolder.create(parent, internalListener)
+            VideoViewHolder.ITEM_TYPE -> VideoViewHolder.create(parent, internalListener)
             else -> UnknownViewHolder.create(parent)
         }
     }

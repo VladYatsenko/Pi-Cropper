@@ -29,9 +29,9 @@ class PickerFragment : BaseChildFragment() {
     private val imageAdapter by lazy { ImageGripAdapter(false) }
     private val permissionHelper by lazy { PermissionHelper(this, viewModel::extractImages) }
 
-    private val transitionImageView: (position: Int) -> ImageView? = {
-        recycler.findViewHolderByAdapterPosition<ImageViewHolder>(it)?.transitionImageView
-    }
+//    private val transitionImageView: (position: Int) -> ImageView? = {
+//        recycler.findViewHolderByAdapterPosition<ImageViewHolder>(it)?.transitionImageView
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,11 +55,8 @@ class PickerFragment : BaseChildFragment() {
         when (result) {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
-            is AdapterResult.OnImageClicked -> {
-
-            }
-            is AdapterResult.ImageLoaded -> startPostponedEnterTransition()
-            is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.image)
+            is AdapterResult.OnImageClicked -> router.openViewer(result.media)
+            is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.media)
         }
     }
 
