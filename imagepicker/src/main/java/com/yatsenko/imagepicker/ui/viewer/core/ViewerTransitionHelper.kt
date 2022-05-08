@@ -6,7 +6,10 @@ import android.widget.ImageView
 
 object ViewerTransitionHelper {
 
-    private val transition = HashMap<ImageView, String>()
+    private val _transition = HashMap<ImageView, String>()
+
+    val transition: Map<ImageView, String>
+        get() = _transition
 
     fun put(mediaId: String, imageView: ImageView) {
         require(isMainThread())
@@ -14,15 +17,15 @@ object ViewerTransitionHelper {
         imageView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View?) = Unit
             override fun onViewDetachedFromWindow(p0: View?) {
-                transition.remove(imageView)
+                _transition.remove(imageView)
                 imageView.removeOnAttachStateChangeListener(this)
             }
         })
-        transition[imageView] = mediaId
+        _transition[imageView] = mediaId
     }
 
     fun provide(mediaId: String): ImageView? {
-        return transition.keys.firstOrNull { transition[it] == mediaId }
+        return _transition.keys.firstOrNull { _transition[it] == mediaId }
     }
 
     private fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()

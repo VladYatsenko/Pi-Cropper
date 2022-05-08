@@ -98,19 +98,14 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                     viewHolder
                 )
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
-//                userCallback.onInit(viewHolder)
-
-//                if (initPosition > 0) userCallback.onPageSelected(initPosition, viewHolder)
             }
 
             override fun onDrag(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {
                 background.updateBackgroundColor(fraction, Config.viewBackgroundColor, Color.TRANSPARENT)
-//                userCallback.onDrag(viewHolder, view, fraction)
             }
 
             override fun onRestore(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
-//                userCallback.onRestore(viewHolder, view, fraction)
             }
 
             override fun onRelease(viewHolder: FullscreenViewHolder, view: View) {
@@ -118,24 +113,22 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                 val startView = ViewerTransitionHelper.provide(id)
                 TransitionEndHelper.end(this@ImageViewerDialogFragment, startView, viewHolder)
                 background.changeToBackgroundColor(Color.TRANSPARENT)
-//                userCallback.onRelease(viewHolder, view)
             }
         }
     }
 
     private val pagerCallback by lazy {
         object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrollStateChanged(state: Int) {
-//                userCallback.onPageScrollStateChanged(state)
-            }
+            override fun onPageScrollStateChanged(state: Int) {}
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//                userCallback.onPageScrolled(position, positionOffset, positionOffsetPixels)
-            }
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position)?.let { holder ->
-//                    userCallback.onPageSelected(position, holder)
+                val viewHolder = pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position)
+                val id = viewHolder?.data?.id
+                val startView = id?.let { ViewerTransitionHelper.provide(it) }
+                ViewerTransitionHelper.transition.keys.forEach {
+                    it.alpha = if (startView == it) 0f else 1f
                 }
             }
         }

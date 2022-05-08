@@ -48,6 +48,8 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
     }
 
     override fun beforeTransitionStart(startView: View?) {
+        startView?.alpha = 0f
+
         photoView.scaleType = (startView as? ImageView?)?.scaleType ?: ImageView.ScaleType.FIT_CENTER
         photoView.layoutParams = photoView.layoutParams.apply {
             width = startView?.width ?: width
@@ -94,6 +96,7 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
                 topMargin = location[1] - Config.transitionOffsetY
             }
         }
+
     }
 
     override fun fade(startView: View?) {
@@ -102,6 +105,10 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
                 .setDuration(0)
                 .setStartDelay(max(Config.durationTransition - 20, 0))
                 .alpha(0f).start()
+            startView.animate()
+                .setDuration(0)
+                .setStartDelay(max(Config.durationTransition - 20, 0))
+                .alpha(1f).start()
         } else {
             photoView.animate()
                 .setDuration(Config.durationTransition)
