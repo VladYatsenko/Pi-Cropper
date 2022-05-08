@@ -37,10 +37,6 @@ open class BaseDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         view?.setOnKeyListener(null)
-
-        //todo appbar color
-        activity?.window?.statusBarColor = context?.let { ContextCompat.getColor(it, R.color.pickerColorPrimaryDark) }
-            ?: Color.TRANSPARENT
     }
 
     open fun setWindow(win: Window) {
@@ -52,9 +48,7 @@ open class BaseDialogFragment : DialogFragment() {
         win.attributes = lp
         win.setGravity(Gravity.CENTER)
 
-        //todo appbar color
         win.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-        activity?.window?.statusBarColor = Color.BLACK
     }
 
     fun show(fragmentManager: FragmentManager?) {
@@ -65,10 +59,8 @@ open class BaseDialogFragment : DialogFragment() {
         }
     }
 
-    open fun showFailure(message: String? = null) {
-    }
+    open fun showFailure(message: String? = null) {}
 
-    open fun onBackPressed() {
-    }
+    open fun onBackPressed() {}
 
 }

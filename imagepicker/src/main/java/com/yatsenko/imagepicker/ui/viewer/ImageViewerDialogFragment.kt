@@ -38,9 +38,6 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         }
     }
 
-//    private val imageLoader by lazy { ImageLoader() }
-//    private val transformer by lazy { SimpleTransformer() }
-
     private val initKey by lazy { requireArguments().getString(MEDIA_ID, "") }
     private val adapter by lazy { ImageViewerAdapter(initKey) }
     private var initPosition = RecyclerView.NO_POSITION
@@ -51,7 +48,8 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     private val viewModel: PickerViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
-        factoryProducer = { ViewModelFactory(requireActivity().application) })
+        factoryProducer = { ViewModelFactory(requireActivity().application) }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +92,11 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private val adapterListener by lazy {
         object : ImageViewerAdapterListener {
             override fun onInit(viewHolder: FullscreenViewHolder) {
-                TransitionStartHelper.start(this@ImageViewerDialogFragment, ViewerTransitionHelper.provide(initKey), viewHolder)
+                TransitionStartHelper.start(
+                    this@ImageViewerDialogFragment,
+                    ViewerTransitionHelper.provide(initKey),
+                    viewHolder
+                )
                 background.changeToBackgroundColor(Config.viewBackgroundColor)
 //                userCallback.onInit(viewHolder)
 
