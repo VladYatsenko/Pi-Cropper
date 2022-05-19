@@ -47,12 +47,21 @@ class ImageReaderContract(private val context: Context) {
                 val imageModifyIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)
                 val folderNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
 
+                val widthIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.WIDTH)
+                val heightIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.HEIGHT)
+                val fileNameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                val sizeIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
+
                 do {
                     val image = cursor.getImageOrNull(
                         imageIDIndex,
                         folderIdIndex,
                         imageModifyIndex,
-                        folderNameIndex
+                        folderNameIndex,
+                        widthIndex,
+                        heightIndex,
+                        fileNameIndex,
+                        sizeIndex
                     )
                     image?.let { images.add(image) }
                     cursor.getFolderOrNull(
@@ -78,14 +87,27 @@ class ImageReaderContract(private val context: Context) {
         return Pair(folders.map { it.value }, images)
     }
 
-    private fun Cursor.getImageOrNull(imageIDIndex: Int, folderIdIndex: Int, imageModifyIndex: Int, folderNameIndex: Int): Media.Image? {
+    private fun Cursor.getImageOrNull(
+        imageIDIndex: Int,
+        folderIdIndex: Int,
+        imageModifyIndex: Int,
+        folderNameIndex: Int,
+        widthIndex: Int,
+        heightIndex: Int,
+        fileNameIndex: Int,
+        sizeIndex: Int
+    ): Media.Image? {
         val imageId = this.getStringOrNull(imageIDIndex) ?: return null
         val folderId = this.getStringOrNull(folderIdIndex) ?: return null
         val lastModify = this.getStringOrNull(imageModifyIndex)?.toLongOrNull() ?: 0L
+        val width = this.getStringOrNull(widthIndex)?.toIntOrNull() ?: 0
+        val height = this.getStringOrNull(heightIndex)?.toIntOrNull() ?: 0
+        val fileName = this.getStringOrNull(fileNameIndex).orEmpty()
+        val size = this.getStringOrNull(sizeIndex)?.toIntOrNull() ?: 0
 
         val imagePath = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + imageId).toString()
 
-        return Media.Image(imageId, imagePath, lastModify, folderId)
+        return Media.Image(imageId, imagePath, lastModify, folderId, width, height, size, fileName)
     }
 
     private fun Cursor.getFolderOrNull(folderIdIndex: Int, folderNameIndex: Int): Folder.Common? {

@@ -7,6 +7,10 @@ sealed class Media(
     open val path: String,
     open val lastModified: Long,
     open val folderId: String,
+    open val width: Int,
+    open val height: Int,
+    open val size: Int,
+    open val name: String,
     open val isSelected: Boolean = false,
     open val indexInResult: Int = -1
 ) : Serializable {
@@ -21,13 +25,17 @@ sealed class Media(
         override val path: String,
         override val lastModified: Long,
         override val folderId: String,
+        override val width: Int,
+        override val height: Int,
+        override val size: Int,
+        override val name: String,
         override val isSelected: Boolean = false,
         override val indexInResult: Int = -1,
-        private val croppedPath: String? = null
-    ) : Media(id, path, lastModified, folderId, isSelected, indexInResult) {
+        private val croppedImage: Image? = null
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, isSelected, indexInResult) {
 
         override val imagePath: String
-            get() = croppedPath ?: path
+            get() = croppedImage?.path ?: path
 
     }
 
@@ -36,14 +44,18 @@ sealed class Media(
         override val path: String,
         override val lastModified: Long,
         override val folderId: String,
+        override val width: Int,
+        override val height: Int,
+        override val size: Int,
+        override val name: String,
         override val isSelected: Boolean = false,
         override val indexInResult: Int = -1,
-        private val croppedPath: String? = null
-    ) : Media(id, path, lastModified, folderId, isSelected, indexInResult) {
+        private val croppedImage: Image? = null
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, isSelected, indexInResult) {
 
 
         override val imagePath: String
-            get() = croppedPath ?: path
+            get() = croppedImage?.path ?: path
 
     }
 
@@ -52,10 +64,14 @@ sealed class Media(
         override val path: String,
         override val lastModified: Long,
         override val folderId: String,
+        override val width: Int,
+        override val height: Int,
+        override val size: Int,
+        override val name: String,
         override val isSelected: Boolean = false,
         override val indexInResult: Int = -1,
         private val editedPath: String? = null
-    ) : Media(id, path, lastModified, folderId, isSelected, indexInResult) {
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, isSelected, indexInResult) {
 
         val videoPath: String
             get() = editedPath ?: path
