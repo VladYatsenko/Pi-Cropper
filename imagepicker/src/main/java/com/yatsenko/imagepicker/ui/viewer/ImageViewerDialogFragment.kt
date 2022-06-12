@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.ui.abstraction.BaseDialogFragment
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
@@ -24,6 +25,7 @@ import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
 import com.yatsenko.imagepicker.widgets.BackgroundView
+import com.yatsenko.imagepicker.widgets.imageview.Overlay
 
 open class ImageViewerDialogFragment : BaseDialogFragment() {
 
@@ -42,22 +44,19 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     }
 
     private val initKey by lazy { requireArguments().getString(MEDIA_ID, "") }
-    private val adapter by lazy { ImageViewerAdapter(initKey) }
+    private val adapter by lazy { ImageViewerAdapter(initKey, overlayHelper) }
     private var initPosition = RecyclerView.NO_POSITION
 
     private lateinit var pager: ViewPager2
     private lateinit var overlayView: ConstraintLayout
     private lateinit var background: BackgroundView
 
+    private val overlayHelper by lazy { OverlayHelper() }
+
     private val viewModel: PickerViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
         factoryProducer = { ViewModelFactory(requireActivity().application) }
     )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        if (!Viewer.working) dismissAllowingStateLoss()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -81,7 +80,14 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         pager.offscreenPageLimit = offscreenPageLimit
         pager.adapter = adapter
 
-//        requireOverlayCustomizer().provideView(overlayView)?.let(overlayView::addView)
+        overlayHelper.adapterResult = {
+            when(it) {
+                AdapterResult.GoBack -> onBackPressed()
+                is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(it.media)
+                is AdapterResult.OnCropImageClicked -> router.openCropper(it.media)
+            }
+        }
+        overlayView.addView(overlayHelper.provideView(overlayView))
 
         viewModel.state.observe(viewLifecycleOwner) {
             val list = it.media
@@ -116,6 +122,8 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                 val startView = ViewerTransitionHelper.provide(id)
                 TransitionEndHelper.end(this@ImageViewerDialogFragment, startView, viewHolder)
                 background.changeToBackgroundColor(Color.TRANSPARENT)
+
+                overlayHelper.onRelease(viewHolder, view)
             }
         }
     }
@@ -127,19 +135,20 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                val viewHolder = pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position)
-                val id = viewHolder?.data?.id
+                val viewHolder = pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position) ?: return
+                val id = viewHolder.data?.id
                 val startView = id?.let { ViewerTransitionHelper.provide(it) }
                 ViewerTransitionHelper.transition.keys.forEach {
                     it.alpha = if (startView == it) 0f else 1f
                 }
+
+                overlayHelper.onPageSelected(position, viewHolder)
             }
         }
     }
 
     override fun showFailure(message: String?) {
         super.showFailure(message)
-//        Viewer.release()
     }
 
     override fun onDestroyView() {
@@ -147,7 +156,6 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         adapter.listener = null
         pager.unregisterOnPageChangeCallback(pagerCallback)
         pager.adapter = null
-//        Viewer.release()
     }
 
     override fun onBackPressed() {

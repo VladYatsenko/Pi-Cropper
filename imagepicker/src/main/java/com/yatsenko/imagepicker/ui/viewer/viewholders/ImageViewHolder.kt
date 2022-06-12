@@ -8,19 +8,27 @@ import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
 import com.yatsenko.imagepicker.ui.viewer.core.ImageLoader
+import com.yatsenko.imagepicker.ui.viewer.core.VHCustomizer
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
 import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.imageview.PhotoView2
 import kotlin.math.max
 
-class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : FullscreenViewHolder(view) {
+class ImageViewHolder(
+    val view: View,
+    val vhCustomizer: VHCustomizer,
+    callback: ImageViewerAdapterListener) : FullscreenViewHolder(view) {
     
     companion object {
         val ITEM_TYPE: Int = R.layout.item_imageviewer_photo
 
-        fun create(parent: ViewGroup, callback: ImageViewerAdapterListener) = ImageViewHolder(
+        fun create(
+            parent: ViewGroup,
+            vhCustomizer: VHCustomizer,
+            callback: ImageViewerAdapterListener) = ImageViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_imageviewer_photo, parent, false),
+            vhCustomizer,
             callback
         )
     }
@@ -33,12 +41,17 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
         })
     }
 
+    init {
+        vhCustomizer.initialize(ITEM_TYPE, this)
+    }
+
     override var data: Media? = null
     override var endView: View = photoView
 
     fun bind(data: Media.Image) {
         this.data = data
         ImageLoader.load(photoView, data, this)
+        vhCustomizer.bind(ITEM_TYPE, data, this)
     }
 
     override fun afterTransitionStart() {
@@ -115,6 +128,5 @@ class ImageViewHolder(val view: View, callback: ImageViewerAdapterListener) : Fu
                 .alpha(0f).start()
         }
     }
-
 
 }

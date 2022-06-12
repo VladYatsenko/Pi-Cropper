@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.annotation.FloatRange
 import androidx.core.content.ContextCompat
 import com.yatsenko.imagepicker.R
-import com.yatsenko.imagepicker.ui.cropper.AspectRatio
+import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.ui.cropper.shape.CropIwaOvalShape
 import com.yatsenko.imagepicker.ui.cropper.shape.CropIwaRectShape
 import com.yatsenko.imagepicker.ui.cropper.shape.CropIwaShape

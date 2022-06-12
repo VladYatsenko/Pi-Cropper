@@ -9,8 +9,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.ui.PiCropperFragment
+import com.yatsenko.imagepicker.utils.Router
 
 open class BaseDialogFragment : DialogFragment() {
+
+    protected val router: Router
+        get() = (requireParentFragment() as PiCropperFragment).router
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return Dialog(requireActivity(), R.style.Theme_Light_NoTitle_ViewerDialog).apply {
             setCanceledOnTouchOutside(true)

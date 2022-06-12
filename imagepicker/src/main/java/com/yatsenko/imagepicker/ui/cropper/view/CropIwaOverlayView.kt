@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.view.View
-import com.yatsenko.imagepicker.ui.cropper.AspectRatio
+import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.ui.cropper.config.ConfigChangeListener
 import com.yatsenko.imagepicker.ui.cropper.config.CropIwaOverlayConfig
 import com.yatsenko.imagepicker.ui.cropper.listeners.OnImagePositionedListener

@@ -52,7 +52,7 @@ class PickerFragment : BaseChildFragment() {
         when (result) {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
-            is AdapterResult.OnImageClicked -> router.openCropper(result.media)
+            is AdapterResult.OnImageClicked -> router.openViewer(result.media)
             is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.media)
         }
     }

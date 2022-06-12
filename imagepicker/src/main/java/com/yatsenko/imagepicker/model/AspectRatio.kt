@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.cropper
+package com.yatsenko.imagepicker.model
 
 import androidx.annotation.IntRange
 
