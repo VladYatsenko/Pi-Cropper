@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -29,13 +30,15 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     companion object {
         private const val MEDIA_ID = "media_id"
 
-        fun create(mediaId: String) = ImageViewerDialogFragment().also {
-            it.arguments = getBundle(mediaId)
+        fun show(mediaId: String, fragmentManager: FragmentManager) {
+            val dialog = ImageViewerDialogFragment().also {
+                it.arguments = Bundle().apply {
+                    putString(MEDIA_ID, mediaId)
+                }
+            }
+            dialog.show(fragmentManager)
         }
 
-        private fun getBundle(mediaId: String) = Bundle().apply {
-            putString(MEDIA_ID, mediaId)
-        }
     }
 
     private val initKey by lazy { requireArguments().getString(MEDIA_ID, "") }

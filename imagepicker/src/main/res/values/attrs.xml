@@ -1,50 +1,40 @@
 <resources>
 
-    <declare-styleable name="CropImageView">
-        <attr name="cropGuidelines">
-            <enum name="off" value="0"/>
-            <enum name="onTouch" value="1"/>
-            <enum name="on" value="2"/>
+    <declare-styleable name="CropIwaView">
+
+        <attr name="ci_scale_enabled" format="boolean" />
+        <attr name="ci_translation_enabled" format="boolean" />
+        <attr name="ci_max_scale" format="float" />
+        <attr name="ci_crop_scale" format="float" />
+        <attr name="ci_initial_position" format="enum">
+            <enum name="centerInside" value="0" />
+            <enum name="centerCrop" value="1" />
         </attr>
-        <attr name="cropScaleType">
-            <enum name="fitCenter" value="0"/>
-            <enum name="center" value="1"/>
-            <enum name="centerCrop" value="2"/>
-            <enum name="centerInside" value="3"/>
+
+        <attr name="ci_border_color" format="color" />
+        <attr name="ci_border_width" format="dimension" />
+
+        <attr name="ci_corner_color" format="color" />
+        <attr name="ci_corner_width" format="dimension" />
+
+        <attr name="ci_grid_width" format="dimension" />
+        <attr name="ci_grid_color" format="color" />
+        <attr name="ci_draw_grid" format="boolean" />
+
+        <attr name="ci_min_crop_width" format="dimension" />
+        <attr name="ci_min_crop_height" format="dimension" />
+
+        <attr name="ci_overlay_color" format="color" />
+
+        <attr name="ci_dynamic_aspect_ratio" format="boolean" />
+        <attr name="ci_aspect_ratio_w" format="integer" />
+        <attr name="ci_aspect_ratio_h" format="integer" />
+
+        <attr name="ci_crop_shape" format="enum">
+            <enum name="rectangle" value="0" />
+            <enum name="oval" value="1" />
         </attr>
-        <attr name="cropShape">
-            <enum name="rectangle" value="0"/>
-            <enum name="oval" value="1"/>
-        </attr>
-        <attr name="cropAutoZoomEnabled" format="boolean"/>
-        <attr name="cropMaxZoom" format="integer"/>
-        <attr name="cropMultiTouchEnabled" format="boolean"/>
-        <attr name="cropFixAspectRatio" format="boolean"/>
-        <attr name="cropAspectRatioX" format="integer"/>
-        <attr name="cropAspectRatioY" format="integer"/>
-        <attr name="cropInitialCropWindowPaddingRatio" format="float"/>
-        <attr name="cropBorderLineThickness" format="dimension"/>
-        <attr name="cropBorderLineColor" format="color"/>
-        <attr name="cropBorderCornerThickness" format="dimension"/>
-        <attr name="cropBorderCornerOffset" format="dimension"/>
-        <attr name="cropBorderCornerLength" format="dimension"/>
-        <attr name="cropBorderCornerColor" format="color"/>
-        <attr name="cropGuidelinesThickness" format="dimension"/>
-        <attr name="cropGuidelinesColor" format="color"/>
-        <attr name="cropBackgroundColor" format="color"/>
-        <attr name="cropSnapRadius" format="dimension"/>
-        <attr name="cropTouchRadius" format="dimension"/>
-        <attr name="cropSaveBitmapToInstanceState" format="boolean"/>
-        <attr name="cropShowCropOverlay" format="boolean"/>
-        <attr name="cropShowProgressBar" format="boolean"/>
-        <attr name="cropMinCropWindowWidth" format="dimension"/>
-        <attr name="cropMinCropWindowHeight" format="dimension"/>
-        <attr name="cropMinCropResultWidthPX" format="float"/>
-        <attr name="cropMinCropResultHeightPX" format="float"/>
-        <attr name="cropMaxCropResultWidthPX" format="float"/>
-        <attr name="cropMaxCropResultHeightPX" format="float"/>
-        <attr name="cropFlipHorizontally" format="boolean"/>
-        <attr name="cropFlipVertically" format="boolean"/>
+
     </declare-styleable>
 
 </resources>

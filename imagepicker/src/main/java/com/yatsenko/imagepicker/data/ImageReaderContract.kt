@@ -17,10 +17,13 @@ class ImageReaderContract(private val context: Context) {
     private val columns = arrayOf(
         BaseColumns._ID,
         MediaStore.MediaColumns.BUCKET_ID,
-        MediaStore.MediaColumns.MIME_TYPE,
         MediaStore.MediaColumns.DATE_MODIFIED,
         MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-        MediaStore.MediaColumns.DISPLAY_NAME
+        MediaStore.MediaColumns.WIDTH,
+        MediaStore.MediaColumns.HEIGHT,
+        MediaStore.MediaColumns.DISPLAY_NAME,
+        MediaStore.MediaColumns.SIZE,
+        MediaStore.MediaColumns.MIME_TYPE
     )
 
     private val selection = MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=? or " +

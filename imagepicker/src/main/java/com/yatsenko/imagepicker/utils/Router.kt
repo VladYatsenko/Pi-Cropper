@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.yatsenko.imagepicker.model.Media
+import com.yatsenko.imagepicker.ui.cropper.CropDialogFragment
 import com.yatsenko.imagepicker.ui.picker.PickerFragment
 import com.yatsenko.imagepicker.ui.viewer.ImageViewerDialogFragment
 
@@ -21,8 +22,11 @@ class Router(private val containerId: Int, private val fragmentManager: Fragment
     }
 
     fun openViewer(media: Media) {
-        val dialog = ImageViewerDialogFragment.create(media.id)
-        dialog.show(fragmentManager)
+        ImageViewerDialogFragment.show(media.id, fragmentManager)
+    }
+
+    fun openCropper(media: Media) {
+        CropDialogFragment.show(media.imagePath, fragmentManager)
     }
 
     private fun showFragment(

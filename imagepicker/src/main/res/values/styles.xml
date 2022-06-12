@@ -11,11 +11,6 @@
 
     //
 
-    <style name="ImageViewerDialog.Default" parent="android:Theme.Translucent.NoTitleBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-    </style>
-
     <style name="Theme.Light.NoTitle.ViewerDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

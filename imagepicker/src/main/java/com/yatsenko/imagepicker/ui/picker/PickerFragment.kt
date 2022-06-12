@@ -2,19 +2,16 @@ package com.yatsenko.imagepicker.ui.picker
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.ui.picker.adapter.ImageGripAdapter
-import com.yatsenko.imagepicker.ui.picker.adapter.ImageViewHolder
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.PermissionHelper
 import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
-import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
 import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
 class PickerFragment : BaseChildFragment() {
@@ -55,7 +52,7 @@ class PickerFragment : BaseChildFragment() {
         when (result) {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
-            is AdapterResult.OnImageClicked -> router.openViewer(result.media)
+            is AdapterResult.OnImageClicked -> router.openCropper(result.media)
             is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.media)
         }
     }
