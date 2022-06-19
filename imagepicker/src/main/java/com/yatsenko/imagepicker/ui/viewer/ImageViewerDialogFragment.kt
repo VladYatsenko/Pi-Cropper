@@ -118,12 +118,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             }
 
             override fun onRelease(viewHolder: FullscreenViewHolder, view: View) {
-                val id = viewHolder.data?.id ?: return
-                val startView = ViewerTransitionHelper.provide(id)
-                TransitionEndHelper.end(this@ImageViewerDialogFragment, startView, viewHolder)
-                background.changeToBackgroundColor(Color.TRANSPARENT)
-
-                overlayHelper.onRelease(viewHolder, view)
+                exit(viewHolder, view)
             }
         }
     }
@@ -158,14 +153,19 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         pager.adapter = null
     }
 
+    private fun exit(viewHolder: FullscreenViewHolder, view: View) {
+        val startView = ViewerTransitionHelper.provide(viewHolder.data?.id ?: return)
+        background.changeToBackgroundColor(Color.TRANSPARENT)
+        TransitionEndHelper.end(this, startView, viewHolder)
+        overlayHelper.onRelease(viewHolder, view)
+    }
+
     override fun onBackPressed() {
         if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
             return
 
-        pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { holder ->
-            val startView = ViewerTransitionHelper.provide(holder.data?.id ?: return@let)
-            background.changeToBackgroundColor(Color.TRANSPARENT)
-            TransitionEndHelper.end(this, startView, holder)
+        pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { viewHolder ->
+            exit(viewHolder, viewHolder.endView)
         }
     }
 

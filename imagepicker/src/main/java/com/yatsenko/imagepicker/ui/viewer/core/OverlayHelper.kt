@@ -19,11 +19,12 @@ class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
         return Overlay.create(parent.context).apply {
             result = internalAdapterResult
             this@OverlayHelper.overlayView = this
+            show()
         }
     }
 
     override fun onRelease(viewHolder: FullscreenViewHolder, view: View) {
-        overlayView?.animate()?.setDuration(200)?.alpha(0f)?.start()
+        overlayView?.hide()
     }
 
     override fun onPageSelected(position: Int, viewHolder: RecyclerView.ViewHolder) {

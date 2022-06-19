@@ -3,6 +3,7 @@ package com.yatsenko.imagepicker.utils.extensions
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
 import android.util.TypedValue
@@ -128,4 +129,19 @@ internal fun View.switchVisibilityWithAnimation() {
         start()
     }
 }
+
+val Context.actionBarSize: Int
+    get() = this.sizeByIdentifier("status_bar_height")
+
+val Context.navigationBarSize: Int
+    get() = this.sizeByIdentifier("navigation_bar_height")
+
+private fun Context.sizeByIdentifier(name: String): Int {
+    val resources = this.resources
+    val resourceId: Int = resources.getIdentifier(name, "dimen", "android")
+    return if (resourceId > 0) {
+        resources.getDimensionPixelSize(resourceId)
+    } else 0
+}
+
 

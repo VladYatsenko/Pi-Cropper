@@ -2,16 +2,19 @@ package com.yatsenko.imagepicker.widgets.imageview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.utils.extensions.FileUtils
-import com.yatsenko.imagepicker.utils.extensions.checkboxPosition
+import com.yatsenko.imagepicker.utils.extensions.*
+import com.yatsenko.imagepicker.utils.extensions.Animations.slideDown
+import com.yatsenko.imagepicker.utils.extensions.Animations.slideUp
+import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
+import com.yatsenko.imagepicker.utils.extensions.applyMargin
 
 class Overlay @JvmOverloads constructor(
     context: Context,
@@ -38,6 +41,9 @@ class Overlay @JvmOverloads constructor(
     private val fileName: TextView
     private val info: TextView
 
+    private val top: View
+    private val bottom: View
+
     var data: Data? = null
         set(value) {
             field = value
@@ -57,6 +63,10 @@ class Overlay @JvmOverloads constructor(
         fileName = findViewById(R.id.fileName)
         info = findViewById(R.id.info)
 
+        top = findViewById(R.id.top)
+        bottom = findViewById(R.id.bottom)
+
+
         back.setOnClickListener {
             result(AdapterResult.GoBack)
         }
@@ -66,6 +76,12 @@ class Overlay @JvmOverloads constructor(
             }
         }
         brush.setOnClickListener {}
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        top.updateMargin(top = context.actionBarSize)
+        bottom.applyMargin(bottom = context.navigationBarSize)
     }
 
     private fun refreshLayout() {
@@ -78,6 +94,16 @@ class Overlay @JvmOverloads constructor(
         info.text = data?.image?.let {
             "${it.width}x${it.height} • ${FileUtils.stringFileSize(it.size)}"
         }
+    }
+
+    fun show() {
+        this.animate()?.setDuration(500)?.alpha(1f)?.start()
+    }
+
+    fun hide() {
+        this.animate()?.setDuration(200)?.alpha(0f)?.start()
+        top.slideUp(0f, (top.height + context.actionBarSize) * -1f)
+        bottom.slideDown(0f, bottom.height + context.navigationBarSize.toFloat())
     }
 
     data class Data(
