@@ -87,7 +87,15 @@ class ImageReaderContract(private val context: Context) {
             Log.e("ImagePicker", "ImagePicker scan data error:" + e);
         }
 
-        return Pair(folders.map { it.value }, images)
+        val sortedFolders = folders.map { it.value }.toMutableList().apply {
+            val index = this.indexOfFirst { it is Folder.All }
+            if (index == -1) return@apply
+            val all = this[index]
+            this.removeAt(index)
+            this.add(0, all)
+        }
+
+        return Pair(sortedFolders, images)
     }
 
     private fun Cursor.getImageOrNull(
