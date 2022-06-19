@@ -45,7 +45,6 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     private val initKey by lazy { requireArguments().getString(MEDIA_ID, "") }
     private val adapter by lazy { ImageViewerAdapter(initKey, overlayHelper) }
-    private var initPosition = RecyclerView.NO_POSITION
 
     private lateinit var pager: ViewPager2
     private lateinit var overlayView: ConstraintLayout
@@ -89,11 +88,18 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         }
         overlayView.addView(overlayHelper.provideView(overlayView))
 
+        var key: String? =  initKey
         viewModel.state.observe(viewLifecycleOwner) {
             val list = it.media
-            adapter.submitList(list)
-            initPosition = list.indexOfFirst { it.id == initKey }
-            pager.setCurrentItem(initPosition, false)
+            if (key != null) {
+                adapter.submitList(list)
+                val initPosition = list.indexOfFirst { it.id == key }
+                key = null
+                pager.setCurrentItem(initPosition, false)
+                overlayHelper.submitData(initPosition, list)
+            } else {
+                overlayHelper.submitData(pager.currentItem, list)
+            }
         }
     }
 
@@ -137,13 +143,9 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                     it.alpha = if (startView == it) 0f else 1f
                 }
 
-                overlayHelper.onPageSelected(position, viewHolder)
+                overlayHelper.submitData(position, viewModel.images)
             }
         }
-    }
-
-    override fun showFailure(message: String?) {
-        super.showFailure(message)
     }
 
     override fun onDestroyView() {

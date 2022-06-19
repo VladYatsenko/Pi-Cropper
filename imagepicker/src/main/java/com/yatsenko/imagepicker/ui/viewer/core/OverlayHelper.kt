@@ -14,6 +14,7 @@ class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
     private var overlayView: Overlay? = null
     var adapterResult: (AdapterResult) -> Unit = {}
     private val internalAdapterResult: (AdapterResult) -> Unit = { adapterResult(it) }
+    private var currentPosition = -1
 
     override fun provideView(parent: ViewGroup): View {
         return Overlay.create(parent.context).apply {
@@ -27,14 +28,10 @@ class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
         overlayView?.hide()
     }
 
-    override fun onPageSelected(position: Int, viewHolder: RecyclerView.ViewHolder) {
-        val fullscreenViewHolder = (viewHolder as? FullscreenViewHolder) ?: return
-        overlayView?.data = Overlay.Data.createFrom(fullscreenViewHolder.data)
-    }
-
-    override fun bind(type: Int, data: Media, viewHolder: RecyclerView.ViewHolder) {
-        when (type) {
-            ImageViewHolder.ITEM_TYPE -> overlayView?.data = Overlay.Data.createFrom(data)
+    fun submitData(position: Int, list: List<Media>) {
+        currentPosition = position
+        list.getOrNull(position)?.let {
+            overlayView?.data = Overlay.Data.createFrom(it)
         }
     }
 

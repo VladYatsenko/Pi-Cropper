@@ -31,6 +31,9 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     private val _state: MutableLiveData<PickerState> = MutableLiveData()
     val state: LiveData<PickerState> = _state
 
+    val images: List<Media>
+        get() = imageState.media
+
     init {
         Log.i("PickerViewModel", "init()")
     }
