@@ -27,7 +27,7 @@ object TransitionEndHelper {
             interpolator = DecelerateInterpolator()
         }
 
-    fun end(fragment: DialogFragment, startView: View?, holder: FullscreenViewHolder) {
+    fun end(fragment: DialogFragment, startView: View?, holder: FullscreenViewHolder, onTransitionEnd: () -> Unit) {
         holder.beforeTransitionEnd(startView)
         val doTransition = {
             TransitionManager.beginDelayedTransition(holder.itemView as ViewGroup, transitionSet.also {
@@ -40,6 +40,8 @@ object TransitionEndHelper {
                         if (!animating) return
                         animating = false
                         fragment.dismissAllowingStateLoss()
+
+                        onTransitionEnd()
                     }
                 })
             })

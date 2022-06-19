@@ -34,6 +34,8 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     val images: List<Media>
         get() = imageState.media
 
+    private var fullscreenPosition: Int = -1
+
     init {
         Log.i("PickerViewModel", "init()")
     }
@@ -69,7 +71,13 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             else -> selectedImages.add(image)
         }
 
-        rawData = Pair(rawData.first, rawData.second.map(::remapSelectedImage))
+        rawData = Pair(rawData.first, rawData.second.mapIndexed(::remapSelectedImage))
+        refreshFolderImages(imageState.selectedFolder)
+    }
+
+    fun onFullscreenPageSelected(position: Int) {
+        fullscreenPosition = position
+        rawData = Pair(rawData.first, rawData.second.mapIndexed(::remapSelectedImage))
         refreshFolderImages(imageState.selectedFolder)
     }
 
@@ -85,17 +93,20 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         _state.postValue(imageState)
     }
 
-    private fun remapSelectedImage(image: Media): Media {
+    private fun remapSelectedImage(index: Int, image: Media): Media {
         val isSelected = selectedImages.firstOrNull { it.id == image.id } != null
-        val index = selectedImages.indexOfFirst { it.id == image.id }
+        val indexInResult = selectedImages.indexOfFirst { it.id == image.id }
+        val inFullscreen = index == fullscreenPosition
 
-        return if (image.isSelected == isSelected && image.indexInResult == index)
+        return if (image.isSelected == isSelected
+            && image.indexInResult == indexInResult
+            && image.inFullscreen == inFullscreen)
              image
         else {
             return when(image) {
-                is Media.Image -> image.copy(isSelected = isSelected, indexInResult = index)
-                is Media.SubsamplingImage -> image.copy(isSelected = isSelected, indexInResult = index)
-                is Media.Video -> image.copy(isSelected = isSelected, indexInResult = index)
+                is Media.Image -> image.copy(isSelected = isSelected, indexInResult = indexInResult, inFullscreen = inFullscreen)
+                is Media.SubsamplingImage -> image.copy(isSelected = isSelected, indexInResult = indexInResult, inFullscreen = inFullscreen)
+                is Media.Video -> image.copy(isSelected = isSelected, indexInResult = indexInResult, inFullscreen = inFullscreen)
             }
         }
     }

@@ -32,6 +32,7 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         position.checkboxPosition(media, single, result)
         imageView.loadImage(media) {}
+        imageView.alpha = if (media.inFullscreen) 0f else 1f
 
         itemView.setOnClickListener {
             result(AdapterResult.OnImageClicked(imageView, media, bindingAdapterPosition))

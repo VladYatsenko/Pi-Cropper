@@ -136,14 +136,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                val viewHolder = pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(position) ?: return
-                val id = viewHolder.data?.id
-                val startView = id?.let { ViewerTransitionHelper.provide(it) }
-                ViewerTransitionHelper.transition.keys.forEach {
-                    it.alpha = if (startView == it) 0f else 1f
-                }
-
-                overlayHelper.submitData(position, viewModel.images)
+                viewModel.onFullscreenPageSelected(position)
             }
         }
     }
@@ -158,7 +151,9 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private fun exit(viewHolder: FullscreenViewHolder, view: View) {
         val startView = ViewerTransitionHelper.provide(viewHolder.data?.id ?: return)
         background.changeToBackgroundColor(Color.TRANSPARENT)
-        TransitionEndHelper.end(this, startView, viewHolder)
+        TransitionEndHelper.end(this, startView, viewHolder) {
+            viewModel.onFullscreenPageSelected(-1)
+        }
         overlayHelper.onRelease(viewHolder, view)
     }
 
