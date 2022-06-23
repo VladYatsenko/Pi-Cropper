@@ -26,7 +26,7 @@ class Router(private val containerId: Int, private val fragmentManager: Fragment
     }
 
     fun openCropper(media: Media) {
-        CropDialogFragment.show(media.imagePath, fragmentManager)
+        CropDialogFragment.show(media, fragmentManager)
     }
 
     private fun showFragment(

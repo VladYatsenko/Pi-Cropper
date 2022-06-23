@@ -19,10 +19,10 @@ class CropIwaOverlayConfig {
 
         fun createDefault(context: Context): CropIwaOverlayConfig {
             val config: CropIwaOverlayConfig = CropIwaOverlayConfig()
-                .setBorderColor(ContextCompat.getColor(context, R.color.cropiwa_default_border_color))
-                .setCornerColor(ContextCompat.getColor(context, R.color.cropiwa_default_corner_color))
-                .setGridColor(ContextCompat.getColor(context, R.color.cropiwa_default_grid_color))
-                .setOverlayColor(ContextCompat.getColor(context, R.color.cropiwa_default_overlay_color))
+                .setBorderColor(ContextCompat.getColor(context, R.color.default_border_color))
+                .setCornerColor(ContextCompat.getColor(context, R.color.default_corner_color))
+                .setGridColor(ContextCompat.getColor(context, R.color.default_grid_color))
+                .setOverlayColor(ContextCompat.getColor(context, R.color.default_overlay_color))
                 .setBorderStrokeWidth(context.resources.getDimensionPixelSize(R.dimen.cropiwa_default_border_stroke_width))
                 .setCornerStrokeWidth(context.resources.getDimension(R.dimen.cropiwa_default_corner_stroke_width))
                 .setCropScale(DEFAULT_CROP_SCALE)

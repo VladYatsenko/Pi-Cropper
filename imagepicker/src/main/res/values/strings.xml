@@ -1,6 +1,8 @@
 <resources>
 
     <string name="all_image_folder">All Images</string>
+    <string name="dynamic">Dynamic</string>
+    <string name="original">Original</string>
 
 
 </resources>

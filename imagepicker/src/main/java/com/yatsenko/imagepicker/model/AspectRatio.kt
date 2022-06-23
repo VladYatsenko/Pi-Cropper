@@ -1,6 +1,9 @@
 package com.yatsenko.imagepicker.model
 
+import android.content.Context
 import androidx.annotation.IntRange
+import com.yatsenko.imagepicker.R
+import java.util.*
 
 sealed class AspectRatio(@IntRange(from = 1) open val width: Int, @IntRange(from = 1) open val height: Int){
 
@@ -8,14 +11,34 @@ sealed class AspectRatio(@IntRange(from = 1) open val width: Int, @IntRange(from
         @SuppressWarnings("Range")
         val IMG_SRC = Dynamic
 
+        val defaultList = listOf(
+            Dynamic,
+            Aspect4to3,
+            Aspect16to9,
+            Aspect1to1,
+            Aspect3to4,
+            Aspect9to16
+        )
+
+        fun createFrom(media: Media): AspectOriginal {
+            val factor = greatestCommonFactor(media.width, media.height)
+            val widthRatio: Int = media.width / factor
+            val heightRatio: Int = media.height / factor
+            return AspectOriginal(widthRatio, heightRatio)
+        }
+
+        private fun greatestCommonFactor(width: Int, height: Int): Int {
+            return if (height == 0) width else greatestCommonFactor(height, width % height)
+        }
+
     }
 
     @SuppressWarnings("Range")
     object Dynamic: AspectRatio(-1, -1)
 
     data class AspectOriginal(
-        @IntRange(from = 1) override val width: Int,
-        @IntRange(from = 1) override val height: Int
+        override val width: Int,
+        override val height: Int
         ): AspectRatio(width, height)
 
     object Aspect4to3: AspectRatio(4, 3)
@@ -33,5 +56,13 @@ sealed class AspectRatio(@IntRange(from = 1) open val width: Int, @IntRange(from
 
     val ratio: Float
         get() = width.toFloat() / height
+
+    val ratioString: (Context) -> String = {
+        when(this) {
+            is AspectOriginal -> it.getString(R.string.original)
+            is Dynamic -> it.getString(R.string.dynamic)
+            else -> String.format(Locale.US, "%d:%d", width, height)
+        }
+    }
 
 }
