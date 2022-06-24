@@ -5,4 +5,10 @@
     <dimen name="cropiwa_default_grid_stroke_width">1dp</dimen>
     <dimen name="cropiwa_default_min_height">40dp</dimen>
     <dimen name="cropiwa_default_min_width">40dp</dimen>
+
+
+    <dimen name="height_horizontal_wheel_progress_line">20dp</dimen>
+    <dimen name="width_horizontal_wheel_progress_line">2dp</dimen>
+    <dimen name="width_middle_wheel_progress_line">4dp</dimen>
+    <dimen name="margin_horizontal_wheel_progress_line">10dp</dimen>
 </resources>

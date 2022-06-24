@@ -59,8 +59,8 @@ sealed class AspectRatio(@IntRange(from = 1) open val width: Int, @IntRange(from
 
     val ratioString: (Context) -> String = {
         when(this) {
-            is AspectOriginal -> it.getString(R.string.original)
-            is Dynamic -> it.getString(R.string.dynamic)
+            is AspectOriginal -> it.getString(R.string.crop_style_original)
+            is Dynamic -> it.getString(R.string.crop_style_dynamic)
             else -> String.format(Locale.US, "%d:%d", width, height)
         }
     }
