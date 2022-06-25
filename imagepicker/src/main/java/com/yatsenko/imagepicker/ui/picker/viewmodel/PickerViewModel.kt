@@ -128,6 +128,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             else -> selectedImages.add(media)
         }
 
+        rawData = Pair(rawData.first, rawData.second.mapIndexed(::remapSelectedImage))
         refreshFolderImages(pickerStateData.selectedFolder)
         refreshOverlay()
         refreshViewer()
@@ -154,7 +155,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun imageCropped(media: Media.Image, croppedImage: Media.Image) {
-        val indexInResult = if(selectedImages.isEmpty()) 1 else selectedImages.size
+        val indexInResult = if(selectedImages.isEmpty()) 0 else selectedImages.size
         val updatedMedia = media.copy(indexInResult = indexInResult, croppedImage = croppedImage)
         selectedImages.add(updatedMedia)
         val index = rawData.second.indexOfFirst { it.id == media.id }
@@ -164,6 +165,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             mutableList.add(index, updatedMedia)
             rawData = Pair(rawData.first, mutableList)
             refreshFolderImages(pickerStateData.selectedFolder)
+            refreshOverlay()
             refreshViewer()
         }
     }
@@ -200,7 +202,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         else {
             return when (image) {
                 is Media.Image -> {
-                    val croppedImage = if (image.isSelected) image.croppedImage else null
+                    val croppedImage = if (indexInResult != -1) image.croppedImage else null
                     image.copy(indexInResult = indexInResult, inFullscreen = inFullscreen, croppedImage = croppedImage)
                 }
                 is Media.SubsamplingImage -> image.copy(indexInResult = indexInResult, inFullscreen = inFullscreen)
