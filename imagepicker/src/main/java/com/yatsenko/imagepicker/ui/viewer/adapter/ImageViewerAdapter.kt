@@ -3,17 +3,29 @@ package com.yatsenko.imagepicker.ui.viewer.adapter
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.core.VHCustomizer
 import com.yatsenko.imagepicker.ui.viewer.viewholders.*
 
+private val callback = object : DiffUtil.ItemCallback<Media>() {
+
+    override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
+        return oldItem == newItem
+    }
+
+    @SuppressLint("DiffUtilEquals")
+    override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
+        return oldItem === newItem
+    }
+
+}
+
 class ImageViewerAdapter(
     initKey: String,
     private val vhCustomizer: VHCustomizer,
-) : RecyclerView.Adapter<FullscreenViewHolder>() {
+) : PagedListAdapter<Media, FullscreenViewHolder>(callback) {
 
     private var key: String? = initKey
 
@@ -38,28 +50,6 @@ class ImageViewerAdapter(
 
     }
 
-    private val callback = object : DiffUtil.ItemCallback<Media>() {
-
-        override fun areItemsTheSame(oldItem: Media, newItem: Media): Boolean {
-            return oldItem == newItem
-        }
-
-        @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(oldItem: Media, newItem: Media): Boolean {
-            return oldItem === newItem
-        }
-
-    }
-
-    private val differ = AsyncListDiffer(this, callback)
-
-    val list: List<Media>
-        get() = differ.currentList
-
-    fun submitList(list: List<Media>) {
-        differ.submitList(list)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FullscreenViewHolder {
         return when (viewType) {
             ImageViewHolder.ITEM_TYPE -> ImageViewHolder.create(parent, vhCustomizer, internalListener)
@@ -70,25 +60,25 @@ class ImageViewerAdapter(
     }
 
     override fun onBindViewHolder(holder: FullscreenViewHolder, position: Int) {
-        val item = list[position]
+        val item = getItem(position)
         when (holder) {
             is ImageViewHolder -> (item as? Media.Image)?.let { holder.bind(it) }
 //            is SubsamplingViewHolder -> (item as? Media.SubsamplingImage)?.let { holder.bind(it) }
 //            is VideoViewHolder -> (item as? Media.Video)?.let { holder.bind(it) }
         }
 
-        if (item.id == key) {
+        if (item?.id == key) {
             internalListener.onInit(holder)
             key = null
         }
     }
 
     override fun getItemId(position: Int): Long {
-        return list[position].lastModified
+        return getItem(position)?.lastModified ?: -1
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(list[position]){
+        return when(getItem(position)){
             is Media.Image -> ImageViewHolder.ITEM_TYPE
 //            is Media.SubsamplingImage -> SubsamplingViewHolder.ITEM_TYPE
 //            is Media.Video -> VideoViewHolder.ITEM_TYPE
@@ -96,6 +86,6 @@ class ImageViewerAdapter(
         }
     }
 
-    override fun getItemCount(): Int = list.size
+//    override fun getItemCount(): Int = list.size
 
 }

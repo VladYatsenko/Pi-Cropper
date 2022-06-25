@@ -26,10 +26,6 @@ class PickerFragment : BaseChildFragment() {
     private val imageAdapter by lazy { ImageGripAdapter(false) }
     private val permissionHelper by lazy { PermissionHelper(this, viewModel::extractImages) }
 
-//    private val transitionImageView: (position: Int) -> ImageView? = {
-//        recycler.findViewHolderByAdapterPosition<ImageViewHolder>(it)?.transitionImageView
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         toolbar = view.findViewById(R.id.dropdown_toolbar)
@@ -41,7 +37,7 @@ class PickerFragment : BaseChildFragment() {
         toolbar.result = ::handleAdapterResult
         imageAdapter.result = ::handleAdapterResult
 
-        viewModel.state.observe(this) { state ->
+        viewModel.pickerState.observe(this) { state ->
             toolbar.data = DropdownToolbar.Data(state.selectedFolder, state.folders)
             imageAdapter.submitList(state.media)
         }
@@ -52,8 +48,11 @@ class PickerFragment : BaseChildFragment() {
         when (result) {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
-            is AdapterResult.OnImageClicked -> router.openViewer(result.media)
-            is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(result.media)
+            is AdapterResult.OnImageClicked -> {
+                viewModel.openFullscreen(result.position)
+                router.openViewer(result.media)
+            }
+            is AdapterResult.OnSelectImageClicked -> viewModel.selectMedia(result.media)
         }
     }
 

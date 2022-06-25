@@ -28,11 +28,8 @@ class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
         overlayView?.hide()
     }
 
-    fun submitData(position: Int, list: List<Media>) {
-        currentPosition = position
-        list.getOrNull(position)?.let {
-            overlayView?.data = Overlay.Data.createFrom(it)
-        }
+    fun submitData(media: Media?) {
+        overlayView?.data = Overlay.Data.createFrom(media)
     }
 
 }

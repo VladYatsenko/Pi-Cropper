@@ -11,7 +11,7 @@ object ImageLoader {
 
     fun load(view: ImageView, data: Media.Image, viewHolder: RecyclerView.ViewHolder) {
         Glide.with(view)
-            .load(data.imagePath)
+            .load(data.mediaPath)
             .placeholder(view.drawable)
             .into(view)
     }

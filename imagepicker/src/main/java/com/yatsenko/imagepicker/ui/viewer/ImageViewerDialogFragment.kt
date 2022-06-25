@@ -25,7 +25,6 @@ import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
 import com.yatsenko.imagepicker.widgets.BackgroundView
-import com.yatsenko.imagepicker.widgets.imageview.Overlay
 
 open class ImageViewerDialogFragment : BaseDialogFragment() {
 
@@ -49,6 +48,8 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
     private lateinit var pager: ViewPager2
     private lateinit var overlayView: ConstraintLayout
     private lateinit var background: BackgroundView
+
+    private var overlayRefreshGate = true
 
     private val overlayHelper by lazy { OverlayHelper() }
 
@@ -82,25 +83,23 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         overlayHelper.adapterResult = {
             when(it) {
                 AdapterResult.GoBack -> onBackPressed()
-                is AdapterResult.OnSelectImageClicked -> viewModel.selectImage(it.media)
+                is AdapterResult.OnSelectImageClicked -> viewModel.selectMedia(it.media)
                 is AdapterResult.OnCropImageClicked -> router.openCropper(it.media)
             }
         }
         overlayView.addView(overlayHelper.provideView(overlayView))
 
-        var key: String? =  initKey
-        viewModel.state.observe(viewLifecycleOwner) {
-            val list = it.media
-            if (key != null) {
-                adapter.submitList(list)
-                val initPosition = list.indexOfFirst { it.id == key }
-                key = null
-                pager.setCurrentItem(initPosition, false)
-                overlayHelper.submitData(initPosition, list)
-            } else {
-                overlayHelper.submitData(pager.currentItem, list)
-            }
+        var key: String? = initKey
+        viewModel.viewerState.observe(viewLifecycleOwner) { list ->
+            if (list.size > 1) return@observe
+            overlayRefreshGate = list.size == 1 && viewModel.media.size > 1
+            adapter.submitList(list)
         }
+
+        viewModel.overlayState.observe(viewLifecycleOwner) {
+            overlayHelper.submitData(it.media)
+        }
+
     }
 
 
@@ -136,7 +135,11 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                viewModel.onFullscreenPageSelected(position)
+                if (overlayRefreshGate) {
+                    overlayRefreshGate = false
+                    return
+                }
+                viewModel.onFullscreenPageChanged(position)
             }
         }
     }
@@ -152,7 +155,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         val startView = ViewerTransitionHelper.provide(viewHolder.data?.id ?: return)
         background.changeToBackgroundColor(Color.TRANSPARENT)
         TransitionEndHelper.end(this, startView, viewHolder) {
-            viewModel.onFullscreenPageSelected(-1)
+            viewModel.onFullscreenClosed()
         }
         overlayHelper.onRelease(viewHolder, view)
     }

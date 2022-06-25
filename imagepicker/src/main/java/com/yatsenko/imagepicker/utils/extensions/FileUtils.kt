@@ -1,5 +1,8 @@
 package com.yatsenko.imagepicker.utils.extensions
 
+import android.content.Context
+import android.net.Uri
+import java.io.File
 import java.text.DecimalFormat
 
 object FileUtils {
@@ -17,4 +20,15 @@ object FileUtils {
             else -> ""
         }
     }
+
+    fun tempFileUri(context: Context, extension: String): Uri {
+        return Uri.fromFile(tempFile(context, extension))
+    }
+
+    fun tempFile(context: Context, extension: String): File {
+        val destinationFileName = "${System.currentTimeMillis()}$extension"
+        return File(context.cacheDir, destinationFileName)
+    }
+
+    fun File.fileUri(context: Context) = Uri.fromFile(this)
 }

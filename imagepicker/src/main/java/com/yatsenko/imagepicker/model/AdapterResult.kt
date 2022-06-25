@@ -15,10 +15,15 @@ sealed class AdapterResult {
     data class OnAspectRatioClicked(val item: AspectRatioAdapter.Data) : AdapterResult()
     object OnResetRotationClicked : AdapterResult()
     object OnRotate90Clicked : AdapterResult()
+    object OnApplyCrop: AdapterResult()
+    object OnCancelCrop: AdapterResult()
 
     object OnRotateStart : AdapterResult()
     data class OnRotateProgress(val deltaAngle: Float) : AdapterResult()
     object OnRotateEnd : AdapterResult()
 
+    data class OnImageRotated(val angle: Float) : AdapterResult()
+    data class OnImageCropped(val media: Media.Image) : AdapterResult()
+    data class OnCropError(val t: Throwable) : AdapterResult()
 
 }

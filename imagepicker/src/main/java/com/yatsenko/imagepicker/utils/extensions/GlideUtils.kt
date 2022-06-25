@@ -14,7 +14,7 @@ import com.yatsenko.imagepicker.model.Media
 
 fun ImageView.loadImage(image: Media?) {
     Glide.with(this)
-        .load(image?.imagePath)
+        .load(image?.mediaPath)
         .addListener(object : RequestListener<Drawable> {
             override fun onLoadFailed(
                 e: GlideException?,
@@ -65,7 +65,7 @@ fun ImageView.loadImage(image: Media, onLoadingFinished: () -> Unit) {
         }
     }
     Glide.with(this)
-        .load(image.imagePath)
+        .load(image.mediaPath)
         .apply(RequestOptions().dontTransform())
         .listener(listener)
         .into(this)

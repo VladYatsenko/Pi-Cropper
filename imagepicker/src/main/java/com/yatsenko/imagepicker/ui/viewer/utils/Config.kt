@@ -6,7 +6,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 object Config {
     var isDebug: Boolean = true
-    var offscreenPageLimit: Int = 1
+    var offscreenPageLimit: Int = 3
     var VIEWER_ORIENTATION: Int = ViewPager2.ORIENTATION_HORIZONTAL
     var viewBackgroundColor: Int = Color.BLACK
     var durationTransition: Long = 250L

@@ -6,16 +6,15 @@
     android:background="@android:color/black"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.yatsenko.imagepicker.ui.cropper.view.CropIwaView
-        android:id="@+id/crop_view"
+    <FrameLayout
+        android:id="@+id/crop_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_marginBottom="@dimen/overlap_crop_bottom_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_view"
-        app:ci_dynamic_aspect_ratio="false" />
+        app:layout_constraintBottom_toTopOf="@+id/bottom_view" />
 
     <com.yatsenko.imagepicker.widgets.crop.CropToolsView
         android:id="@+id/bottom_view"

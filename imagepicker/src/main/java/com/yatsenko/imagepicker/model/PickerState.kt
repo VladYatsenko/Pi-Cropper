@@ -5,3 +5,7 @@ data class PickerState(
     val selectedFolder: Folder,
     val media: List<Media>
 )
+
+data class OverlayState(
+    val media: Media?
+)

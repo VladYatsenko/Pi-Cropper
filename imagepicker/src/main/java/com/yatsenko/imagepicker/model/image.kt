@@ -1,5 +1,6 @@
 package com.yatsenko.imagepicker.model
 
+import java.io.File
 import java.io.Serializable
 
 sealed class Media(
@@ -11,12 +12,14 @@ sealed class Media(
     open val height: Int,
     open val size: Int,
     open val name: String,
-    open val isSelected: Boolean = false,
     open val indexInResult: Int = -1,
     open val inFullscreen: Boolean = false
 ) : Serializable {
 
-    open val imagePath: String = path
+    open val mediaPath: String = path
+
+    val isSelected: Boolean
+        get() = indexInResult != -1
 
     val indexString: String
         get() = if (isSelected) indexInResult.plus(1).toString() else ""
@@ -30,14 +33,31 @@ sealed class Media(
         override val height: Int,
         override val size: Int,
         override val name: String,
-        override val isSelected: Boolean = false,
         override val indexInResult: Int = -1,
         override val inFullscreen: Boolean = false,
-        private val croppedImage: Image? = null
-    ) : Media(id, path, lastModified, folderId, width, height, size, name, isSelected, indexInResult, inFullscreen) {
+        val croppedImage: Image? = null
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult, inFullscreen) {
 
-        override val imagePath: String
+        override val mediaPath: String
             get() = croppedImage?.path ?: path
+
+        companion object {
+            fun croppedImage(file: File, width: Int, height: Int): Image {
+                return Image(
+                    id = "",
+                    path = file.path,
+                    lastModified = 0,
+                    folderId = "",
+                    width = width,
+                    height = height,
+                    size = file.length().toInt(),
+                    name = "",
+                    indexInResult = -1,
+                    inFullscreen = false,
+                    croppedImage = null
+                )
+            }
+        }
 
     }
 
@@ -50,14 +70,13 @@ sealed class Media(
         override val height: Int,
         override val size: Int,
         override val name: String,
-        override val isSelected: Boolean = false,
         override val indexInResult: Int = -1,
         override val inFullscreen: Boolean = false,
         private val croppedImage: Image? = null
-    ) : Media(id, path, lastModified, folderId, width, height, size, name, isSelected, indexInResult) {
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult) {
 
 
-        override val imagePath: String
+        override val mediaPath: String
             get() = croppedImage?.path ?: path
 
     }
@@ -71,11 +90,10 @@ sealed class Media(
         override val height: Int,
         override val size: Int,
         override val name: String,
-        override val isSelected: Boolean = false,
         override val indexInResult: Int = -1,
         override val inFullscreen: Boolean = false,
         private val editedPath: String? = null
-    ) : Media(id, path, lastModified, folderId, width, height, size, name, isSelected, indexInResult) {
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult) {
 
         val videoPath: String
             get() = editedPath ?: path
