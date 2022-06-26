@@ -26,7 +26,6 @@ public class CheckBoxBase {
 
     private View parentView;
     private Rect bounds = new Rect();
-    private RectF rect = new RectF();
 
     private static Paint paint;
     private static Paint eraser;
@@ -50,9 +49,9 @@ public class CheckBoxBase {
 
     private boolean isChecked;
 
-    private String checkColorKey = "checkColorKey";//Theme.key_checkboxCheck;
-    private String backgroundColorKey = "backgroundColorKey";//Theme.key_chat_serviceBackground;
-    private String background2ColorKey = "background2ColorKey";//Theme.key_chat_serviceBackground;
+    private String checkColorKey = "checkColorKey";
+    private String backgroundColorKey = "backgroundColorKey";
+    private String background2ColorKey = "background2ColorKey";
 
     private boolean useDefaultCheck;
 
@@ -151,18 +150,7 @@ public class CheckBoxBase {
 
     public void setBackgroundType(int type) {
         backgroundType = type;
-        if (type == 12 || type == 13) {
-            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1));
-        } else if (type == 4 || type == 5) {
-            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.9f));
-            if (type == 5) {
-                checkPaint.setStrokeWidth(ViewKt.dpToPxInt(1.5f));
-            }
-        } else if (type == 3) {
-            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.2f));
-        } else if (type != 0) {
-            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.5f));
-        }
+        backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.5f));
     }
 
     private void cancelCheckAnimator() {
@@ -197,14 +185,6 @@ public class CheckBoxBase {
         background2ColorKey = background2;
         checkColorKey = check;
         invalidate();
-    }
-
-    public void setUseDefaultCheck(boolean value) {
-        useDefaultCheck = value;
-    }
-
-    public void setBackgroundAlpha(float alpha) {
-        backgroundAlpha = alpha;
     }
 
     public void setNum(int num) {
@@ -245,14 +225,6 @@ public class CheckBoxBase {
 
         drawBitmap.eraseColor(0);
         float rad = ViewKt.dpToPxInt(size / 2);
-        float outerRad = rad;
-        if (backgroundType == 12 || backgroundType == 13) {
-            rad = outerRad = ViewKt.dpToPxInt(10);
-        } else {
-            if (backgroundType != 0 && backgroundType != 11) {
-                outerRad -= ViewKt.dpToPxInt(0.2f);
-            }
-        }
 
         float roundProgress = progress >= 0.5f ? 1.0f : progress / 0.5f;
 
@@ -261,130 +233,43 @@ public class CheckBoxBase {
 
         if (backgroundColorKey != null) {
             if (drawUnchecked) {
-//                if (backgroundType == 12 || backgroundType == 13) {
-//                    paint.setColor(getThemedColor(backgroundColorKey));
-//                    paint.setAlpha((int) (255 * backgroundAlpha));
-//                    backgroundPaint.setColor(getThemedColor(checkColorKey));
-//                } else if (backgroundType == 6 || backgroundType == 7) {
-//                    paint.setColor(getThemedColor(background2ColorKey));
-//                    backgroundPaint.setColor(getThemedColor(checkColorKey));
-//                } else if (backgroundType == 10) {
-//                    backgroundPaint.setColor(getThemedColor(background2ColorKey));
-//                } else {
                 paint.setColor(getThemedColor("key_transparent_bg")); //(Theme.getServiceMessageColor() & 0x00ffffff) | 0x28000000
                 String color = isChecked ? "Theme.key_chat_serviceBackground;" : checkColorKey;
                 backgroundPaint.setColor(getThemedColor(color));
-//                }
             } else {
                 backgroundPaint.setColor(AndroidUtilities.getOffsetColor(0x00ffffff, getThemedColor(background2ColorKey != null ? background2ColorKey : checkColorKey), progress, backgroundAlpha));
             }
         } else {
             if (drawUnchecked) {
                 paint.setColor(Color.argb((int) (25 * backgroundAlpha), 0, 0, 0));
-//                if (backgroundType == 8) {
-//                    backgroundPaint.setColor(getThemedColor(background2ColorKey));
-//                } else {
                 backgroundPaint.setColor(AndroidUtilities.getOffsetColor(0xffffffff, getThemedColor(checkColorKey), progress, backgroundAlpha));
-//                }
             } else {
                 backgroundPaint.setColor(AndroidUtilities.getOffsetColor(0x00ffffff, getThemedColor(background2ColorKey != null ? background2ColorKey : checkColorKey), progress, backgroundAlpha));
             }
         }
 
         if (drawUnchecked && backgroundType >= 0) {
-            if (backgroundType == 12 || backgroundType == 13) {
-                //draw nothing
-            } else if (backgroundType == 8 || backgroundType == 10) {
-                canvas.drawCircle(cx, cy, rad - ViewKt.dpToPxInt(1.5f), backgroundPaint);
-            } else if (backgroundType == 6 || backgroundType == 7) {
-                canvas.drawCircle(cx, cy, rad - ViewKt.dpToPxInt(1), paint);
-                canvas.drawCircle(cx, cy, rad - ViewKt.dpToPxInt(1.5f), backgroundPaint);
-            } else {
-                canvas.drawCircle(cx, cy, rad, paint);
-            }
+            canvas.drawCircle(cx, cy, rad, paint);
         }
         paint.setColor(getThemedColor(checkColorKey));
-        if (backgroundType != -1 && backgroundType != 7 && backgroundType != 8 && backgroundType != 9 && backgroundType != 10) {
-            if (backgroundType == 12 || backgroundType == 13) {
-                backgroundPaint.setStyle(Paint.Style.FILL);
-//                if (messageDrawable != null && messageDrawable.hasGradient()) {
-//                    Shader shader = messageDrawable.getGradientShader();
-//                    Matrix matrix = messageDrawable.getMatrix();
-//                    matrix.reset();
-//                    messageDrawable.applyMatrixScale();
-//                    matrix.postTranslate(0, -messageDrawable.getTopY() + bounds.top);
-//                    shader.setLocalMatrix(matrix);
-//                    backgroundPaint.setShader(shader);
-//                } else {
-//                    backgroundPaint.setShader(null);
-//                }
-
-                backgroundPaint.setShader(null);
-
-                canvas.drawCircle(cx, cy, (rad - ViewKt.dpToPxInt(1)) * backgroundAlpha, backgroundPaint);
-                backgroundPaint.setStyle(Paint.Style.STROKE);
-            } else if (backgroundType == 0 || backgroundType == 11) {
-                canvas.drawCircle(cx, cy, rad, backgroundPaint);
-            } else {
-                rect.set(cx - outerRad, cy - outerRad, cx + outerRad, cy + outerRad);
-                int startAngle;
-                int sweepAngle;
-                if (backgroundType == 6) {
-                    startAngle = 0;
-                    sweepAngle = (int) (-360 * progress);
-                } else if (backgroundType == 1) {
-                    startAngle = -90;
-                    sweepAngle = (int) (-270 * progress);
-                } else {
-                    startAngle = 90;
-                    sweepAngle = (int) (270 * progress);
-                }
-
-//                if (backgroundType == 6) {
-//                    int color = getThemedColor(Theme.key_dialogBackground);
-//                    int alpha = Color.alpha(color);
-//                    backgroundPaint.setColor(color);
-//                    backgroundPaint.setAlpha((int) (alpha * progress));
-//                    canvas.drawArc(rect, startAngle, sweepAngle, false, backgroundPaint);
-//                    color = getThemedColor(Theme.key_chat_attachPhotoBackground);
-//                    alpha = Color.alpha(color);
-//                    backgroundPaint.setColor(color);
-//                    backgroundPaint.setAlpha((int) (alpha * progress));
-//                }
-                canvas.drawArc(rect, startAngle, sweepAngle, false, backgroundPaint);
-            }
-        }
+        canvas.drawCircle(cx, cy, rad, backgroundPaint);
 
         if (roundProgress > 0) {
             float checkProgress = progress < 0.5f ? 0.0f : (progress - 0.5f) / 0.5f;
-
-//            if (backgroundType == 9) {
-//                paint.setColor(getThemedColor(background2ColorKey));
-//            } else
             if (backgroundType == 11 || backgroundType == 6 || backgroundType == 7 || backgroundType == 10 || !drawUnchecked && backgroundColorKey != null) {
                 paint.setColor(getThemedColor(backgroundColorKey));
             }
-//            }
-//            else {
-//                paint.setColor(getThemedColor(enabled ? Theme.key_checkbox : Theme.key_checkboxDisabled));
-//            }
             if (!useDefaultCheck && checkColorKey != null) {
                 checkPaint.setColor(getThemedColor(checkColorKey));
             } else {
                 checkPaint.setColor(getThemedColor("Theme.key_checkboxCheck"));
             }
 
-            if (backgroundType != -1) {
-                if (backgroundType == 12 || backgroundType == 13) {
-                    paint.setAlpha((int) (255 * roundProgress));
-                    bitmapCanvas.drawCircle(drawBitmap.getWidth() / 2, drawBitmap.getHeight() / 2, rad * roundProgress, paint);
-                } else {
-                    rad -= ViewKt.dpToPxInt(0.5f);
-                    bitmapCanvas.drawCircle(drawBitmap.getWidth() / 2, drawBitmap.getHeight() / 2, rad, paint);
-                    bitmapCanvas.drawCircle(drawBitmap.getWidth() / 2, drawBitmap.getHeight() / 2, rad * (1.0f - roundProgress), eraser);
-                }
-                canvas.drawBitmap(drawBitmap, cx - drawBitmap.getWidth() / 2, cy - drawBitmap.getHeight() / 2, null);
-            }
+            rad -= ViewKt.dpToPxInt(0.5f);
+            bitmapCanvas.drawCircle(drawBitmap.getWidth() / 2, drawBitmap.getHeight() / 2, rad, paint);
+            bitmapCanvas.drawCircle(drawBitmap.getWidth() / 2, drawBitmap.getHeight() / 2, rad * (1.0f - roundProgress), eraser);
+            canvas.drawBitmap(drawBitmap, cx - drawBitmap.getWidth() / 2, cy - drawBitmap.getHeight() / 2, null);
+
             if (checkProgress != 0) {
                 if (checkedText != null) {
                     if (textPaint == null) {
