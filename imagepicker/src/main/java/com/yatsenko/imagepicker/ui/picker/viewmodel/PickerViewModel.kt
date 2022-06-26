@@ -156,7 +156,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun imageCropped(media: Media.Image, croppedImage: Media.Image) {
-        val indexInResult = if(selectedImages.isEmpty()) 0 else selectedImages.size
+        val indexInResult = if (selectedImages.isEmpty()) 0 else selectedImages.size
         val updatedMedia = media.copy(indexInResult = indexInResult, croppedImage = croppedImage)
         selectedImages.add(updatedMedia)
         val index = rawData.second.indexOfFirst { it.id == media.id }

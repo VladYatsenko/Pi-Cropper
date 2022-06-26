@@ -12,6 +12,7 @@ import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.PermissionHelper
 import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
+import com.yatsenko.imagepicker.ui.picker.adapter.ImageViewHolder
 import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
 class PickerFragment : BaseChildFragment() {
@@ -33,6 +34,7 @@ class PickerFragment : BaseChildFragment() {
         recycler.layoutManager = GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         recycler.adapter = imageAdapter
         recycler.itemAnimator = null
+        recycler.recycledViewPool.setMaxRecycledViews(ImageViewHolder.VIEW_TYPE, 40)
 
         toolbar.result = ::handleAdapterResult
         imageAdapter.result = ::handleAdapterResult

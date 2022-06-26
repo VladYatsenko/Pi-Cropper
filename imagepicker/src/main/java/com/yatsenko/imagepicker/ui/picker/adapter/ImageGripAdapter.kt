@@ -25,6 +25,10 @@ class ImageGripAdapter(
 
     }
 
+    init {
+        setHasStableIds(true)
+    }
+
     private val differ = AsyncListDiffer(this, callback)
 
     val list: List<Media>
@@ -45,7 +49,7 @@ class ImageGripAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ImageViewHolder -> list[position].let { image ->
-                holder.bind(image, single) { result(it) }
+                holder.bind(image) { result(it) }
             }
         }
     }
@@ -55,6 +59,14 @@ class ImageGripAdapter(
         when (holder) {
             is ImageViewHolder -> holder.refreshTransitionView()
         }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return ImageViewHolder.VIEW_TYPE
+    }
+
+    override fun getItemId(position: Int): Long {
+        return list.getOrNull(position)?.lastModified ?: -1L
     }
 
 }
