@@ -7,14 +7,12 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.core.ViewerTransitionHelper
 import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
-import com.yatsenko.imagepicker.utils.extensions.checkboxPosition
 import com.yatsenko.imagepicker.utils.extensions.dpToPx
 import com.yatsenko.imagepicker.utils.extensions.loadImage
 import com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
@@ -66,10 +64,14 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         anim?.cancel()
         if (animate) {
+            var isFinished = false
             anim = object : Animation() {
                 override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                    val newMargin = (if (isSelected) (selectedMargin * interpolatedTime) else selectedMargin + ((0 - selectedMargin) * interpolatedTime)).toInt()
-                    updateMargin(newMargin, newMargin, newMargin, newMargin)
+                    if (!isFinished) {
+                        val newMargin = (if (isSelected) (selectedMargin * interpolatedTime) else selectedMargin + ((0 - selectedMargin) * interpolatedTime)).toInt()
+                        updateMargin(newMargin, newMargin, newMargin, newMargin)
+                        isFinished = interpolatedTime == 1f
+                    }
                 }
             }
             anim?.fillAfter = true // Needed to keep the result of the animation
