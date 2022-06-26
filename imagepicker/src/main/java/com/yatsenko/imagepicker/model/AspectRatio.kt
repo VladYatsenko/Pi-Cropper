@@ -54,6 +54,9 @@ sealed class AspectRatio(@IntRange(from = 1) open val width: Int, @IntRange(from
     val isSquare: Boolean
         get() = width == height
 
+    val isDynamic: Boolean
+        get() = this is Dynamic
+
     val ratio: Float
         get() = width.toFloat() / height
 

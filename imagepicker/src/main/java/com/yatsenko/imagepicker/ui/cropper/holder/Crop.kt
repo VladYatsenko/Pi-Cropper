@@ -16,7 +16,7 @@ interface Crop: LifecycleEventObserver {
 
     fun onResetRotation()
 
-    fun applyRatio(aspectRatio: AspectRatio)
+    fun applyRatio(aspectRatio: AspectRatio, isDynamic: Boolean)
 
     fun crop()
 

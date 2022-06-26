@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.yalantis.ucrop.callback.BitmapCropCallback
+import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_DISABLE
+import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_ENABLE
 import com.yalantis.ucrop.view.TransformImageView.TransformImageListener
 import com.yalantis.ucrop.view.UCropView
 import com.yatsenko.imagepicker.model.AdapterResult
@@ -25,6 +27,7 @@ class UCropIml(
     }
 
     private val gestureCropImageView = cropView.cropImageView
+    private val overlayView = cropView.overlayView
 
     private val compressFormat = Bitmap.CompressFormat.JPEG
     private val compressQuality = 80
@@ -69,9 +72,13 @@ class UCropIml(
         gestureCropImageView.setImageToWrapCropBounds()
     }
 
-    override fun applyRatio(aspectRatio: AspectRatio) {
-        gestureCropImageView.targetAspectRatio = (aspectRatio.ratio)
-        gestureCropImageView.setImageToWrapCropBounds()
+    override fun applyRatio(aspectRatio: AspectRatio, isDynamic: Boolean) {
+        val dynamic = if (isDynamic) FREESTYLE_CROP_MODE_ENABLE else FREESTYLE_CROP_MODE_DISABLE
+        overlayView.freestyleCropMode = dynamic
+        if (!isDynamic) {
+            gestureCropImageView.targetAspectRatio = (aspectRatio.ratio)
+            gestureCropImageView.setImageToWrapCropBounds()
+        }
     }
 
     override fun crop() {

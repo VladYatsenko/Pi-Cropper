@@ -86,7 +86,7 @@ class CropDialogFragment : BaseDialogFragment() {
         list.addAll(newList)
 
         cropTools.data = CropToolsView.Data(list)
-        crop.applyRatio(item.ratio)
+        crop.applyRatio(item.ratio, item.ratio.isDynamic)
     }
 
     override fun onBackPressed() {
