@@ -37,7 +37,9 @@ class CropDialogFragment : BaseDialogFragment() {
     private lateinit var cropTools: CropToolsView
 
     private val media by lazy { requireArguments().getSerializable(CROP_URL) as Media.Image }
-    private val crop by lazy { UCropIml(requireContext(), Uri.parse(media.path), ::handleResult) }
+    private val crop by lazy { UCropIml(requireContext(), Uri.parse(media.path), ::handleResult).also {
+        lifecycle.addObserver(it)
+    } }
 
     private val list by lazy { AspectRatio.defaultList.map { AspectRatioAdapter.Data.createFrom(it) }.toMutableList() }
 
