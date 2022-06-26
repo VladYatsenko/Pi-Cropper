@@ -22,6 +22,7 @@
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/pickerColorAccent"
             android:popupBackground="@color/pickerColorPrimary"/>
 
     </androidx.appcompat.widget.Toolbar>
