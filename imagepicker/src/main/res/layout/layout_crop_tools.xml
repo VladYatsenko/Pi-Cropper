@@ -94,17 +94,34 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/apply"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp"
-            android:theme="@style/Theme.MaterialComponents.Light"
-            app:srcCompat="@drawable/ic_done"
-            app:tint="@color/cerulean" />
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp"
+                android:theme="@style/Theme.MaterialComponents.Light"
+                app:srcCompat="@drawable/ic_done"
+                app:tint="@color/cerulean" />
+
+            <ProgressBar
+                android:theme="@style/Theme.MaterialComponents.Light"
+                android:id="@+id/progress"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:indeterminate="true"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                tools:visibility="visible"
+                android:indeterminateTint="@color/cerulean"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 

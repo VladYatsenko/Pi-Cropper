@@ -71,7 +71,10 @@ class CropDialogFragment : BaseDialogFragment() {
             is AdapterResult.OnRotate90Clicked -> crop.onRotate(90f)
             is AdapterResult.OnResetRotationClicked -> crop.onResetRotation()
             is AdapterResult.OnImageRotated -> cropTools.rotateAngel = result.angle
-            is AdapterResult.OnApplyCrop -> crop.crop()
+            is AdapterResult.OnApplyCrop -> {
+                cropTools.showLoading()
+                crop.crop()
+            }
             is AdapterResult.OnCancelCrop -> onBackPressed()
             is AdapterResult.OnImageCropped -> {
                 viewModel.imageCropped(media, result.media)

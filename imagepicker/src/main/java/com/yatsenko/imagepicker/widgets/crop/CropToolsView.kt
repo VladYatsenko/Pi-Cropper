@@ -3,6 +3,7 @@ package com.yatsenko.imagepicker.widgets.crop
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.AspectRatio
+import com.yatsenko.imagepicker.utils.extensions.invisible
 import com.yatsenko.imagepicker.utils.extensions.navigationBarSize
+import com.yatsenko.imagepicker.utils.extensions.visible
 import java.util.*
 
 class CropToolsView @JvmOverloads constructor(
@@ -29,6 +32,7 @@ class CropToolsView @JvmOverloads constructor(
     private val resetRotation: AppCompatImageView
     private val rotateByAngle: AppCompatImageView
     private val wheel: HorizontalProgressWheelView
+    private val progress: ProgressBar
 
     private val rotate: TextView
 
@@ -85,7 +89,8 @@ class CropToolsView @JvmOverloads constructor(
                 internalResult(AdapterResult.OnRotateEnd)
             }
         }
-
+        progress = findViewById(R.id.progress)
+        progress.isIndeterminate = true
         rotate = findViewById(R.id.text_view_rotate)
 
         resetRotation = findViewById(R.id.reset_rotate)
@@ -99,6 +104,11 @@ class CropToolsView @JvmOverloads constructor(
         data?.let {
             adapter.submitList(it.aspectRatioList)
         }
+    }
+
+    fun showLoading() {
+        progress.visible()
+        apply.invisible()
     }
 
     data class Data(

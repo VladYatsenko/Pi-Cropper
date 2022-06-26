@@ -16,11 +16,19 @@ import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.extensions.FileUtils
 import com.yatsenko.imagepicker.utils.extensions.FileUtils.fileUri
+import kotlinx.android.synthetic.main.layout_crop_tools.view.*
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
 class UCropIml(
     context: Context,
     inputUri: Uri,
     private val result: (AdapterResult) -> Unit) : Crop {
+
+    private val scope = CoroutineScope(Job() + Dispatchers.Main)
+    private var cropJob: Job? = null
+
+    private var internalResult: (AdapterResult) -> Unit = { result(it) }
 
     override val cropView = UCropView(context, null).apply {
         layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -39,17 +47,17 @@ class UCropIml(
         try {
             gestureCropImageView.setImageUri(inputUri, outputFile.fileUri(context))
         } catch (e: Exception) {
-            result(AdapterResult.OnCropError(e))
+            internalResult(AdapterResult.OnCropError(e))
         }
 
         gestureCropImageView.setTransformImageListener(object : TransformImageListener {
-            override fun onRotate(currentAngle: Float) = result(AdapterResult.OnImageRotated(currentAngle))
+            override fun onRotate(currentAngle: Float) = internalResult(AdapterResult.OnImageRotated(currentAngle))
 
             override fun onScale(currentScale: Float) {}
 
             override fun onLoadComplete() {}
 
-            override fun onLoadFailure(e: Exception) = result(AdapterResult.OnCropError(e))
+            override fun onLoadFailure(e: Exception) = internalResult(AdapterResult.OnCropError(e))
         })
 
     }
@@ -82,21 +90,37 @@ class UCropIml(
     }
 
     override fun crop() {
-        gestureCropImageView.cropAndSaveImage(compressFormat, compressQuality, object : BitmapCropCallback {
-            override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
-                val newMedia = Media.Image.croppedImage(outputFile, imageWidth, imageHeight)
-                result(AdapterResult.OnImageCropped(newMedia))
-            }
+        cropJob?.cancel()
+        cropJob = scope.launch {
+            try {
+                gestureCropImageView.cropAndSaveImage(compressFormat, compressQuality, object : BitmapCropCallback {
+                    override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
+                        val newMedia = Media.Image.croppedImage(outputFile, imageWidth, imageHeight)
+                        internalResult(AdapterResult.OnImageCropped(newMedia))
+                    }
 
-            override fun onCropFailure(t: Throwable) {
-                result(AdapterResult.OnCropError(t))
+                    override fun onCropFailure(t: Throwable) {
+                        internalResult(AdapterResult.OnCropError(t))
+                    }
+                })
+            } catch (t: Throwable) {
+                internalResult(AdapterResult.OnCropError(t))
             }
-        })
+        }
+    }
+
+    override fun cancelCrop() {
+        cropJob?.cancel()
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
         when(event) {
             Lifecycle.Event.ON_STOP -> gestureCropImageView.cancelAllAnimations()
+            Lifecycle.Event.ON_DESTROY -> {
+                internalResult = {}
+                cancelCrop()
+            }
         }
     }
+
 }

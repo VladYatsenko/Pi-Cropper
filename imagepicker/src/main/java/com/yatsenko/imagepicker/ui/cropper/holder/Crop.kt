@@ -20,4 +20,6 @@ interface Crop: LifecycleEventObserver {
 
     fun crop()
 
+    fun cancelCrop()
+
 }
