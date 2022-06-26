@@ -32,6 +32,7 @@ class UCropIml(
     private val outputFile = FileUtils.tempFile(context, ".jpg")
 
     init {
+        gestureCropImageView.isRotateEnabled = false
         try {
             gestureCropImageView.setImageUri(inputUri, outputFile.fileUri(context))
         } catch (e: Exception) {
