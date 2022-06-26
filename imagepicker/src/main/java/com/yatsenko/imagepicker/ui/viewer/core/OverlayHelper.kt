@@ -14,7 +14,6 @@ class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
     private var overlayView: Overlay? = null
     var adapterResult: (AdapterResult) -> Unit = {}
     private val internalAdapterResult: (AdapterResult) -> Unit = { adapterResult(it) }
-    private var currentPosition = -1
 
     override fun provideView(parent: ViewGroup): View {
         return Overlay.create(parent.context).apply {

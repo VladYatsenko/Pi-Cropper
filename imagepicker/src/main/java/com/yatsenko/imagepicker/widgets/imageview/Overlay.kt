@@ -85,10 +85,12 @@ class Overlay @JvmOverloads constructor(
     }
 
     private fun refreshLayout() {
-        data?.let {
-            position.checkboxPosition(it.image, it.single) { adapterResult ->
-                result(adapterResult)
+        data?.let { data ->
+            position.checkboxPosition(data.image, data.single)
+            position.setOnClickListener {
+                result(AdapterResult.OnSelectImageClicked(data.image))
             }
+
         }
         fileName.text = data?.image?.name
         info.text = data?.image?.let {

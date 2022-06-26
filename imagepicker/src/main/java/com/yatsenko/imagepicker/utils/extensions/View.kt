@@ -22,16 +22,11 @@ fun dpToPx(@Dimension(unit = Dimension.DP) dp: Int): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), Resources.getSystem().displayMetrics)
 }
 
-fun TextView.checkboxPosition(image: Media?, single: Boolean, result: (AdapterResult) -> Unit) {
+fun TextView.checkboxPosition(image: Media?, single: Boolean) {
     isGone = single
     text = image?.indexString
     val circle = if (image?.isSelected == true) R.drawable.circle_selected else R.drawable.circle
     background = ContextCompat.getDrawable(context, circle)
-
-    setOnClickListener {
-        val img = image ?: return@setOnClickListener
-        result(AdapterResult.OnSelectImageClicked(img))
-    }
 }
 
 internal val View?.localVisibleRect: Rect

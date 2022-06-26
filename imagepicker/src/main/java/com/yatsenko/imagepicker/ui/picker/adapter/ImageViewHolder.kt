@@ -3,6 +3,7 @@ package com.yatsenko.imagepicker.ui.picker.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -24,13 +25,17 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val imageView = view.findViewById<ImageView>(R.id.image)
     private val position = view.findViewById<TextView>(R.id.position)
+    private val positionContainer = view.findViewById<FrameLayout>(R.id.position_container)
 
     private var media: Media? = null
 
     fun bind(media: Media, single: Boolean, result: (AdapterResult) -> Unit) {
         this.media = media
 
-        position.checkboxPosition(media, single, result)
+        position.checkboxPosition(media, single)
+        positionContainer.setOnClickListener {
+            result(AdapterResult.OnSelectImageClicked(media))
+        }
         imageView.loadImage(media) {}
         imageView.alpha = if (media.inFullscreen) 0f else 1f
 

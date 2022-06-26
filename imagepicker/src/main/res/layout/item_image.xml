@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2.5dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_margin="2.5dp">
 
     <ImageView
         android:id="@+id/image"
@@ -12,26 +12,38 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:scaleType="centerCrop"
-        tools:src="@android:color/holo_blue_bright"
-        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@android:color/holo_blue_bright" />
 
-    <TextView
-        android:id="@+id/position"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:background="@drawable/circle"
-        android:gravity="center"
-        android:layout_margin="8dp"
-        android:textSize="14dp"
-        android:includeFontPadding="false"
-        android:maxLength="2"
-        tools:text="1"
-        android:textColor="@android:color/white"
+    <FrameLayout
+        android:id="@+id/position_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/position"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/circle"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLength="2"
+            android:clickable="false"
+            android:focusable="false"
+            android:textColor="@android:color/white"
+            android:textSize="14dp"
+            tools:text="1" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
