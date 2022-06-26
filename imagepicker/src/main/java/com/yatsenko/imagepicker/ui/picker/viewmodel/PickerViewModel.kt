@@ -136,6 +136,7 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
 
     fun openFullscreen(position: Int) {
         fullscreenPosition = position
+        refreshFolderImages(pickerStateData.selectedFolder)
         refreshOverlay()
         refreshViewer()
     }
