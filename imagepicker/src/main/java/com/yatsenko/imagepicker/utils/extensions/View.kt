@@ -22,6 +22,10 @@ fun dpToPx(@Dimension(unit = Dimension.DP) dp: Int): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), Resources.getSystem().displayMetrics)
 }
 
+fun dpToPxInt(@Dimension(unit = Dimension.DP) dp: Float): Int {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().displayMetrics).toInt()
+}
+
 fun TextView.checkboxPosition(image: Media?, stroke: Boolean = false) {
     //todo config
 //    isGone = single

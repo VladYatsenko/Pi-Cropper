@@ -17,6 +17,7 @@ import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
 import com.yatsenko.imagepicker.utils.extensions.checkboxPosition
 import com.yatsenko.imagepicker.utils.extensions.dpToPx
 import com.yatsenko.imagepicker.utils.extensions.loadImage
+import com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
 
 
 class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,19 +30,19 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private val thumbnail = view.findViewById<ImageView>(R.id.image)
-    private val position = view.findViewById<TextView>(R.id.position)
+    private val checkBox2 = view.findViewById<CheckBox2>(R.id.checkbox)
     private val positionContainer = view.findViewById<FrameLayout>(R.id.position_container)
 
     private var media: Media? = null
     private var anim: Animation? = null
 
     fun bind(media: Media, result: (AdapterResult) -> Unit) {
-        if (this.media?.id == media.id && this.media?.isSelected != media.isSelected)
-            thumbnail.scaleView(media.isSelected)
-        else thumbnail.changeScale(media.isSelected)
-
+        val animate = this.media?.id == media.id && this.media?.isSelected != media.isSelected
         this.media = media
-        position.checkboxPosition(media, true)
+
+        thumbnail.scaleView(media.isSelected, animate)
+        checkBox2.setChecked(media.indexInResult, media.isSelected, animate)
+
         positionContainer.setOnClickListener {
             result(AdapterResult.OnSelectImageClicked(media))
         }
@@ -49,7 +50,6 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         thumbnail.alpha = if (media.inFullscreen) 0f else 1f
 
         itemView.setOnClickListener {
-//            thumbnail.changeScale(media.isSelected)
             result(AdapterResult.OnImageClicked(thumbnail, media, bindingAdapterPosition))
         }
 
@@ -61,24 +61,24 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         ViewerTransitionHelper.put(id, thumbnail)
     }
 
-    private fun View.scaleView(isSelected: Boolean) {
+    private fun View.scaleView(isSelected: Boolean, animate: Boolean) {
         val selectedMargin = dpToPx(16).toInt()
 
         anim?.cancel()
-        anim = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                val newMargin = (if (isSelected) (selectedMargin * interpolatedTime) else selectedMargin + ((0 - selectedMargin) * interpolatedTime)).toInt()
-                updateMargin(newMargin, newMargin, newMargin, newMargin)
+        if (animate) {
+            anim = object : Animation() {
+                override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+                    val newMargin = (if (isSelected) (selectedMargin * interpolatedTime) else selectedMargin + ((0 - selectedMargin) * interpolatedTime)).toInt()
+                    updateMargin(newMargin, newMargin, newMargin, newMargin)
+                }
             }
+            anim?.fillAfter = true // Needed to keep the result of the animation
+            anim?.duration = 200
+            this.startAnimation(anim)
+        } else {
+            val margin = (if (isSelected) selectedMargin else 0).toInt()
+            updateMargin(margin, margin, margin, margin)
         }
-        anim?.fillAfter = true // Needed to keep the result of the animation
-        anim?.duration = 200
-        this.startAnimation(anim)
-    }
-
-    private fun View.changeScale(isSelected: Boolean) {
-        val margin = (if (isSelected) dpToPx(16) else 0).toInt()
-        updateMargin(margin, margin, margin, margin)
     }
 
 }
