@@ -12,7 +12,7 @@
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/transparent_gray"
+        android:background="@color/transparent_gray_40"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/info"
-            app:layout_constraintEnd_toStartOf="@+id/position"
+            app:layout_constraintEnd_toStartOf="@+id/checkbox"
             app:layout_constraintStart_toEndOf="@id/back"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -59,24 +59,19 @@
             android:textColor="@android:color/white"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/position"
+            app:layout_constraintEnd_toStartOf="@+id/checkbox"
             app:layout_constraintStart_toEndOf="@id/back"
             app:layout_constraintTop_toBottomOf="@+id/fileName" />
 
-        <TextView
-            android:id="@+id/position"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+        <com.yatsenko.imagepicker.widgets.checkbox.CheckBoxOverlay
+            android:id="@+id/checkbox"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_margin="12dp"
-            android:background="@drawable/circle"
-            android:gravity="center"
-            android:maxLength="2"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1" />
+            app:layout_constraintTop_toTopOf="parent"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -86,7 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/transparent_gray"
+        android:background="@color/transparent_gray_35"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"

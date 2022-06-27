@@ -15,6 +15,7 @@ import com.yatsenko.imagepicker.utils.extensions.Animations.slideDown
 import com.yatsenko.imagepicker.utils.extensions.Animations.slideUp
 import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
 import com.yatsenko.imagepicker.utils.extensions.applyMargin
+import com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
 
 class Overlay @JvmOverloads constructor(
     context: Context,
@@ -34,7 +35,7 @@ class Overlay @JvmOverloads constructor(
     }
 
     private val back: ImageView
-    private val position: TextView
+    private val checkbox: CheckBox2
     private val crop: ImageView
     private val brush: ImageView
 
@@ -46,8 +47,9 @@ class Overlay @JvmOverloads constructor(
 
     var data: Data? = null
         set(value) {
+            val shouldAnimate = value?.image?.shouldAnimate?.invoke(field?.image) == true
             field = value
-            refreshLayout()
+            refreshLayout(shouldAnimate)
         }
 
     var result: (AdapterResult) -> Unit = {}
@@ -56,7 +58,11 @@ class Overlay @JvmOverloads constructor(
         inflate(context, R.layout.view_overlay, this)
 
         back = findViewById(R.id.back)
-        position = findViewById(R.id.position)
+        checkbox = findViewById(R.id.checkbox)
+        checkbox.setOnClickListener {
+            val media = data?.image ?: return@setOnClickListener
+            result(AdapterResult.OnSelectImageClicked(media))
+        }
         crop = findViewById(R.id.crop)
         brush = findViewById(R.id.brush)
 
@@ -84,13 +90,10 @@ class Overlay @JvmOverloads constructor(
         bottom.applyMargin(bottom = context.navigationBarSize)
     }
 
-    private fun refreshLayout() {
+    private fun refreshLayout(shouldAnimate: Boolean = false) {
         data?.let { data ->
-            position.checkboxPosition(data.image, data.single)
-            position.setOnClickListener {
-                result(AdapterResult.OnSelectImageClicked(data.image))
-            }
-
+            val media = data.image
+            checkbox.setChecked(media.indexInResult, media.isSelected, shouldAnimate)
         }
         fileName.text = data?.image?.name
         info.text = data?.image?.let {

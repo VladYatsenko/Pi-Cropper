@@ -7,38 +7,25 @@ import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.CheckBox;
 
-public class CheckBox2 extends View {
+public abstract class CheckBox2 extends View {
+
+    public static final int GRID = 1;
+    public static final int OVERLAY = 2;
 
     private CheckBoxBase checkBoxBase;
 
-    public CheckBox2(Context context, AttributeSet attrs) {
+    public CheckBox2(Context context, AttributeSet attrs, int size) {
         super(context, attrs);
-        checkBoxBase = new CheckBoxBase(this, 24);
+        checkBoxBase = new CheckBoxBase(this, size);
         setDrawBackgroundAsArc(11);
-    }
-
-    public void setProgressDelegate(CheckBoxBase.ProgressDelegate delegate) {
-        checkBoxBase.setProgressDelegate(delegate);
     }
 
     public void setChecked(int num, boolean checked, boolean animated) {
         checkBoxBase.setChecked(num, checked, animated);
     }
 
-    public void setChecked(boolean checked, boolean animated) {
-        checkBoxBase.setChecked(checked, animated);
-    }
-
-    public void setNum(int num) {
-        checkBoxBase.setNum(num);
-    }
-
     public boolean isChecked() {
         return checkBoxBase.isChecked();
-    }
-
-    public void setColor(String background, String background2, String check) {
-        checkBoxBase.setColor(background, background2, check);
     }
 
     @Override

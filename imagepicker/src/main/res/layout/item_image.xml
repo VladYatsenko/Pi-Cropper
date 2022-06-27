@@ -31,26 +31,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
+        <com.yatsenko.imagepicker.widgets.checkbox.CheckBoxGrid
             android:id="@+id/checkbox"
             android:layout_width="25dp"
             android:layout_height="25dp"/>
-
-        <TextView
-            android:id="@+id/position"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/circle"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLength="2"
-
-            android:clickable="false"
-            android:focusable="false"
-            android:visibility="invisible"
-            android:textColor="@android:color/white"
-            android:textSize="14dp"
-            tools:text="1" />
 
     </FrameLayout>
 

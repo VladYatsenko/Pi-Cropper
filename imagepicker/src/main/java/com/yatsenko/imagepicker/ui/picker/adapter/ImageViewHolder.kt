@@ -16,6 +16,7 @@ import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
 import com.yatsenko.imagepicker.utils.extensions.dpToPx
 import com.yatsenko.imagepicker.utils.extensions.loadImage
 import com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
+import com.yatsenko.imagepicker.widgets.checkbox.CheckBoxGrid
 
 
 class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -28,14 +29,14 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     }
 
     private val thumbnail = view.findViewById<ImageView>(R.id.image)
-    private val checkBox2 = view.findViewById<CheckBox2>(R.id.checkbox)
+    private val checkBox2 = view.findViewById<CheckBoxGrid>(R.id.checkbox)
     private val positionContainer = view.findViewById<FrameLayout>(R.id.position_container)
 
     private var media: Media? = null
     private var anim: Animation? = null
 
     fun bind(media: Media, result: (AdapterResult) -> Unit) {
-        val animate = this.media?.id == media.id && this.media?.isSelected != media.isSelected
+        val animate = media.shouldAnimate(this.media)
         this.media = media
 
         thumbnail.scaleView(media.isSelected, animate)

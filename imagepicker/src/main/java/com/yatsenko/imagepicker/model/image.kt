@@ -24,6 +24,10 @@ sealed class Media(
     val indexString: String
         get() = if (isSelected) indexInResult.plus(1).toString() else ""
 
+    val shouldAnimate: (Media?) -> Boolean = { media ->
+        this.id == media?.id && this.isSelected != media.isSelected
+    }
+
     data class Image(
         override val id: String,
         override val path: String,

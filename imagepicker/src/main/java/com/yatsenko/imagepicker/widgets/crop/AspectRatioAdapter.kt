@@ -1,7 +1,6 @@
 package com.yatsenko.imagepicker.widgets.crop
 
 import android.annotation.SuppressLint
-import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +60,7 @@ class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() 
             dot.isVisible = item.isSelected
             title.text = item.ratio.ratioString(itemView.context)
 
-            val color = if (item.isSelected) R.color.cerulean else R.color.default_corner_color
+            val color = if (item.isSelected) R.color.cerulean else R.color.wild_sand
             title.setTextColor(ContextCompat.getColor(itemView.context, color))
 
             itemView.setOnClickListener {

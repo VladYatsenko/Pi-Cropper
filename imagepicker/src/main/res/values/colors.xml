@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pickerColorPrimary">#212D3B</color>
-    <color name="pickerColorPrimaryDark">#1A242E</color>
-    <color name="pickerColorAccent">#ffffff</color>
-    <color name="transparent_gray">#59000000</color>
-    <color name="mirage">#1D2733</color>
+    <color name="pickerColorPrimary">@color/ebony_clay</color>
+    <color name="pickerColorPrimaryDark">@color/mirage</color>
+    <color name="pickerColorAccent">@color/white</color>
 
 
-    <color name="default_overlay_color">#af000000</color>
-    <color name="default_border_color">#f5f5f5</color>
-    <color name="default_corner_color">#f5f5f5</color>
-    <color name="default_grid_color">#fff</color>
-
+    <color name="white">#ffffff</color>
+    <color name="wild_sand">#f5f5f5</color>
     <color name="cerulean">#03A9F4</color>
+    <color name="ebony_clay">#212D3B</color>
+    <color name="mirage">#1A242E</color>
 
-    <color name="aspectRatioNotSelected">#757575</color>
-    <color name="aspectRatioText">#757575</color>
-    <color name="disabledOverlay">#3cffffff</color>
+    <color name="transparent_gray_40">#66000000</color>
+    <color name="transparent_gray_35">#59000000</color>
+
 </resources>
