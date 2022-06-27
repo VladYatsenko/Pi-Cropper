@@ -17,7 +17,6 @@ public abstract class CheckBox2 extends View {
     public CheckBox2(Context context, AttributeSet attrs, int size) {
         super(context, attrs);
         checkBoxBase = new CheckBoxBase(this, size);
-        setDrawBackgroundAsArc(11);
     }
 
     public void setChecked(int num, boolean checked, boolean animated) {

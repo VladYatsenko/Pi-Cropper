@@ -1,17 +1,18 @@
 package com.yatsenko.imagepicker.widgets.checkbox;
 
+import static com.yatsenko.imagepicker.widgets.checkbox.CheckBox2.GRID;
+import static com.yatsenko.imagepicker.widgets.checkbox.CheckBox2.OVERLAY;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.text.TextPaint;
 import android.view.View;
 
@@ -19,8 +20,11 @@ import androidx.annotation.Keep;
 import androidx.core.content.ContextCompat;
 
 import com.yatsenko.imagepicker.R;
+import com.yatsenko.imagepicker.core.Theme;
 import com.yatsenko.imagepicker.utils.AndroidUtilities;
 import com.yatsenko.imagepicker.utils.extensions.ViewKt;
+
+import java.util.Map;
 
 public class CheckBoxBase {
 
@@ -46,9 +50,6 @@ public class CheckBoxBase {
     private ObjectAnimator checkAnimator;
 
     private boolean isChecked;
-
-    private String checkColorKey = "checkColorKey";//Theme.key_checkboxCheck;
-    private String backgroundColorKey = "backgroundColorKey";//Theme.key_chat_serviceBackground;
 
     private int backgroundType;
 
@@ -127,13 +128,11 @@ public class CheckBoxBase {
 
     public void setBackgroundType(int type) {
         backgroundType = type;
-        backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.5f));
-
-//        if (type == GRID) {
-//            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.9f));
-//        } else {
-//            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(2.3f));
-//        }
+        if (type == GRID) {
+            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(1.9f));
+        } else {
+            backgroundPaint.setStrokeWidth(ViewKt.dpToPxInt(2.3f));
+        }
     }
 
     private void cancelCheckAnimator() {
@@ -193,21 +192,21 @@ public class CheckBoxBase {
         int cx = bounds.centerX();
         int cy = bounds.centerY();
 
-        paint.setColor(getThemedColor("key_transparent_bg"));//color of non selected ckeck
+        //color of non selected check
+        paint.setColor(getThemedColor(Theme.checkBoxBackground));
 
         //corner color
-        String color = isChecked ? "Theme.key_chat_serviceBackground;" : checkColorKey;
+        String color = backgroundType == OVERLAY ? Theme.checkBoxCheckedBorderOverlay : isChecked ? Theme.checkBoxCheckedBorder : Theme.checkBoxUncheckedBorder;
         backgroundPaint.setColor(getThemedColor(color));
 
         canvas.drawCircle(cx, cy, rad, paint);
-        paint.setColor(getThemedColor(checkColorKey));
+        paint.setColor(getThemedColor(Theme.checkBoxUncheckedBorder)); //"checkColorKey"
         canvas.drawCircle(cx, cy, rad, backgroundPaint);
 
         if (roundProgress > 0) {
             float checkProgress = progress < 0.5f ? 0.0f : (progress - 0.5f) / 0.5f;
 
-            paint.setColor(getThemedColor(backgroundColorKey));
-            checkPaint.setColor(getThemedColor(checkColorKey));
+            paint.setColor(getThemedColor(Theme.accentColor));
 
             rad -= ViewKt.dpToPxInt(0.5f);
             bitmapCanvas.drawCircle(drawBitmap.getWidth() / 2, drawBitmap.getHeight() / 2, rad, paint);
@@ -236,13 +235,13 @@ public class CheckBoxBase {
                             textSize = 8f;
                             y = 15.75f;
                     }
-//                    if (backgroundType == OVERLAY){
-//                        textSize += 2f;
-//                        y += 3f;
-//                    }
+                    if (backgroundType == OVERLAY){
+                        textSize += 2f;
+                        y += 3f;
+                    }
                     textPaint.setTextSize(ViewKt.dpToPxInt(textSize));
                     //textColor
-                    textPaint.setColor(getThemedColor("textColor"));
+                    textPaint.setColor(getThemedColor(Theme.checkBoxTextColor));
                     canvas.save();
                     canvas.scale(checkProgress, 1.0f, cx, cy);
                     canvas.drawText(checkedText, cx - textPaint.measureText(checkedText) / 2f, ViewKt.dpToPxInt(y), textPaint);
@@ -265,37 +264,11 @@ public class CheckBoxBase {
         }
     }
 
-//    private int getThemedColor(String key) {
-//        Map<String, Integer> theme = Theme.INSTANCE.getTheme();
-//        Integer value = theme.get(key);
-//        int res = value != null ? value : R.color.white;
-//        return ContextCompat.getColor(parentView.getContext(), res);
-//    }
-
     private int getThemedColor(String key) {
-        int res;
-        switch (key) {
-            case ("textColor"):
-                res = android.R.color.white;
-                break;
-            case ("checkColorKey"):
-                res = android.R.color.white;
-                break;
-            case ("backgroundColorKey"):
-                res = R.color.cerulean;
-                break;
-
-                //color for corners of selected in grid
-            case ("Theme.key_chat_serviceBackground;"):
-                res = R.color.pickerColorPrimary;
-                break;
-            case ("key_transparent_bg"):
-                res = R.color.transparent_gray_40;
-                break;
-            default:
-                res = android.R.color.white;
-                break;
-        }
+        Map<String, Integer> theme = Theme.INSTANCE.getTheme();
+        Integer value = theme.get(key);
+        int res = value != null ? value : R.color.white;
         return ContextCompat.getColor(parentView.getContext(), res);
     }
+
 }

@@ -7,7 +7,7 @@ public class CheckBoxOverlay extends CheckBox2 {
 
     public CheckBoxOverlay(Context context, AttributeSet attrs) {
         super(context, attrs, 28);
-        setDrawBackgroundAsArc(11);//CheckBoxBase.OVERLAY);
+        setDrawBackgroundAsArc(OVERLAY);
     }
 
 }
