@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.yatsenko.imagepicker.R
@@ -40,6 +41,11 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             dialog.show(fragmentManager)
         }
 
+        private val viewerUserInputEnabled = MutableLiveData<Boolean>()
+
+        fun setViewerUserInputEnabled(enable: Boolean) {
+            if (viewerUserInputEnabled.value != enable) viewerUserInputEnabled.value = enable
+        }
     }
 
     private val initKey by lazy { requireArguments().getString(MEDIA_ID, "") }
@@ -89,7 +95,6 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         }
         overlayView.addView(overlayHelper.provideView(overlayView))
 
-        var key: String? = initKey
         viewModel.viewerState.observe(viewLifecycleOwner) { list ->
             if (list.size > 1) return@observe
             overlayRefreshGate = list.size == 1 && viewModel.media.size > 1
@@ -98,6 +103,10 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
         viewModel.overlayState.observe(viewLifecycleOwner) {
             overlayHelper.submitData(it.media)
+        }
+
+        viewerUserInputEnabled.observe(viewLifecycleOwner) {
+            pager.isUserInputEnabled = it ?: true
         }
 
     }

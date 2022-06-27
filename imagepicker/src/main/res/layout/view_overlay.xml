@@ -12,7 +12,7 @@
         android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/transparent_gray_40"
+        android:background="@color/transparent_gray_35"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -81,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/transparent_gray_35"
+        android:background="@color/transparent_gray_40"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"

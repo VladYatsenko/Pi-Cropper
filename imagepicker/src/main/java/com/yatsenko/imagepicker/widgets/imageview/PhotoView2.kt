@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.ViewConfiguration
 import androidx.viewpager2.widget.ViewPager2
 import com.github.chrisbanes.photoview.PhotoView
+import com.yatsenko.imagepicker.ui.viewer.ImageViewerDialogFragment
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import kotlin.math.abs
 import kotlin.math.max
@@ -99,7 +100,7 @@ class PhotoView2 @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
     private fun setSingleTouch(value: Boolean) {
         singleTouch = value
-//        viewModel?.setViewerUserInputEnabled(value)
+        ImageViewerDialogFragment.setViewerUserInputEnabled(value)
     }
 
     override fun onDetachedFromWindow() {
