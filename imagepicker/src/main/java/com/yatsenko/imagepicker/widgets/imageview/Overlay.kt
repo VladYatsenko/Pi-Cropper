@@ -34,6 +34,8 @@ class Overlay @JvmOverloads constructor(
 
     }
 
+    private var isOverlayVisible = true
+
     private val back: ImageView
     private val checkbox: CheckBox2
     private val crop: ImageView
@@ -72,7 +74,6 @@ class Overlay @JvmOverloads constructor(
         top = findViewById(R.id.top)
         bottom = findViewById(R.id.bottom)
 
-
         back.setOnClickListener {
             result(AdapterResult.GoBack)
         }
@@ -102,10 +103,16 @@ class Overlay @JvmOverloads constructor(
     }
 
     fun show() {
+        isOverlayVisible = true
+
         this.animate()?.setDuration(500)?.alpha(1f)?.start()
+        top.slideDown((top.height + context.actionBarSize) * -1f, 0f, )
+        bottom.slideUp(bottom.height + context.navigationBarSize.toFloat(), 0f)
     }
 
     fun hide() {
+        isOverlayVisible = false
+
         this.animate()?.setDuration(200)?.alpha(0f)?.start()
         top.slideUp(0f, (top.height + context.actionBarSize) * -1f)
         bottom.slideDown(0f, bottom.height + context.navigationBarSize.toFloat())
