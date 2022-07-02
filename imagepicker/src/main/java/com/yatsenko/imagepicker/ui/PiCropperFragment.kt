@@ -29,7 +29,7 @@ class PiCropperFragment : BaseFragment() {
             forceOpenEditor: Boolean
         ): Bundle {
             return Bundle().apply {
-                putParcelableArray(ASPECT_RATIO, aspectRatio.toTypedArray())
+                putParcelableArrayList(ASPECT_RATIO, ArrayList(aspectRatio))
                 putInt(COLLECT_COUNT, collectCount)
                 putString(ALL_IMAGES_FOLDER, allImagesFolder)
                 putBoolean(CIRCLE_CROP, circleCrop)
@@ -45,7 +45,7 @@ class PiCropperFragment : BaseFragment() {
     val router by lazy { Router(R.id.container, childFragmentManager) }
 
     val args by lazy { Arguments(
-        aspectRatioList = (requireArguments().getParcelableArray(ASPECT_RATIO) as? List<AspectRatio>) ?: AspectRatio.defaultList,
+        aspectRatioList = (requireArguments().getParcelableArrayList<AspectRatio>(ASPECT_RATIO) as? List<AspectRatio>) ?: AspectRatio.defaultList,
         collectCount = requireArguments().getInt(COLLECT_COUNT, 1),
         circleCrop = requireArguments().getBoolean(CIRCLE_CROP, false),
         allImagesFolder = requireArguments().getString(ALL_IMAGES_FOLDER, getString(R.string.all_image_folder)),
@@ -73,6 +73,10 @@ class PiCropperFragment : BaseFragment() {
                 }
             }
         })
+    }
+
+    fun provideResultToTarget() {
+
     }
 
     fun provideResultToTarget(media: Media) {

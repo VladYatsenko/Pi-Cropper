@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
@@ -14,6 +15,7 @@ import com.yatsenko.imagepicker.ui.picker.adapter.ImageViewHolder
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.PermissionHelper
+import com.yatsenko.imagepicker.utils.extensions.applyTheming
 import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
 class PickerFragment : BaseChildFragment() {
@@ -22,6 +24,7 @@ class PickerFragment : BaseChildFragment() {
 
     private lateinit var toolbar: DropdownToolbar
     private lateinit var recycler: RecyclerView
+    private lateinit var doneFab: FloatingActionButton
 
     private val viewModel: PickerViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
@@ -46,7 +49,15 @@ class PickerFragment : BaseChildFragment() {
         viewModel.pickerState.observe(viewLifecycleOwner) { state ->
             toolbar.data = DropdownToolbar.Data(state.selectedFolder, state.folders)
             imageAdapter.submitList(state.media)
+
+            doneFab.apply { if (viewModel.selectedImages.isEmpty()) hide() else show() }
         }
+
+        doneFab = view.findViewById(R.id.doneFab)
+        doneFab.setOnClickListener { piCropFragment.provideResultToTarget() }
+        doneFab.applyTheming()
+        doneFab.hide()
+
         permissionHelper.checkPermission()
     }
 

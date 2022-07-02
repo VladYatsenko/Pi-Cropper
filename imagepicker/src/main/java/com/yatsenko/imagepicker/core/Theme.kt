@@ -5,6 +5,7 @@ import com.yatsenko.imagepicker.R
 object Theme {
 
     const val accentColor = "accentColor"
+    const val accentDualColor = "accentDualColor"
 
 //    const val statusBarColor = "statusBarColor"
 //    const val toolbarBarColor = "toolbarBarColor"
@@ -20,6 +21,7 @@ object Theme {
 
     val dark = mapOf(
         accentColor to R.color.cerulean,
+        accentDualColor to R.color.white,
         checkBoxTextColor to R.color.white,
         checkBoxBackground to R.color.transparent_gray_40,
         checkBoxCheckedBorder to R.color.ebony_clay,
@@ -28,5 +30,9 @@ object Theme {
     )
 
     var theme: Map<String, Int> = dark
+
+    fun themedColor(name: String): Int {
+        return theme[name] ?: R.color.ebony_clay
+    }
 
 }

@@ -78,7 +78,9 @@ class PickerViewModel(application: Application, private val arguments: Arguments
     val media: List<Media>
         get() = pickerStateData.media
 
-    private val selectedImages = mutableListOf<Media>()
+    private val _selectedImages = mutableListOf<Media>()
+    val selectedImages: List<Media>
+        get() = _selectedImages
 
     private val _pickerState: MutableLiveData<PickerState> = MutableLiveData()
     val pickerState: LiveData<PickerState> = _pickerState
@@ -129,13 +131,13 @@ class PickerViewModel(application: Application, private val arguments: Arguments
     fun selectMedia(media: Media) {
         when (media.isSelected) {
             true -> {
-                val withoutImage = selectedImages.filterNot { it.id == media.id }
-                selectedImages.clear()
-                selectedImages.addAll(withoutImage)
+                val withoutImage = _selectedImages.filterNot { it.id == media.id }
+                _selectedImages.clear()
+                _selectedImages.addAll(withoutImage)
             }
             else -> {
-                if (selectedImages.size < arguments.collectCount)
-                    selectedImages.add(media)
+                if (_selectedImages.size < arguments.collectCount)
+                    _selectedImages.add(media)
             }
         }
 
@@ -186,9 +188,9 @@ class PickerViewModel(application: Application, private val arguments: Arguments
     }
 
     fun imageCropped(media: Media.Image, croppedImage: Media.Image) {
-        val indexInResult = if (selectedImages.isEmpty()) 0 else selectedImages.size
+        val indexInResult = if (_selectedImages.isEmpty()) 0 else _selectedImages.size
         val updatedMedia = media.copy(indexInResult = indexInResult, croppedImage = croppedImage)
-        selectedImages.add(updatedMedia)
+        _selectedImages.add(updatedMedia)
         val index = rawData.second.indexOfFirst { it.id == media.id }
         if (index != -1) {
             val mutableList = rawData.second.toMutableList()
@@ -225,7 +227,7 @@ class PickerViewModel(application: Application, private val arguments: Arguments
     }
 
     private fun remapSelectedImage(index: Int, image: Media): Media {
-        val indexInResult = selectedImages.indexOfFirst { it.id == image.id }
+        val indexInResult = _selectedImages.indexOfFirst { it.id == image.id }
         val inFullscreen = index == fullscreenPosition
 
         return if (image.indexInResult == indexInResult && image.inFullscreen == inFullscreen)

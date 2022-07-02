@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isGone
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -103,6 +104,7 @@ class CropToolsView @JvmOverloads constructor(
     private fun refreshLayout() {
         data?.let {
             adapter.submitList(it.aspectRatioList)
+            recycler.isGone = it.aspectRatioList.size < 2
         }
     }
 

@@ -89,6 +89,7 @@ class Overlay @JvmOverloads constructor(
         brush.setOnClickListener {}
 
         doneFab = findViewById(R.id.doneFab)
+        doneFab.applyTheming()
         doneFab.setOnClickListener {
 
         }
