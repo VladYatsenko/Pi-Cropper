@@ -7,6 +7,7 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
@@ -35,12 +36,13 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var media: Media? = null
     private var anim: Animation? = null
 
-    fun bind(media: Media, result: (AdapterResult) -> Unit) {
+    fun bind(media: Media, single: Boolean, result: (AdapterResult) -> Unit) {
         val animate = media.shouldAnimate(this.media)
         this.media = media
 
         thumbnail.scaleView(media.isSelected, animate)
         checkBox2.setChecked(media.indexInResult, media.isSelected, animate)
+        checkBox2.isGone = single
 
         positionContainer.setOnClickListener {
             result(AdapterResult.OnSelectImageClicked(media))

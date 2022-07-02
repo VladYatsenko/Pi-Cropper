@@ -4,6 +4,8 @@ import android.graphics.Color
 import androidx.viewpager2.widget.ViewPager2
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
+//internal var Loader = object: MediaLoader {}
+
 object Config {
     var isDebug: Boolean = true
     var offscreenPageLimit: Int = 3

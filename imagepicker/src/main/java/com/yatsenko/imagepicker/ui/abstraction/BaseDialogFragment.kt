@@ -17,6 +17,9 @@ open class BaseDialogFragment : DialogFragment() {
     protected val router: Router
         get() = (requireParentFragment() as PiCropperFragment).router
 
+    protected val piCropFragment: PiCropperFragment
+        get() = requireParentFragment() as PiCropperFragment
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return Dialog(requireActivity(), R.style.Theme_Light_NoTitle_ViewerDialog).apply {
             setCanceledOnTouchOutside(true)

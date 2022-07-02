@@ -112,7 +112,7 @@ class CropToolsView @JvmOverloads constructor(
     }
 
     data class Data(
-        val aspectRatioList: List<AspectRatioAdapter.Data>
+        val aspectRatioList: List<AspectRatioWrapper>
     )
 
 }

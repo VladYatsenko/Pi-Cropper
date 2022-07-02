@@ -33,14 +33,14 @@ class ImageReaderContract(private val context: Context) {
     private val sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc";
 
 
-    suspend fun extractImages(): Pair<List<Folder>, List<Media>> {
+    suspend fun extractImages(allImagesFolder: String): Pair<List<Folder>, List<Media>> {
         val images = mutableListOf<Media>()
         val folders = HashMap<String, Folder>()
 
         try {
             val cursor = context.contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, columns, selection, selectionArgs, sortOrder);
 
-            val all = Folder.All(context.getString(R.string.all_image_folder), count = cursor?.count ?: 0)
+            val all = Folder.All(allImagesFolder, count = cursor?.count ?: 0)
             folders[all.id] = all
 
             if (cursor?.moveToFirst() == true) {

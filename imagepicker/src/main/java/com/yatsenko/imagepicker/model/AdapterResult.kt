@@ -2,6 +2,7 @@ package com.yatsenko.imagepicker.model
 
 import android.widget.ImageView
 import com.yatsenko.imagepicker.widgets.crop.AspectRatioAdapter
+import com.yatsenko.imagepicker.widgets.crop.AspectRatioWrapper
 
 sealed class AdapterResult {
     data class FolderChanged(val folder: Folder): AdapterResult()
@@ -12,7 +13,7 @@ sealed class AdapterResult {
     class OnCropImageClicked(val media: Media) : AdapterResult()
 
     //crop
-    data class OnAspectRatioClicked(val item: AspectRatioAdapter.Data) : AdapterResult()
+    data class OnAspectRatioClicked(val item: AspectRatioWrapper) : AdapterResult()
     object OnResetRotationClicked : AdapterResult()
     object OnRotate90Clicked : AdapterResult()
     object OnApplyCrop: AdapterResult()

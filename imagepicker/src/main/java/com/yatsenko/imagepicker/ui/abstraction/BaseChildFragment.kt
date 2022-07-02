@@ -13,6 +13,9 @@ abstract class BaseChildFragment : Fragment() {
     val router: Router
         get() = (parentFragment as PiCropperFragment).router
 
+    protected val piCropFragment: PiCropperFragment
+        get() = requireParentFragment() as PiCropperFragment
+
     abstract val layoutId: Int
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

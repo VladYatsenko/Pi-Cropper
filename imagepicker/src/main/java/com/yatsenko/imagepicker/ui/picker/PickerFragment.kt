@@ -7,12 +7,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
+import com.yatsenko.imagepicker.model.Media
+import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
 import com.yatsenko.imagepicker.ui.picker.adapter.ImageGripAdapter
+import com.yatsenko.imagepicker.ui.picker.adapter.ImageViewHolder
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.PermissionHelper
-import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
-import com.yatsenko.imagepicker.ui.picker.adapter.ImageViewHolder
 import com.yatsenko.imagepicker.widgets.toolbar.DropdownToolbar
 
 class PickerFragment : BaseChildFragment() {
@@ -22,9 +23,12 @@ class PickerFragment : BaseChildFragment() {
     private lateinit var toolbar: DropdownToolbar
     private lateinit var recycler: RecyclerView
 
-    private val viewModel: PickerViewModel by viewModels (ownerProducer = ::requireParentFragment, factoryProducer = { ViewModelFactory(requireActivity().application) })
+    private val viewModel: PickerViewModel by viewModels(
+        ownerProducer = ::requireParentFragment,
+        factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
+    )
 
-    private val imageAdapter by lazy { ImageGripAdapter(false) }
+    private val imageAdapter by lazy { ImageGripAdapter(piCropFragment.args.single) }
     private val permissionHelper by lazy { PermissionHelper(this, viewModel::extractImages) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,11 +43,18 @@ class PickerFragment : BaseChildFragment() {
         toolbar.result = ::handleAdapterResult
         imageAdapter.result = ::handleAdapterResult
 
-        viewModel.pickerState.observe(this) { state ->
+        viewModel.pickerState.observe(viewLifecycleOwner) { state ->
             toolbar.data = DropdownToolbar.Data(state.selectedFolder, state.folders)
             imageAdapter.submitList(state.media)
         }
         permissionHelper.checkPermission()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (permissionHelper.isReadExternalStorageGranted) {
+            viewModel.extractImages()
+        }
     }
 
     private fun handleAdapterResult(result: AdapterResult) {
@@ -51,8 +62,16 @@ class PickerFragment : BaseChildFragment() {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
             is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
             is AdapterResult.OnImageClicked -> {
-                viewModel.openFullscreen(result.position)
-                router.openViewer(result.media)
+                when {
+                    piCropFragment.args.forceOpenEditor -> {
+                        viewModel.prepareAspectRatio(result.media as Media.Image)
+                        router.openCropper(result.media)
+                    }
+                    else -> {
+                        viewModel.openFullscreen(result.position)
+                        router.openViewer(result.media)
+                    }
+                }
             }
             is AdapterResult.OnSelectImageClicked -> viewModel.selectMedia(result.media)
         }

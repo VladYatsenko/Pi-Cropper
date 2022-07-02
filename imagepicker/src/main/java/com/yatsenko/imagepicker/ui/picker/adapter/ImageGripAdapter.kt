@@ -49,7 +49,7 @@ class ImageGripAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ImageViewHolder -> list[position].let { image ->
-                holder.bind(image) { result(it) }
+                holder.bind(image, single) { result(it) }
             }
         }
     }

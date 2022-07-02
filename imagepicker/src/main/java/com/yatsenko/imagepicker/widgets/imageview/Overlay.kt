@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
@@ -43,6 +46,7 @@ class Overlay @JvmOverloads constructor(
 
     private val fileName: TextView
     private val info: TextView
+    private val doneFab: FloatingActionButton
 
     private val top: View
     private val bottom: View
@@ -83,6 +87,11 @@ class Overlay @JvmOverloads constructor(
             }
         }
         brush.setOnClickListener {}
+
+        doneFab = findViewById(R.id.doneFab)
+        doneFab.setOnClickListener {
+
+        }
     }
 
     override fun onAttachedToWindow() {
@@ -96,6 +105,8 @@ class Overlay @JvmOverloads constructor(
             val media = data.image
             checkbox.setChecked(media.indexInResult, media.isSelected, shouldAnimate)
         }
+        checkbox.isGone = data?.single == true
+        doneFab.isVisible = data?.single == true
         fileName.text = data?.image?.name
         info.text = data?.image?.let {
             "${it.width}x${it.height} • ${FileUtils.stringFileSize(it.size)}"
@@ -123,8 +134,8 @@ class Overlay @JvmOverloads constructor(
         val single: Boolean = false
     ) {
         companion object {
-            fun createFrom(media: Media?): Data? {
-                return media?.let { Data(it) }
+            fun createFrom(media: Media?, single: Boolean): Data? {
+                return media?.let { Data(it, single) }
             }
         }
     }

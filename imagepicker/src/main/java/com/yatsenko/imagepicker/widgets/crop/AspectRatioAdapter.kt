@@ -16,14 +16,14 @@ import com.yatsenko.imagepicker.model.AspectRatio
 
 class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() {
 
-    private val callback = object : DiffUtil.ItemCallback<Data>() {
+    private val callback = object : DiffUtil.ItemCallback<AspectRatioWrapper>() {
 
-        override fun areItemsTheSame(oldItem: Data, newItem: Data): Boolean {
+        override fun areItemsTheSame(oldItem: AspectRatioWrapper, newItem: AspectRatioWrapper): Boolean {
             return oldItem == newItem
         }
 
         @SuppressLint("DiffUtilEquals")
-        override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
+        override fun areContentsTheSame(oldItem: AspectRatioWrapper, newItem: AspectRatioWrapper): Boolean {
             return oldItem === newItem
         }
 
@@ -33,7 +33,7 @@ class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() 
 
     var result: (AdapterResult) -> Unit = {}
 
-    fun submitList(ratios: List<Data>) {
+    fun submitList(ratios: List<AspectRatioWrapper>) {
         differ.submitList(ArrayList(ratios))
     }
 
@@ -56,9 +56,9 @@ class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() 
         private val dot: View = view.findViewById(R.id.ratio_dot)
         private val title: TextView = view.findViewById(R.id.ratio_title)
 
-        fun bind(item: Data, result: (AdapterResult) -> Unit) {
+        fun bind(item: AspectRatioWrapper, result: (AdapterResult) -> Unit) {
             dot.isVisible = item.isSelected
-            title.text = item.ratio.ratioString(itemView.context)
+            title.text = item.ratio.ratioString
 
             val color = if (item.isSelected) R.color.cerulean else R.color.wild_sand
             title.setTextColor(ContextCompat.getColor(itemView.context, color))
@@ -71,14 +71,15 @@ class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() 
 
     }
 
-    data class Data(
-        val ratio: AspectRatio,
-        val isSelected: Boolean
-    ) {
+}
 
-        companion object {
-            fun createFrom(aspect: AspectRatio) = Data(aspect, false)
-        }
+
+data class AspectRatioWrapper(
+    val ratio: AspectRatio,
+    val isSelected: Boolean
+) {
+
+    companion object {
+        fun createFrom(aspect: AspectRatio) = AspectRatioWrapper(aspect, false)
     }
-
 }

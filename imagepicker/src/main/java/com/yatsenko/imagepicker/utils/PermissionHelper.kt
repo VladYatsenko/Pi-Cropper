@@ -24,9 +24,11 @@ class PermissionHelper(
 ) {
 
     private val permissions = arrayOf(
-        Manifest.permission.CAMERA,
         Manifest.permission.READ_EXTERNAL_STORAGE
     )
+
+    val isReadExternalStorageGranted: Boolean
+        get() = ContextCompat.checkSelfPermission(fragment.requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
     private val requestMultiplePermissions by lazy {
         fragment.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->

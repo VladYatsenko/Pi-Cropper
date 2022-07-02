@@ -9,7 +9,7 @@ import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.ui.viewer.viewholders.ImageViewHolder
 import com.yatsenko.imagepicker.widgets.imageview.Overlay
 
-class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
+class OverlayHelper (private val single: Boolean): VHCustomizer, OverlayCustomizer, ViewerCallback {
 
     private var overlayView: Overlay? = null
     var adapterResult: (AdapterResult) -> Unit = {}
@@ -28,7 +28,7 @@ class OverlayHelper : VHCustomizer, OverlayCustomizer, ViewerCallback {
     }
 
     fun submitData(media: Media?) {
-        overlayView?.data = Overlay.Data.createFrom(media)
+        overlayView?.data = Overlay.Data.createFrom(media, single)
     }
 
 }

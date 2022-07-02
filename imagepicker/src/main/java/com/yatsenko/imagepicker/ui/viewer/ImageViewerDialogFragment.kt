@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
+import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.abstraction.BaseDialogFragment
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
@@ -57,11 +58,11 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     private var overlayRefreshGate = true
 
-    private val overlayHelper by lazy { OverlayHelper() }
+    private val overlayHelper by lazy { OverlayHelper(piCropFragment.args.single) }
 
     private val viewModel: PickerViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
-        factoryProducer = { ViewModelFactory(requireActivity().application) }
+        factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -90,7 +91,10 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
             when(it) {
                 AdapterResult.GoBack -> onBackPressed()
                 is AdapterResult.OnSelectImageClicked -> viewModel.selectMedia(it.media)
-                is AdapterResult.OnCropImageClicked -> router.openCropper(it.media)
+                is AdapterResult.OnCropImageClicked -> {
+                    viewModel.prepareAspectRatio(it.media as Media.Image)
+                    router.openCropper(it.media)
+                }
             }
         }
         overlayView.addView(overlayHelper.provideView(overlayView))

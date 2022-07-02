@@ -10,14 +10,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
-import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.abstraction.BaseDialogFragment
 import com.yatsenko.imagepicker.ui.cropper.holder.UCropIml
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
-import com.yatsenko.imagepicker.utils.extensions.navigationBarSize
-import com.yatsenko.imagepicker.widgets.crop.AspectRatioAdapter
 import com.yatsenko.imagepicker.widgets.crop.CropToolsView
 
 class CropDialogFragment : BaseDialogFragment() {
@@ -41,11 +38,9 @@ class CropDialogFragment : BaseDialogFragment() {
         lifecycle.addObserver(it)
     } }
 
-    private val list by lazy { AspectRatio.defaultList.map { AspectRatioAdapter.Data.createFrom(it) }.toMutableList() }
-
     private val viewModel: PickerViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
-        factoryProducer = { ViewModelFactory(requireActivity().application) }
+        factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
     )
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,13 +55,16 @@ class CropDialogFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cropTools.result = ::handleResult
-        list.add(0, AspectRatioAdapter.Data.createFrom(AspectRatio.createFrom(media)))
-        setSelectedRatio(list.first())
+
+        viewModel.cropperState.observe(viewLifecycleOwner) {
+            cropTools.data = CropToolsView.Data(it.ratios)
+            crop.applyRatio(it.selectedRatio, it.selectedRatio.isDynamic)
+        }
     }
 
     private fun handleResult(result: AdapterResult) {
         when (result) {
-            is AdapterResult.OnAspectRatioClicked -> setSelectedRatio(result.item)
+            is AdapterResult.OnAspectRatioClicked -> viewModel.selectAspectRatio(result.item)
             is AdapterResult.OnRotateStart -> crop.onRotateStart()
             is AdapterResult.OnRotateProgress -> crop.onRotate(result.deltaAngle)
             is AdapterResult.OnRotateEnd -> crop.onRotateEnd()
@@ -79,19 +77,17 @@ class CropDialogFragment : BaseDialogFragment() {
             }
             is AdapterResult.OnCancelCrop -> onBackPressed()
             is AdapterResult.OnImageCropped -> {
-                viewModel.imageCropped(media, result.media)
-                onBackPressed()
+                when {
+                    piCropFragment.args.single -> {
+                        piCropFragment.provideResultToTarget(result.media)
+                    }
+                    else -> {
+                        viewModel.imageCropped(media, result.media)
+                        onBackPressed()
+                    }
+                }
             }
         }
-    }
-
-    private fun setSelectedRatio(item: AspectRatioAdapter.Data) {
-        val newList = list.map { AspectRatioAdapter.Data(it.ratio, it.ratio == item.ratio) }
-        list.clear()
-        list.addAll(newList)
-
-        cropTools.data = CropToolsView.Data(list)
-        crop.applyRatio(item.ratio, item.ratio.isDynamic)
     }
 
     override fun onBackPressed() {

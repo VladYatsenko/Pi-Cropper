@@ -18,7 +18,7 @@ object Theme {
     const val checkBoxUncheckedBorder = "checkBoxUncheckedBorder"
     const val checkBoxCheckedBorderOverlay = "checkBoxCheckedBorderOverlay"
 
-    private val dark = mapOf(
+    val dark = mapOf(
         accentColor to R.color.cerulean,
         checkBoxTextColor to R.color.white,
         checkBoxBackground to R.color.transparent_gray_40,

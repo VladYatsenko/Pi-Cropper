@@ -1,51 +1,23 @@
 package com.yatsenko.imagepicker.ui.picker.viewmodel
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.DataSource
 import androidx.paging.ItemKeyedDataSource
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.yatsenko.imagepicker.data.ImageReaderContract
-import com.yatsenko.imagepicker.model.Folder
-import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.model.OverlayState
-import com.yatsenko.imagepicker.model.PickerState
+import com.yatsenko.imagepicker.model.*
 import com.yatsenko.imagepicker.ui.viewer.core.DataProvider
 import com.yatsenko.imagepicker.ui.viewer.core.SimpleDataProvider
+import com.yatsenko.imagepicker.widgets.crop.AspectRatioWrapper
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class PickerViewModel(application: Application) : AndroidViewModel(application) {
+class PickerViewModel(application: Application, private val arguments: Arguments) : AndroidViewModel(application) {
 
     private val imageReader by lazy { ImageReaderContract(application) }
-
-    private var rawData: Pair<List<Folder>, List<Media>> = Pair(emptyList(), emptyList())
-    private val noopFolder = Folder.All("")
-    private var pickerStateData = PickerState(
-        folders = emptyList(),
-        selectedFolder = noopFolder,
-        media = emptyList()
-    )
-
-    private var overlayStateData = OverlayState(media = null)
-
-    val media: List<Media>
-        get() = pickerStateData.media
-    private val selectedImages = mutableListOf<Media>()
-
-    private val _pickerState: MutableLiveData<PickerState> = MutableLiveData()
-    val pickerState: LiveData<PickerState> = _pickerState
-
-    private val _overlayState: MutableLiveData<OverlayState> = MutableLiveData()
-    val overlayState: LiveData<OverlayState> = _overlayState
-
-    private var fullscreenPosition: Int = -1
 
     private val dataProvider: DataProvider
         get() = SimpleDataProvider(media)
@@ -91,15 +63,49 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    private var rawData: Pair<List<Folder>, List<Media>> = Pair(emptyList(), emptyList())
+
+    private val noopFolder = Folder.All("")
+
+    private var pickerStateData = PickerState(
+        folders = emptyList(),
+        selectedFolder = noopFolder,
+        media = emptyList()
+    )
+
+    private var overlayStateData = OverlayState(media = null)
+
+    val media: List<Media>
+        get() = pickerStateData.media
+
+    private val selectedImages = mutableListOf<Media>()
+
+    private val _pickerState: MutableLiveData<PickerState> = MutableLiveData()
+    val pickerState: LiveData<PickerState> = _pickerState
+
+    private val _overlayState: MutableLiveData<OverlayState> = MutableLiveData()
+    val overlayState: LiveData<OverlayState> = _overlayState
+
     val viewerState: LiveData<PagedList<Media>> = dataSourceFactory.toLiveData(pageSize = 1)
 
+    private var fullscreenPosition: Int = -1
+
+    private var ratioRawData: List<AspectRatioWrapper>
+
+    private val _cropperState: MutableLiveData<CropperState> = MutableLiveData()
+    val cropperState: LiveData<CropperState> = _cropperState
+
     init {
-        Log.i("PickerViewModel", "init()")
+        ratioRawData = if (arguments.aspectRatioList.isEmpty()) {
+            listOf(AspectRatioWrapper(AspectRatio.Custom(1, 1), false))
+        } else arguments.aspectRatioList.map { AspectRatioWrapper.createFrom(it) }
+
+        _cropperState.postValue(CropperState(ratioRawData.first().ratio, ratioRawData))
     }
 
     fun extractImages() {
         viewModelScope.launch(errorHandler {}) {
-            rawData = imageReader.extractImages()
+            rawData = imageReader.extractImages(arguments.allImagesFolder)
 
             if (pickerStateData.selectedFolder == noopFolder) {
                 pickerStateData = pickerStateData.copy(
@@ -107,6 +113,8 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
                     media = rawData.second
                 )
                 changeFolder(rawData.first.first())
+            } else {
+                refreshFolderImages(pickerStateData.selectedFolder)
             }
         }
     }
@@ -125,7 +133,10 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
                 selectedImages.clear()
                 selectedImages.addAll(withoutImage)
             }
-            else -> selectedImages.add(media)
+            else -> {
+                if (selectedImages.size < arguments.collectCount)
+                    selectedImages.add(media)
+            }
         }
 
         rawData = Pair(rawData.first, rawData.second.mapIndexed(::remapSelectedImage))
@@ -153,6 +164,25 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
         fullscreenPosition = -1
         refreshFolderImages(pickerStateData.selectedFolder)
         refreshOverlay()
+    }
+
+    fun prepareAspectRatio(media: Media.Image) {
+        ratioRawData = if (ratioRawData.isEmpty()) {
+            listOf(AspectRatioWrapper(AspectRatio.Custom(1, 1), false))
+        } else ratioRawData.map {
+            AspectRatioWrapper.createFrom(AspectRatio.remapOriginal(it.ratio, media))
+        }
+
+        selectAspectRatio(ratioRawData.first())
+    }
+
+    fun selectAspectRatio(item: AspectRatioWrapper) {
+        val preparedList = changeSelectedAspectRatio(ratioRawData, item)
+        _cropperState.postValue(CropperState(item.ratio, preparedList))
+    }
+
+    private fun changeSelectedAspectRatio(list: List<AspectRatioWrapper>, item: AspectRatioWrapper): List<AspectRatioWrapper> {
+        return list.map { AspectRatioWrapper(it.ratio, it.ratio == item.ratio) }
     }
 
     fun imageCropped(media: Media.Image, croppedImage: Media.Image) {
@@ -217,6 +247,5 @@ class PickerViewModel(application: Application) : AndroidViewModel(application) 
             callback(throwable)
         }
     }
-
 
 }
