@@ -1,15 +1,20 @@
 package com.yatsenko.imagepicker.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Arguments
 import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.abstraction.BaseFragment
+import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
+import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.Router
-import com.yatsenko.imagepicker.utils.extensions.toList
 
 class PiCropperFragment : BaseFragment() {
 
@@ -21,12 +26,16 @@ class PiCropperFragment : BaseFragment() {
         internal const val CIRCLE_CROP = "CIRCLE_CROP"
         internal const val FORCE_OPEN_EDITOR = "FORCE_OPEN_EDITOR"
 
+        const val INTENT_PiCROPPER_RESULT = "intent_picropper_result"
+        const val PiCROPPER_RESULT = "picropper_result"
+        const val RESULT_MEDIA = "result_media"
+
         fun prepareOptions(
-            aspectRatio: List<AspectRatio>,
-            collectCount: Int,
-            allImagesFolder: String?,
-            circleCrop: Boolean,
-            forceOpenEditor: Boolean
+            aspectRatio: List<AspectRatio> = AspectRatio.defaultList,
+            collectCount: Int = 10,
+            allImagesFolder: String? = null,
+            circleCrop: Boolean = false,
+            forceOpenEditor: Boolean = false
         ): Bundle {
             return Bundle().apply {
                 putParcelableArrayList(ASPECT_RATIO, ArrayList(aspectRatio))
@@ -53,12 +62,17 @@ class PiCropperFragment : BaseFragment() {
         shouldForceOpenEditor = requireArguments().getBoolean(FORCE_OPEN_EDITOR, false)
     ) }
 
+    private val viewModel: PickerViewModel by viewModels(
+        factoryProducer = { ViewModelFactory(requireActivity().application, args) }
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        router.openPicker()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (router.backStackCount == 0) {
-            router.openPicker()
-        }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -66,9 +80,12 @@ class PiCropperFragment : BaseFragment() {
                     router.canGoBack -> router.goBack()
                     else -> {
                         isEnabled = false
-                        if (requireActivity() is PiCropperActivity)
+                        if (requireActivity() is PiCropperActivity) {
                             requireActivity().finish()
-                        else requireActivity().onBackPressed()
+                        } else {
+                            router.clearBackStack()
+                            requireActivity().onBackPressed()
+                        }
                     }
                 }
             }
@@ -76,10 +93,27 @@ class PiCropperFragment : BaseFragment() {
     }
 
     fun provideResultToTarget() {
-
+        sendResult(viewModel.selectedImages)
     }
 
     fun provideResultToTarget(media: Media) {
+        sendResult(listOf(media))
+    }
+
+    private fun sendResult(list: List<Media>) {
+        val bundle = Bundle().apply {
+            putStringArrayList(RESULT_MEDIA, ArrayList(list.map { it.mediaPath }))
+        }
+
+        if (requireActivity() is PiCropperActivity) {
+            val resultIntent = Intent()
+            resultIntent.putExtra(INTENT_PiCROPPER_RESULT, bundle)
+            requireActivity().setResult(Activity.RESULT_OK, resultIntent)
+            requireActivity().finish()
+        } else {
+            setFragmentResult(PiCROPPER_RESULT, bundle)
+            requireActivity().onBackPressed()
+        }
 
     }
 

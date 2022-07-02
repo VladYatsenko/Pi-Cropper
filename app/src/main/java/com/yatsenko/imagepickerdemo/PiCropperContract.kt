@@ -7,7 +7,7 @@ import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 import com.yatsenko.imagepicker.core.PiCropper
 
-object PiCropperContract: ActivityResultContract<Any?, List<Uri>?>() {
+object PiCropperContract: ActivityResultContract<Any?, List<String>?>() {
 
     override fun createIntent(context: Context, input: Any?): Intent {
         return PiCropper.builder(context)
@@ -17,12 +17,12 @@ object PiCropperContract: ActivityResultContract<Any?, List<Uri>?>() {
             .intent()
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): List<Uri>? {
+    override fun parseResult(resultCode: Int, intent: Intent?): List<String>? {
         if (intent == null || resultCode != Activity.RESULT_OK) return null
         return parseIntent(intent)
     }
 
-    private fun parseIntent(intent: Intent?): List<Uri> {
+    private fun parseIntent(intent: Intent?): List<String> {
         return emptyList()
     }
 

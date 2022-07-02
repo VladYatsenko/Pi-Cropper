@@ -33,26 +33,25 @@ class Router(private val containerId: Int, private val fragmentManager: Fragment
         fragmentClass: Class<out Fragment?>,
         args: Bundle? = null,
         clearBackstack: Boolean = false,
-        sharedElement: View? = null
     ) {
-        val backStackFragmentsCount = fragmentManager.backStackEntryCount
         if (clearBackstack) {
-            for (i in backStackFragmentsCount - 1 downTo 0) {
-                val backStackId = fragmentManager.getBackStackEntryAt(i).id
-                fragmentManager.popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            }
+            clearBackStack()
         }
         val fragmentTag = fragmentClass.hashCode().toString()
         val fragmentTransaction = fragmentManager.beginTransaction().setReorderingAllowed(true)
 
         if (!fragmentManager.isStateSaved) {
-            sharedElement?.let {
-                fragmentTransaction.addSharedElement(sharedElement, sharedElement.transitionName)
-            }
-
             fragmentTransaction.replace(containerId, fragmentClass, args, fragmentTag)
-                .addToBackStack(fragmentTag)
+                .addToBackStack(null)
                 .commit()
+        }
+    }
+
+    fun clearBackStack() {
+        val backStackFragmentsCount = fragmentManager.backStackEntryCount
+        for (i in backStackFragmentsCount - 1 downTo 0) {
+            val backStackId = fragmentManager.getBackStackEntryAt(i).id
+            fragmentManager.popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         }
     }
 
