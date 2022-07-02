@@ -1,17 +1,20 @@
 package com.yatsenko.imagepicker.widgets.crop
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.utils.extensions.invisible
@@ -25,6 +28,10 @@ class CropToolsView @JvmOverloads constructor(
 ) : ConstraintLayout(context, attrs) {
 
     private val ROTATE_WIDGET_SENSITIVITY_COEFFICIENT = 42
+
+    private val accentColor = ContextCompat.getColor(context, Theme.themedColor(Theme.accentColor))
+    private val accentColorList = ColorStateList.valueOf(accentColor)
+    private val toolsColor = ContextCompat.getColor(context, Theme.themedColor(Theme.toolsColor))
 
     private val recycler: RecyclerView
 
@@ -57,7 +64,10 @@ class CropToolsView @JvmOverloads constructor(
     init {
         inflate(context, R.layout.layout_crop_tools, this)
 
-        findViewById<View>(R.id.root).updatePadding(bottom = context.navigationBarSize)
+        findViewById<View>(R.id.root).apply {
+            updatePadding(bottom = context.navigationBarSize)
+            backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, Theme.themedColor(Theme.toolsBackgroundColor)))
+        }
 
         recycler = findViewById(R.id.aspect_recycler)
 
@@ -69,6 +79,8 @@ class CropToolsView @JvmOverloads constructor(
         adapter.result = internalResult
 
         apply = findViewById(R.id.apply)
+        apply.imageTintList = ColorStateList.valueOf((ContextCompat.getColor(context, Theme.themedColor(Theme.accentColor))))
+
         apply.setOnClickListener {
             result(AdapterResult.OnApplyCrop)
         }
@@ -76,6 +88,8 @@ class CropToolsView @JvmOverloads constructor(
         cancel.setOnClickListener {
             result(AdapterResult.OnCancelCrop)
         }
+        cancel.imageTintList = ColorStateList.valueOf(toolsColor)
+
         wheel = findViewById(R.id.rotate_scroll_wheel)
         wheel.scrollingListener = object : HorizontalProgressWheelView.ScrollingListener {
             override fun onScrollStart() {
@@ -90,15 +104,21 @@ class CropToolsView @JvmOverloads constructor(
                 internalResult(AdapterResult.OnRotateEnd)
             }
         }
+
         progress = findViewById(R.id.progress)
         progress.isIndeterminate = true
+        progress.indeterminateTintList = accentColorList
+
         rotate = findViewById(R.id.text_view_rotate)
+        rotate.setTextColor(accentColor)
 
         resetRotation = findViewById(R.id.reset_rotate)
         resetRotation.setOnClickListener { internalResult(AdapterResult.OnResetRotationClicked) }
+        resetRotation.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, Theme.themedColor(Theme.toolsResetRotationColor)))
 
         rotateByAngle = findViewById(R.id.rotate_by_angle)
         rotateByAngle.setOnClickListener { internalResult(AdapterResult.OnRotate90Clicked) }
+        rotateByAngle.imageTintList = ColorStateList.valueOf(toolsColor)
     }
 
     private fun refreshLayout() {

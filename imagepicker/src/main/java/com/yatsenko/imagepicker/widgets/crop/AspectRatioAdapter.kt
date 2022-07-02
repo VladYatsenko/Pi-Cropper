@@ -1,6 +1,7 @@
 package com.yatsenko.imagepicker.widgets.crop
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.AspectRatio
 
@@ -53,15 +55,20 @@ class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() 
             )
         }
 
+        private val accentColor = ContextCompat.getColor(view.context, Theme.themedColor(Theme.accentColor))
+        private val toolsColor = ContextCompat.getColor(view.context, Theme.themedColor(Theme.toolsColor))
+
         private val dot: View = view.findViewById(R.id.ratio_dot)
         private val title: TextView = view.findViewById(R.id.ratio_title)
 
         fun bind(item: AspectRatioWrapper, result: (AdapterResult) -> Unit) {
+            val color = if (item.isSelected) accentColor else toolsColor
+
             dot.isVisible = item.isSelected
+            dot.backgroundTintList = ColorStateList.valueOf(color)
             title.text = item.ratio.ratioString
 
-            val color = if (item.isSelected) R.color.cerulean else R.color.wild_sand
-            title.setTextColor(ContextCompat.getColor(itemView.context, color))
+            title.setTextColor(color)
 
             itemView.setOnClickListener {
                 if (item.isSelected) return@setOnClickListener

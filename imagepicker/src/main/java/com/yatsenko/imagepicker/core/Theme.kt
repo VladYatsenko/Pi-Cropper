@@ -11,7 +11,10 @@ object Theme {
 //    const val toolbarBarColor = "toolbarBarColor"
 //    const val gridBackgroundColor = "gridBackgroundColor"
 //    const val imageBackgroundColor = "imageBackgroundColor"
-//    const val toolsBackgroundColor = "toolsBackgroundColor"
+
+    const val toolsColor = "toolsColor"
+    const val toolsResetRotationColor = "toolsResetRotationColor"
+    const val toolsBackgroundColor = "toolsBackgroundColor"
 
     const val checkBoxTextColor = "checkBoxTextColor"
     const val checkBoxBackground = "checkBoxBackground"
@@ -26,7 +29,11 @@ object Theme {
         checkBoxBackground to R.color.transparent_gray_40,
         checkBoxCheckedBorder to R.color.ebony_clay,
         checkBoxUncheckedBorder to R.color.white,
-        checkBoxCheckedBorderOverlay to R.color.white
+        checkBoxCheckedBorderOverlay to R.color.white,
+
+        toolsColor to R.color.white,
+        toolsResetRotationColor to R.color.silver_chalice,
+        toolsBackgroundColor to R.color.mirage
     )
 
     var theme: Map<String, Int> = dark

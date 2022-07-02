@@ -2,6 +2,7 @@ package com.yatsenko.imagepicker.widgets.crop
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
@@ -10,18 +11,23 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 
 class HorizontalProgressWheelView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
-    var middleLineColor = ContextCompat.getColor(context, R.color.cerulean)
-        set(value) {
-            field = value
-            progressMiddleLinePaint.color = value
-            invalidate()
-        }
+    private val accentColor = ContextCompat.getColor(context, Theme.themedColor(Theme.accentColor))
+    private val accentColorList = ColorStateList.valueOf(accentColor)
+    private val toolsColor = ContextCompat.getColor(context, Theme.themedColor(Theme.toolsColor))
+
+//    var middleLineColor = ContextCompat.getColor(context, R.color.cerulean)
+//        set(value) {
+//            field = value
+//            progressMiddleLinePaint.color = value
+//            invalidate()
+//        }
 
     private val canvasClipBounds = Rect()
 
@@ -34,11 +40,11 @@ class HorizontalProgressWheelView @JvmOverloads constructor(
     private var progressLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = progressLineWidth.toFloat()
-        color = ContextCompat.getColor(context, R.color.pickerColorAccent)
+        color = toolsColor
     }
 
     private var progressMiddleLinePaint = Paint(progressLinePaint).apply {
-        color = middleLineColor
+        color = accentColor
         strokeCap = Paint.Cap.ROUND
         strokeWidth = context.resources.getDimensionPixelSize(R.dimen.width_middle_wheel_progress_line).toFloat()
     }
