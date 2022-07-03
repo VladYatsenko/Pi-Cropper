@@ -52,7 +52,10 @@ class HomeFragment: Fragment() {
     }
 
     private fun runFragment() {
-        val args = PiCropperFragment.prepareOptions()
+        val args = PiCropperFragment.prepareOptions(
+            collectCount = 1,
+            forceOpenEditor = true
+        )
         findNavController().navigate(R.id.piCropperFragment, args)
     }
 

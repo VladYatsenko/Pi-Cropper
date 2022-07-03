@@ -1,11 +1,19 @@
 package com.yatsenko.imagepicker.ui.cropper
 
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.ConstraintSet.TOP
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.yatsenko.imagepicker.R
@@ -15,6 +23,12 @@ import com.yatsenko.imagepicker.ui.abstraction.BaseDialogFragment
 import com.yatsenko.imagepicker.ui.cropper.holder.UCropIml
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
+import com.yatsenko.imagepicker.ui.viewer.utils.Config
+import com.yatsenko.imagepicker.utils.ImageLoader
+import com.yatsenko.imagepicker.utils.extensions.*
+import com.yatsenko.imagepicker.utils.extensions.gone
+import com.yatsenko.imagepicker.utils.transition.*
+import com.yatsenko.imagepicker.widgets.BackgroundView
 import com.yatsenko.imagepicker.widgets.crop.CropToolsView
 
 class CropDialogFragment : BaseDialogFragment() {
@@ -31,12 +45,18 @@ class CropDialogFragment : BaseDialogFragment() {
         }
     }
 
-    private lateinit var cropTools: CropToolsView
-
     private val media by lazy { requireArguments().getSerializable(CROP_URL) as Media.Image }
     private val crop by lazy { UCropIml(requireContext(), Uri.parse(media.path), ::handleResult).also {
         lifecycle.addObserver(it)
     } }
+
+    private lateinit var root: ConstraintLayout
+    private lateinit var cropTools: CropToolsView
+    private lateinit var background: BackgroundView
+    private lateinit var cropTransitionOverlay: ImageView
+
+    private val transitionHelper: TransitionHelper
+        get() = if (piCropFragment.args.forceOpenEditor) ViewerTransitionHelper else CropperTransitionHelper
 
     private val viewModel: PickerViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
@@ -46,20 +66,120 @@ class CropDialogFragment : BaseDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = layoutInflater.inflate(R.layout.fragment_image_cropper_dialog, container, false)
+        root = view.findViewById(R.id.root)
         val cropContainer: FrameLayout = view.findViewById(R.id.crop_container)
         cropContainer.addView(crop.cropView)
         cropTools = view.findViewById(R.id.bottom_view)
+        background = view.findViewById(R.id.background)
+        cropTransitionOverlay = view.findViewById(R.id.crop_transition_overlay)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cropTools.result = ::handleResult
-
         viewModel.cropperState.observe(viewLifecycleOwner) {
             cropTools.data = CropToolsView.Data(it.ratios)
             crop.applyRatio(it.selectedRatio, it.selectedRatio.isDynamic)
         }
+
+        crop.cropView.alpha = 0f
+        ImageLoader.load(cropTransitionOverlay, media)
+
+        root.post {
+            cropTools.show()
+            background.changeToBackgroundColor(Config.viewBackgroundColor)
+            TransitionStartHelper.start(this, transitionHelper.provide(media.id), transitionStart)
+        }
+    }
+
+    private val transitionStart = object : TransitionStart {
+
+        override fun beforeTransitionStart(startView: View?) {
+            cropTransitionOverlay.scaleType = (startView as? ImageView?)?.scaleType ?: ImageView.ScaleType.FIT_CENTER
+            cropTransitionOverlay.layoutParams = cropTransitionOverlay.layoutParams.apply {
+                width = startView?.width ?: width
+                height = startView?.height ?: height
+                val location = IntArray(2)
+                TransitionStartHelper.getLocationOnScreen(startView, location)
+                if (this is ViewGroup.MarginLayoutParams) {
+                    marginStart = location[0]
+                    topMargin = location[1] - Config.transitionOffsetY
+                }
+            }
+        }
+
+        override fun afterTransitionStart() {}
+
+        override fun transitionStart() {
+            cropTransitionOverlay.scaleType = ImageView.ScaleType.FIT_CENTER
+            cropTransitionOverlay.layoutParams = cropTransitionOverlay.layoutParams.apply {
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                height = 0
+                if (this is ViewGroup.MarginLayoutParams) {
+                    marginStart = dpToPxInt(16f)
+                    marginEnd = dpToPxInt(16f)
+                    topMargin = 0
+                    bottomMargin = dpToPxInt(16f) * -1
+                }
+
+                if (this is ConstraintLayout.LayoutParams) {
+                    this.topToTop = PARENT_ID
+                    this.bottomToTop = cropTools.id
+                }
+            }
+        }
+
+        override val viewGroup: ViewGroup
+            get() = root
+
+    }
+
+    private val transitionEnd = object : TransitionEnd {
+
+        override fun beforeTransitionEnd(startView: View?) {}
+
+        override fun transitionEnd(startView: View?) {
+            cropTransitionOverlay.scaleType = (startView as? ImageView?)?.scaleType
+                ?: ImageView.ScaleType.FIT_CENTER
+            cropTransitionOverlay.translationX = 0f
+            cropTransitionOverlay.translationY = 0f
+            cropTransitionOverlay.scaleX = if (startView != null) 1f else 2f
+            cropTransitionOverlay.scaleY = if (startView != null) 1f else 2f
+            // photoView.alpha = startView?.alpha ?: 0f
+            fade(startView)
+            cropTransitionOverlay.layoutParams = cropTransitionOverlay.layoutParams.apply {
+                width = startView?.width ?: width
+                height = startView?.height ?: height
+                val location = IntArray(2)
+                TransitionEndHelper.getLocationOnScreen(startView, location)
+                if (this is ViewGroup.MarginLayoutParams) {
+                    marginStart = location[0]
+                    topMargin = location[1] - Config.transitionOffsetY
+                    marginEnd = 0
+                    bottomMargin = 0
+                }
+                if (this is ConstraintLayout.LayoutParams) {
+                    this.bottomToTop = UNSET
+                }
+            }
+        }
+
+        override fun fade(startView: View?) {
+            cropTransitionOverlay.animate()
+                .setDuration(50)
+                .alpha(1f).start()
+
+            crop.cropView.animate()
+                .setDuration(50)
+                .alpha(0f).start()
+
+            cropTools.hide()
+        }
+
+        override val viewGroup: ViewGroup
+            get() = root
+
     }
 
     private fun handleResult(result: AdapterResult) {
@@ -83,16 +203,33 @@ class CropDialogFragment : BaseDialogFragment() {
                     }
                     else -> {
                         viewModel.imageCropped(media, result.media)
+                        cropTransitionOverlay.loadImage(result.media)
+                        cropTransitionOverlay.visible()
                         onBackPressed()
                     }
                 }
+            }
+            is AdapterResult.OnCropImageLoaded -> {
+                crop.cropView.animate()
+                    .setDuration(50)
+                    .alpha(1f).start()
+                cropTransitionOverlay.animate()
+                    .setDuration(50)
+                    .alpha(0f)
+                    .start()
             }
         }
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        this.dismiss()
+        if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
+            return
+
+        val startView = transitionHelper.provide(media.id)
+        background.changeToBackgroundColor(Color.TRANSPARENT)
+        TransitionEndHelper.end(this, startView, transitionEnd) {
+            this.dismiss()
+        }
     }
 
 }

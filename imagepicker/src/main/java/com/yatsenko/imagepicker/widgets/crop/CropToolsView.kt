@@ -17,6 +17,9 @@ import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.AspectRatio
+import com.yatsenko.imagepicker.utils.extensions.Animations.slideDown
+import com.yatsenko.imagepicker.utils.extensions.Animations.slideUp
+import com.yatsenko.imagepicker.utils.extensions.actionBarSize
 import com.yatsenko.imagepicker.utils.extensions.invisible
 import com.yatsenko.imagepicker.utils.extensions.navigationBarSize
 import com.yatsenko.imagepicker.utils.extensions.visible
@@ -119,6 +122,9 @@ class CropToolsView @JvmOverloads constructor(
         rotateByAngle = findViewById(R.id.rotate_by_angle)
         rotateByAngle.setOnClickListener { internalResult(AdapterResult.OnRotate90Clicked) }
         rotateByAngle.imageTintList = ColorStateList.valueOf(toolsColor)
+
+        this.slideDown(0f, this.height.toFloat(), 0)
+        this.alpha = 0f
     }
 
     private fun refreshLayout() {
@@ -131,6 +137,16 @@ class CropToolsView @JvmOverloads constructor(
     fun showLoading() {
         progress.visible()
         apply.invisible()
+    }
+
+    fun show() {
+        this.animate()?.setDuration(200)?.alpha(1f)?.start()
+        this.slideUp(this.height.toFloat(), 0f)
+    }
+
+    fun hide() {
+        this.animate()?.setDuration(200)?.alpha(0f)?.start()
+        this.slideDown(0f, this.height.toFloat())
     }
 
     data class Data(

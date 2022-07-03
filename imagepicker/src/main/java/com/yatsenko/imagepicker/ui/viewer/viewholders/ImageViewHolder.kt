@@ -50,13 +50,13 @@ class ImageViewHolder(
 
     fun bind(data: Media.Image) {
         this.data = data
-        ImageLoader.load(photoView, data, this)
+        ImageLoader.load(photoView, data)
         vhCustomizer.bind(ITEM_TYPE, data, this)
     }
 
     override fun afterTransitionStart() {
         (data as? Media.Image)?.let {
-            ImageLoader.load(photoView, it, this)
+            ImageLoader.load(photoView, it)
         }
     }
 

@@ -8,6 +8,8 @@ interface Crop: LifecycleEventObserver {
 
     val cropView: View
 
+    fun load()
+
     fun onRotateStart()
 
     fun onRotate(angle: Float)

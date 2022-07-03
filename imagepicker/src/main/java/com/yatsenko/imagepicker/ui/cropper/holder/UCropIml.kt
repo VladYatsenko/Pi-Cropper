@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.yalantis.ucrop.callback.BitmapCropCallback
@@ -11,18 +12,20 @@ import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_DISABLE
 import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_ENABLE
 import com.yalantis.ucrop.view.TransformImageView.TransformImageListener
 import com.yalantis.ucrop.view.UCropView
+import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.extensions.FileUtils
 import com.yatsenko.imagepicker.utils.extensions.FileUtils.fileUri
+import com.yatsenko.imagepicker.utils.extensions.actionBarSize
 import kotlinx.android.synthetic.main.layout_crop_tools.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class UCropIml(
-    context: Context,
-    inputUri: Uri,
+    private val context: Context,
+    private val inputUri: Uri,
     private val result: (AdapterResult) -> Unit) : Crop {
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
@@ -44,22 +47,35 @@ class UCropIml(
 
     init {
         gestureCropImageView.isRotateEnabled = false
-        try {
-            gestureCropImageView.setImageUri(inputUri, outputFile.fileUri(context))
-        } catch (e: Exception) {
-            internalResult(AdapterResult.OnCropError(e))
-        }
+        load()
 
         gestureCropImageView.setTransformImageListener(object : TransformImageListener {
             override fun onRotate(currentAngle: Float) = internalResult(AdapterResult.OnImageRotated(currentAngle))
 
             override fun onScale(currentScale: Float) {}
 
-            override fun onLoadComplete() {}
+            override fun onLoadComplete() {
+                result(AdapterResult.OnCropImageLoaded)
+
+//                gestureCropImageView.setPadding(
+//                    gestureCropImageView.paddingLeft,
+//                    gestureCropImageView.paddingTop + context.actionBarSize,
+//                    gestureCropImageView.paddingRight,
+//                    gestureCropImageView.paddingBottom + context.resources.getDimensionPixelSize(R.dimen.overlap_crop_tools_height)
+//                )
+            }
 
             override fun onLoadFailure(e: Exception) = internalResult(AdapterResult.OnCropError(e))
         })
 
+    }
+
+    override fun load() {
+        try {
+            gestureCropImageView.setImageUri(inputUri, outputFile.fileUri(context))
+        } catch (e: Exception) {
+            internalResult(AdapterResult.OnCropError(e))
+        }
     }
 
     override fun onRotateStart() {

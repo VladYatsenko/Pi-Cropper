@@ -27,4 +27,5 @@ sealed class AdapterResult {
     data class OnImageCropped(val media: Media.Image) : AdapterResult()
     data class OnCropError(val t: Throwable) : AdapterResult()
 
+    object OnCropImageLoaded: AdapterResult()
 }

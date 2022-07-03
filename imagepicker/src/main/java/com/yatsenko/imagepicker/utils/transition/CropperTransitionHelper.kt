@@ -1,10 +1,9 @@
 package com.yatsenko.imagepicker.utils.transition
 
-import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 
-object ViewerTransitionHelper: TransitionHelper {
+object CropperTransitionHelper: TransitionHelper {
 
     private val _transition = HashMap<ImageView, String>()
 
@@ -26,5 +25,3 @@ object ViewerTransitionHelper: TransitionHelper {
     }
 
 }
-
-
