@@ -71,7 +71,10 @@ class PickerFragment : BaseChildFragment() {
     private fun handleAdapterResult(result: AdapterResult) {
         when (result) {
             AdapterResult.GoBack -> requireActivity().onBackPressed()
-            is AdapterResult.FolderChanged -> viewModel.changeFolder(result.folder)
+            is AdapterResult.FolderChanged -> {
+                recycler.scrollTo(0, 0)
+                viewModel.changeFolder(result.folder)
+            }
             is AdapterResult.OnImageClicked -> {
                 when {
                     piCropFragment.args.forceOpenEditor -> {
