@@ -10,7 +10,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.transition.*
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
-import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 
 object TransitionStartHelper {
 
@@ -28,10 +27,10 @@ object TransitionStartHelper {
             interpolator = DecelerateInterpolator()
         }
 
-    fun start(owner: LifecycleOwner, startView: View?, holder: FullscreenViewHolder) {
-        holder.beforeTransitionStart(startView)
+    fun start(owner: LifecycleOwner, startView: View?, transitionStart: TransitionStart) {
+        transitionStart.beforeTransitionStart(startView)
         val doTransition = {
-            TransitionManager.beginDelayedTransition(holder.itemView as ViewGroup, transitionSet.also {
+            TransitionManager.beginDelayedTransition(transitionStart.viewGroup, transitionSet.also {
                 it.addListener(object : TransitionListenerAdapter() {
                     override fun onTransitionStart(transition: Transition) {
                         animating = true
@@ -40,21 +39,21 @@ object TransitionStartHelper {
                     override fun onTransitionEnd(transition: Transition) {
                         if (!animating) return
                         animating = false
-                        holder.afterTransitionStart()
+                        transitionStart.afterTransitionStart()
                     }
                 })
             })
-            holder.transitionStart()
+            transitionStart.transitionStart()
         }
-        holder.itemView.postDelayed(doTransition, 50)
+        transitionStart.viewGroup.postDelayed(doTransition, 50)
 
         owner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     owner.lifecycle.removeObserver(this)
                     animating = false
-                    holder.itemView.removeCallbacks(doTransition)
-                    TransitionManager.endTransitions(holder.itemView as ViewGroup)
+                    transitionStart.viewGroup.removeCallbacks(doTransition)
+                    TransitionManager.endTransitions(transitionStart.viewGroup)
                 }
             }
         })

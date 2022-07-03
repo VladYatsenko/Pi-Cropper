@@ -7,7 +7,6 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
 import androidx.transition.*
-import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 
@@ -28,10 +27,10 @@ object TransitionEndHelper {
             interpolator = DecelerateInterpolator()
         }
 
-    fun end(fragment: DialogFragment, startView: View?, holder: FullscreenViewHolder, onTransitionEnd: () -> Unit) {
-        holder.beforeTransitionEnd(startView)
+    fun end(fragment: DialogFragment, startView: View?, transitionEnd: TransitionEnd, onTransitionEnd: () -> Unit) {
+        transitionEnd.beforeTransitionEnd(startView)
         val doTransition = {
-            TransitionManager.beginDelayedTransition(holder.itemView as ViewGroup, transitionSet.also {
+            TransitionManager.beginDelayedTransition(transitionEnd.viewGroup, transitionSet.also {
                 it.addListener(object : TransitionListenerAdapter() {
                     override fun onTransitionStart(transition: Transition) {
                         animating = true
@@ -46,17 +45,17 @@ object TransitionEndHelper {
                     }
                 })
             })
-            holder.transitionEnd(startView)
+            transitionEnd.transitionEnd(startView)
         }
-        holder.itemView.post(doTransition)
+        transitionEnd.viewGroup.post(doTransition)
 
         fragment.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
                     fragment.lifecycle.removeObserver(this)
                     animating = false
-                    holder.itemView.removeCallbacks(doTransition)
-                    TransitionManager.endTransitions(holder.itemView as ViewGroup)
+                    transitionEnd.viewGroup.removeCallbacks(doTransition)
+                    TransitionManager.endTransitions(transitionEnd.viewGroup)
                 }
             }
         })
