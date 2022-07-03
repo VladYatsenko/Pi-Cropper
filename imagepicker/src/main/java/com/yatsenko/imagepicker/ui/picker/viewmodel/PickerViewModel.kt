@@ -8,8 +8,8 @@ import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import com.yatsenko.imagepicker.data.ImageReaderContract
 import com.yatsenko.imagepicker.model.*
-import com.yatsenko.imagepicker.ui.viewer.core.DataProvider
-import com.yatsenko.imagepicker.ui.viewer.core.SimpleDataProvider
+import com.yatsenko.imagepicker.data.DataProvider
+import com.yatsenko.imagepicker.data.SimpleDataProvider
 import com.yatsenko.imagepicker.widgets.crop.AspectRatioWrapper
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch

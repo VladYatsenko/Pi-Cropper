@@ -1,12 +1,10 @@
-package com.yatsenko.imagepicker.ui.viewer.core
+package com.yatsenko.imagepicker.ui.viewer.utils
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
-import com.yatsenko.imagepicker.ui.viewer.viewholders.ImageViewHolder
 import com.yatsenko.imagepicker.widgets.imageview.Overlay
 
 class OverlayHelper (private val single: Boolean): VHCustomizer, OverlayCustomizer, ViewerCallback {

@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
-import com.yatsenko.imagepicker.ui.viewer.core.ImageLoader
+import com.yatsenko.imagepicker.utils.ImageLoader
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
-import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
-import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
+import com.yatsenko.imagepicker.utils.transition.TransitionEndHelper
+import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.imageview.SubsamplingScaleImageView2
 
 class SubsamplingViewHolder(view: View, callback: ImageViewerAdapterListener) : FullscreenViewHolder(view) {

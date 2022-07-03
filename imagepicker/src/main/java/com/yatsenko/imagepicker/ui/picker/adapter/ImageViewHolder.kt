@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.core.ViewerTransitionHelper
+import com.yatsenko.imagepicker.utils.transition.ViewerTransitionHelper
 import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
 import com.yatsenko.imagepicker.utils.extensions.dpToPx
 import com.yatsenko.imagepicker.utils.extensions.loadImage
-import com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
 import com.yatsenko.imagepicker.widgets.checkbox.CheckBoxGrid
 
 

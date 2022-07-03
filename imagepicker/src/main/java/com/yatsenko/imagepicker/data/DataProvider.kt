@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer.core
+package com.yatsenko.imagepicker.data
 
 import android.os.Handler
 import android.os.Looper

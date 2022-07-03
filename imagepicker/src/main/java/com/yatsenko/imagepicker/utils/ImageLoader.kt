@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer.core
+package com.yatsenko.imagepicker.utils
 
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView

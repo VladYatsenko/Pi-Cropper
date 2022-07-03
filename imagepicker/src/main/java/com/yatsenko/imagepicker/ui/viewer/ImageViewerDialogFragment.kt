@@ -19,13 +19,14 @@ import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapter
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
-import com.yatsenko.imagepicker.ui.viewer.core.*
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.ui.viewer.utils.Config.offscreenPageLimit
-import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
-import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
+import com.yatsenko.imagepicker.ui.viewer.utils.OverlayHelper
+import com.yatsenko.imagepicker.utils.transition.TransitionEndHelper
+import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
+import com.yatsenko.imagepicker.utils.transition.ViewerTransitionHelper
 import com.yatsenko.imagepicker.widgets.BackgroundView
 
 open class ImageViewerDialogFragment : BaseDialogFragment() {

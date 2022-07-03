@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.yatsenko.imagepicker.model.Media
-import com.yatsenko.imagepicker.ui.viewer.core.VHCustomizer
+import com.yatsenko.imagepicker.ui.viewer.utils.VHCustomizer
 import com.yatsenko.imagepicker.ui.viewer.viewholders.*
 
 private val callback = object : DiffUtil.ItemCallback<Media>() {

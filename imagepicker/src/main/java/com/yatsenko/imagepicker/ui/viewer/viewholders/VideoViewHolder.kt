@@ -7,10 +7,10 @@ import android.widget.ImageView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
-import com.yatsenko.imagepicker.ui.viewer.core.ImageLoader
+import com.yatsenko.imagepicker.utils.ImageLoader
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
-import com.yatsenko.imagepicker.ui.viewer.utils.TransitionEndHelper
-import com.yatsenko.imagepicker.ui.viewer.utils.TransitionStartHelper
+import com.yatsenko.imagepicker.utils.transition.TransitionEndHelper
+import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.video.ExoVideoView2
 import kotlin.math.max
 

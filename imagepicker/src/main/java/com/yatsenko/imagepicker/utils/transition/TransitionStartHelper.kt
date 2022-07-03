@@ -1,16 +1,18 @@
-package com.yatsenko.imagepicker.ui.viewer.utils
+package com.yatsenko.imagepicker.utils.transition
 
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.core.view.ViewCompat
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.transition.*
-import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.ui.viewer.utils.Config
+import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 
-object TransitionEndHelper {
+object TransitionStartHelper {
 
     val transitionAnimating: Boolean
         get() = animating
@@ -21,14 +23,13 @@ object TransitionEndHelper {
         get() = TransitionSet().apply {
             addTransition(ChangeBounds())
             addTransition(ChangeImageTransform())
-            addTransition(ChangeTransform())
-            // addTransition(Fade())
+            // https://github.com/davemorrissey/subsampling-scale-image-view/issues/313
             duration = Config.durationTransition
             interpolator = DecelerateInterpolator()
         }
 
-    fun end(fragment: DialogFragment, startView: View?, holder: FullscreenViewHolder, onTransitionEnd: () -> Unit) {
-        holder.beforeTransitionEnd(startView)
+    fun start(owner: LifecycleOwner, startView: View?, holder: FullscreenViewHolder) {
+        holder.beforeTransitionStart(startView)
         val doTransition = {
             TransitionManager.beginDelayedTransition(holder.itemView as ViewGroup, transitionSet.also {
                 it.addListener(object : TransitionListenerAdapter() {
@@ -39,20 +40,18 @@ object TransitionEndHelper {
                     override fun onTransitionEnd(transition: Transition) {
                         if (!animating) return
                         animating = false
-                        fragment.dismissAllowingStateLoss()
-
-                        onTransitionEnd()
+                        holder.afterTransitionStart()
                     }
                 })
             })
-            holder.transitionEnd(startView)
+            holder.transitionStart()
         }
-        holder.itemView.post(doTransition)
+        holder.itemView.postDelayed(doTransition, 50)
 
-        fragment.lifecycle.addObserver(object : LifecycleEventObserver {
+        owner.lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_DESTROY) {
-                    fragment.lifecycle.removeObserver(this)
+                    owner.lifecycle.removeObserver(this)
                     animating = false
                     holder.itemView.removeCallbacks(doTransition)
                     TransitionManager.endTransitions(holder.itemView as ViewGroup)
@@ -75,4 +74,5 @@ object TransitionEndHelper {
             location[0] = startView.context.resources.displayMetrics.widthPixels - location[0] - startView.width
         }
     }
+
 }

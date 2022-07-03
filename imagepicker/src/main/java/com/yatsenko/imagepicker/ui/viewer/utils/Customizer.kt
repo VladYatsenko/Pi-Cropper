@@ -1,4 +1,4 @@
-package com.yatsenko.imagepicker.ui.viewer.core
+package com.yatsenko.imagepicker.ui.viewer.utils
 
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +21,4 @@ interface ViewerCallback : ImageViewerAdapterListener {
     override fun onDrag(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {}
     override fun onRestore(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {}
     override fun onRelease(viewHolder: FullscreenViewHolder, view: View) {}
-    fun onPageScrollStateChanged(state: Int) {}
-    fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-    fun onPageSelected(position: Int, viewHolder: RecyclerView.ViewHolder) {}
 }
