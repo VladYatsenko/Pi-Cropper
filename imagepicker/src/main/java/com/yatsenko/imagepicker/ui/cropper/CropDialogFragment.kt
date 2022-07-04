@@ -83,7 +83,7 @@ class CropDialogFragment : BaseDialogFragment() {
             crop.applyRatio(it.selectedRatio, it.selectedRatio.isDynamic)
         }
 
-        crop.cropView.alpha = 0f
+        crop.cropView.invisible()
         ImageLoader.load(cropTransitionOverlay, media)
 
         root.post {
@@ -213,10 +213,7 @@ class CropDialogFragment : BaseDialogFragment() {
                 }
             }
             is AdapterResult.OnCropImageLoaded -> {
-                crop.cropView.animate()
-                    .setDuration(200)
-                    .alpha(1f)
-                    .start()
+                crop.cropView.visible()
                 cropTransitionOverlay.animate()
                     .setDuration(200)
                     .alpha(0f)

@@ -230,16 +230,16 @@ class PickerViewModel(application: Application, private val arguments: Arguments
         val indexInResult = _selectedImages.indexOfFirst { it.id == image.id }
         val inFullscreen = index == fullscreenPosition
 
-        return if (image.indexInResult == indexInResult && image.inFullscreen == inFullscreen)
+        return if (image.indexInResult == indexInResult && image.hideInGrid == inFullscreen)
             image
         else {
             return when (image) {
                 is Media.Image -> {
                     val croppedImage = if (indexInResult != -1) image.croppedImage else null
-                    image.copy(indexInResult = indexInResult, inFullscreen = inFullscreen, croppedImage = croppedImage)
+                    image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen, croppedImage = croppedImage)
                 }
-                is Media.SubsamplingImage -> image.copy(indexInResult = indexInResult, inFullscreen = inFullscreen)
-                is Media.Video -> image.copy(indexInResult = indexInResult, inFullscreen = inFullscreen)
+                is Media.SubsamplingImage -> image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
+                is Media.Video -> image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
             }
         }
     }

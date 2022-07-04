@@ -47,7 +47,7 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             result(AdapterResult.OnSelectImageClicked(media))
         }
         thumbnail.loadImage(media)
-        thumbnail.alpha = if (media.inFullscreen) 0f else 1f
+        thumbnail.alpha = if (media.hideInGrid) 0f else 1f
 
         itemView.setOnClickListener {
             result(AdapterResult.OnImageClicked(thumbnail, media, bindingAdapterPosition))

@@ -13,16 +13,13 @@ sealed class Media(
     open val size: Int,
     open val name: String,
     open val indexInResult: Int = -1,
-    open val inFullscreen: Boolean = false
+    open val hideInGrid: Boolean = false
 ) : Serializable {
 
     open val mediaPath: String = path
 
     val isSelected: Boolean
         get() = indexInResult != -1
-
-    val indexString: String
-        get() = if (isSelected) indexInResult.plus(1).toString() else ""
 
     val shouldAnimate: (Media?) -> Boolean = { media ->
         this.id == media?.id && this.isSelected != media.isSelected
@@ -38,9 +35,9 @@ sealed class Media(
         override val size: Int,
         override val name: String,
         override val indexInResult: Int = -1,
-        override val inFullscreen: Boolean = false,
+        override val hideInGrid: Boolean = false,
         val croppedImage: Image? = null
-    ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult, inFullscreen) {
+    ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult, hideInGrid) {
 
         override val mediaPath: String
             get() = croppedImage?.path ?: path
@@ -57,7 +54,7 @@ sealed class Media(
                     size = file.length().toInt(),
                     name = "",
                     indexInResult = -1,
-                    inFullscreen = false,
+                    hideInGrid = false,
                     croppedImage = null
                 )
             }
@@ -75,7 +72,7 @@ sealed class Media(
         override val size: Int,
         override val name: String,
         override val indexInResult: Int = -1,
-        override val inFullscreen: Boolean = false,
+        override val hideInGrid: Boolean = false,
         private val croppedImage: Image? = null
     ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult) {
 
@@ -95,7 +92,7 @@ sealed class Media(
         override val size: Int,
         override val name: String,
         override val indexInResult: Int = -1,
-        override val inFullscreen: Boolean = false,
+        override val hideInGrid: Boolean = false,
         private val editedPath: String? = null
     ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult) {
 
