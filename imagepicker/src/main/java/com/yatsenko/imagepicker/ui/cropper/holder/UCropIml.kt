@@ -47,7 +47,6 @@ class UCropIml(
 
     init {
         gestureCropImageView.isRotateEnabled = false
-        load()
 
         gestureCropImageView.setTransformImageListener(object : TransformImageListener {
             override fun onRotate(currentAngle: Float) = internalResult(AdapterResult.OnImageRotated(currentAngle))

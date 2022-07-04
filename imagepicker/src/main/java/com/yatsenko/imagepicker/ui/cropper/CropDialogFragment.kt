@@ -109,7 +109,9 @@ class CropDialogFragment : BaseDialogFragment() {
             }
         }
 
-        override fun afterTransitionStart() {}
+        override fun afterTransitionStart() {
+            crop.load()
+        }
 
         override fun transitionStart() {
             cropTransitionOverlay.scaleType = ImageView.ScaleType.FIT_CENTER
@@ -117,10 +119,11 @@ class CropDialogFragment : BaseDialogFragment() {
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = 0
                 if (this is ViewGroup.MarginLayoutParams) {
-                    marginStart = dpToPxInt(16f)
-                    marginEnd = dpToPxInt(16f)
-                    topMargin = 0
-                    bottomMargin = dpToPxInt(16f) * -1
+                    val margin =  dpToPxInt(16f)
+                    marginStart = margin
+                    marginEnd = margin
+                    topMargin = margin
+                    bottomMargin = 0
                 }
 
                 if (this is ConstraintLayout.LayoutParams) {
@@ -167,7 +170,7 @@ class CropDialogFragment : BaseDialogFragment() {
 
         override fun fade(startView: View?) {
             cropTransitionOverlay.animate()
-                .setDuration(50)
+                .setDuration(200)
                 .alpha(1f).start()
 
             crop.cropView.animate()
@@ -211,10 +214,11 @@ class CropDialogFragment : BaseDialogFragment() {
             }
             is AdapterResult.OnCropImageLoaded -> {
                 crop.cropView.animate()
-                    .setDuration(50)
-                    .alpha(1f).start()
+                    .setDuration(200)
+                    .alpha(1f)
+                    .start()
                 cropTransitionOverlay.animate()
-                    .setDuration(50)
+                    .setDuration(200)
                     .alpha(0f)
                     .start()
             }
