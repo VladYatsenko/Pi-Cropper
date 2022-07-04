@@ -5,7 +5,7 @@ import android.widget.ImageView
 
 object CropperTransitionHelper: TransitionHelper {
 
-    private val _transition = HashMap<ImageView, String>()
+    private var transition: ImageView? = null
 
     override fun put(mediaId: String, imageView: ImageView) {
         require(isMainThread)
@@ -13,15 +13,15 @@ object CropperTransitionHelper: TransitionHelper {
         imageView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
             override fun onViewAttachedToWindow(p0: View?) = Unit
             override fun onViewDetachedFromWindow(p0: View?) {
-                _transition.remove(imageView)
+                transition = null
                 imageView.removeOnAttachStateChangeListener(this)
             }
         })
-        _transition[imageView] = mediaId
+        transition = imageView
     }
 
     override fun provide(mediaId: String): ImageView? {
-        return _transition.keys.firstOrNull { _transition[it] == mediaId }
+        return transition
     }
 
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
@@ -26,6 +27,7 @@ import com.yatsenko.imagepicker.utils.transition.TransitionEndHelper
 import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.utils.extensions.findViewHolderByAdapterPosition
+import com.yatsenko.imagepicker.utils.transition.CropperTransitionHelper
 import com.yatsenko.imagepicker.utils.transition.ViewerTransitionHelper
 import com.yatsenko.imagepicker.widgets.BackgroundView
 
@@ -93,6 +95,9 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                 AdapterResult.GoBack -> onBackPressed()
                 is AdapterResult.OnSelectImageClicked -> viewModel.selectMedia(it.media)
                 is AdapterResult.OnCropImageClicked -> {
+                    pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { viewHolder ->
+                        CropperTransitionHelper.put(it.media.id, viewHolder.endView as ImageView)
+                    }
                     viewModel.prepareAspectRatio(it.media as Media.Image)
                     router.openCropper(it.media)
                 }

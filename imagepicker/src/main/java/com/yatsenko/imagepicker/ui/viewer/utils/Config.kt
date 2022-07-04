@@ -12,7 +12,7 @@ object Config {
     var VIEWER_ORIENTATION: Int = ViewPager2.ORIENTATION_HORIZONTAL
     var viewBackgroundColor: Int = Color.BLACK
     var durationTransition: Long = 250L
-    var durationBg: Long = 150L
+    var durationBg: Long = 250L
     var subsamplingScaleType = SubsamplingScaleImageView.SCALE_TYPE_CENTER_INSIDE
     var isSwipeToDismiss: Boolean = true
     var swipeTouchSlop = 4f
