@@ -169,9 +169,7 @@ class CropDialogFragment : BaseDialogFragment() {
         }
 
         override fun fade(startView: View?) {
-            cropTransitionOverlay.animate()
-                .setDuration(200)
-                .alpha(1f).start()
+            cropTransitionOverlay.alpha = 1f
 
             crop.cropView.animate()
                 .setDuration(50)
@@ -226,10 +224,15 @@ class CropDialogFragment : BaseDialogFragment() {
         if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
             return
 
+        if (piCropFragment.args.forceOpenEditor)
+            background.changeToBackgroundColor(Color.TRANSPARENT)
+
         val startView = transitionHelper.provide(media.id)
-        background.changeToBackgroundColor(Color.TRANSPARENT)
         TransitionEndHelper.end(this, startView, transitionEnd) {
-            this.dismiss()
+            if (!piCropFragment.args.forceOpenEditor)
+                background.changeToBackgroundColor(Color.TRANSPARENT)
+
+            viewModel.onCropClosed()
         }
     }
 

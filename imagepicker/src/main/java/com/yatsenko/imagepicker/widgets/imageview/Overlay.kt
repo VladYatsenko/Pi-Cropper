@@ -37,7 +37,7 @@ class Overlay @JvmOverloads constructor(
 
     }
 
-    private var isOverlayVisible = true
+    private var isOverlayVisible = false
 
     private val back: ImageView
     private val checkbox: CheckBox2
@@ -53,9 +53,10 @@ class Overlay @JvmOverloads constructor(
 
     var data: Data? = null
         set(value) {
-            val shouldAnimate = value?.image?.shouldAnimate?.invoke(field?.image) == true
+            val checkboxAnimation = value?.image?.shouldAnimate?.invoke(field?.image) == true
+            val overlayAnimation = value?.image?.hideInViewer != field?.image?.hideInViewer
             field = value
-            refreshLayout(shouldAnimate)
+            refreshLayout(checkboxAnimation, overlayAnimation)
         }
 
     var result: (AdapterResult) -> Unit = {}
@@ -101,10 +102,10 @@ class Overlay @JvmOverloads constructor(
         bottom.applyMargin(bottom = context.navigationBarSize)
     }
 
-    private fun refreshLayout(shouldAnimate: Boolean = false) {
+    private fun refreshLayout(checkboxAnimation: Boolean = false, overlayAnimation: Boolean = false) {
         data?.let { data ->
             val media = data.image
-            checkbox.setChecked(media.indexInResult, media.isSelected, shouldAnimate)
+            checkbox.setChecked(media.indexInResult, media.isSelected, checkboxAnimation)
         }
         checkbox.isGone = data?.single == true
         doneFab.isVisible = data?.single == true
@@ -112,22 +113,34 @@ class Overlay @JvmOverloads constructor(
         info.text = data?.image?.let {
             "${it.width}x${it.height} • ${FileUtils.stringFileSize(it.size)}"
         }
+
+        if (overlayAnimation) {
+            if (data?.image?.hideInViewer == true) {
+                hide()
+            } else {
+                show()
+            }
+        }
     }
 
     fun show() {
-        isOverlayVisible = true
+        if (!isOverlayVisible) {
+            isOverlayVisible = true
 
-        this.animate()?.setDuration(500)?.alpha(1f)?.start()
-        top.slideDown((top.height + context.actionBarSize) * -1f, 0f, )
-        bottom.slideUp(bottom.height + context.navigationBarSize.toFloat(), 0f)
+            this.animate()?.setDuration(500)?.alpha(1f)?.start()
+            top.slideDown((top.height + context.actionBarSize) * -1f, 0f,)
+            bottom.slideUp(bottom.height + context.navigationBarSize.toFloat(), 0f)
+        }
     }
 
     fun hide() {
-        isOverlayVisible = false
+        if (isOverlayVisible) {
+            isOverlayVisible = false
 
-        this.animate()?.setDuration(200)?.alpha(0f)?.start()
-        top.slideUp(0f, (top.height + context.actionBarSize) * -1f)
-        bottom.slideDown(0f, bottom.height + context.navigationBarSize.toFloat())
+            this.animate()?.setDuration(200)?.alpha(0f)?.start()
+            top.slideUp(0f, (top.height + context.actionBarSize) * -1f)
+            bottom.slideDown(0f, bottom.height + context.navigationBarSize.toFloat())
+        }
     }
 
     data class Data(

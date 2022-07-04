@@ -92,6 +92,8 @@ class PickerViewModel(application: Application, private val arguments: Arguments
 
     private var fullscreenPosition: Int = -1
 
+    private var croppingMedia: Media.Image? = null
+
     private var ratioRawData: List<AspectRatioWrapper>
 
     private val _cropperState: MutableLiveData<CropperState> = MutableLiveData()
@@ -116,7 +118,7 @@ class PickerViewModel(application: Application, private val arguments: Arguments
                 )
                 changeFolder(rawData.first.first())
             } else {
-                refreshFolderImages(pickerStateData.selectedFolder)
+                refreshFolderImages()
             }
         }
     }
@@ -142,14 +144,14 @@ class PickerViewModel(application: Application, private val arguments: Arguments
         }
 
         rawData = Pair(rawData.first, rawData.second.mapIndexed(::remapSelectedImage))
-        refreshFolderImages(pickerStateData.selectedFolder)
+        refreshFolderImages()
         refreshOverlay()
         refreshViewer()
     }
 
     fun openFullscreen(position: Int) {
         fullscreenPosition = position
-        refreshFolderImages(pickerStateData.selectedFolder)
+        refreshFolderImages()
         refreshOverlay()
         refreshViewer()
     }
@@ -158,17 +160,21 @@ class PickerViewModel(application: Application, private val arguments: Arguments
         if (fullscreenPosition == position) return
 
         fullscreenPosition = position
-        refreshFolderImages(pickerStateData.selectedFolder)
+        refreshFolderImages()
         refreshOverlay()
     }
 
     fun onFullscreenClosed() {
         fullscreenPosition = -1
-        refreshFolderImages(pickerStateData.selectedFolder)
+        refreshFolderImages()
         refreshOverlay()
     }
 
     fun prepareAspectRatio(media: Media.Image) {
+        croppingMedia = media
+        refreshFolderImages()
+        refreshOverlay()
+
         ratioRawData = if (ratioRawData.isEmpty()) {
             listOf(AspectRatioWrapper(AspectRatio.Custom(1, 1), false))
         } else ratioRawData.map {
@@ -197,13 +203,19 @@ class PickerViewModel(application: Application, private val arguments: Arguments
             mutableList.removeAt(index)
             mutableList.add(index, updatedMedia)
             rawData = Pair(rawData.first, mutableList)
-            refreshFolderImages(pickerStateData.selectedFolder)
+            refreshFolderImages()
             refreshOverlay()
             refreshViewer()
         }
     }
 
-    private fun refreshFolderImages(folder: Folder) {
+    fun onCropClosed() {
+        croppingMedia = null
+        refreshFolderImages()
+        refreshOverlay()
+    }
+
+    private fun refreshFolderImages(folder: Folder = pickerStateData.selectedFolder) {
         val images = when (folder) {
             is Folder.All -> rawData.second
             is Folder.Common -> rawData.second.filter { it.folderId == folder.id }.distinctBy { it.lastModified }
@@ -229,14 +241,15 @@ class PickerViewModel(application: Application, private val arguments: Arguments
     private fun remapSelectedImage(index: Int, image: Media): Media {
         val indexInResult = _selectedImages.indexOfFirst { it.id == image.id }
         val inFullscreen = index == fullscreenPosition
+        val inCropping = image.id == croppingMedia?.id
 
-        return if (image.indexInResult == indexInResult && image.hideInGrid == inFullscreen)
+        return if (image.indexInResult == indexInResult && image.hideInGrid == inFullscreen && image.hideInViewer == inCropping)
             image
         else {
             return when (image) {
                 is Media.Image -> {
                     val croppedImage = if (indexInResult != -1) image.croppedImage else null
-                    image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen, croppedImage = croppedImage)
+                    image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen, hideInViewer = inCropping, croppedImage = croppedImage)
                 }
                 is Media.SubsamplingImage -> image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
                 is Media.Video -> image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)

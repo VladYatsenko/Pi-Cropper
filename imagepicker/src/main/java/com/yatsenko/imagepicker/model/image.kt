@@ -13,7 +13,8 @@ sealed class Media(
     open val size: Int,
     open val name: String,
     open val indexInResult: Int = -1,
-    open val hideInGrid: Boolean = false
+    open val hideInGrid: Boolean = false,
+    open val hideInViewer: Boolean = false
 ) : Serializable {
 
     open val mediaPath: String = path
@@ -36,7 +37,8 @@ sealed class Media(
         override val name: String,
         override val indexInResult: Int = -1,
         override val hideInGrid: Boolean = false,
-        val croppedImage: Image? = null
+        override val hideInViewer: Boolean = false,
+        val croppedImage: Image? = null,
     ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult, hideInGrid) {
 
         override val mediaPath: String
@@ -73,6 +75,7 @@ sealed class Media(
         override val name: String,
         override val indexInResult: Int = -1,
         override val hideInGrid: Boolean = false,
+        override val hideInViewer: Boolean = false,
         private val croppedImage: Image? = null
     ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult) {
 
@@ -93,6 +96,7 @@ sealed class Media(
         override val name: String,
         override val indexInResult: Int = -1,
         override val hideInGrid: Boolean = false,
+        override val hideInViewer: Boolean = false,
         private val editedPath: String? = null
     ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult) {
 

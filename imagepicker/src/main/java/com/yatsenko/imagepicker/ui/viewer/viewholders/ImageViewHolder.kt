@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.view.isInvisible
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
@@ -51,6 +52,7 @@ class ImageViewHolder(
     fun bind(data: Media.Image) {
         this.data = data
         ImageLoader.load(photoView, data)
+        photoView.isInvisible = data.hideInViewer
         vhCustomizer.bind(ITEM_TYPE, data, this)
     }
 
