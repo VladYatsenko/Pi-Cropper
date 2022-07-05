@@ -11,9 +11,6 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.ConstraintSet.TOP
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.yatsenko.imagepicker.R
@@ -26,7 +23,6 @@ import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.utils.ImageLoader
 import com.yatsenko.imagepicker.utils.extensions.*
-import com.yatsenko.imagepicker.utils.extensions.gone
 import com.yatsenko.imagepicker.utils.transition.*
 import com.yatsenko.imagepicker.widgets.BackgroundView
 import com.yatsenko.imagepicker.widgets.crop.CropToolsView
@@ -166,10 +162,14 @@ class CropDialogFragment : BaseDialogFragment() {
                     this.bottomToTop = UNSET
                 }
             }
+
+            viewModel.imageCropped()
         }
 
         override fun fade(startView: View?) {
-            cropTransitionOverlay.alpha = 1f
+            cropTransitionOverlay.animate()
+                .setDuration(100)
+                .alpha(1f).start()
 
             crop.cropView.animate()
                 .setDuration(50)
@@ -204,7 +204,7 @@ class CropDialogFragment : BaseDialogFragment() {
                     }
                     else -> {
                         cropTransitionOverlay.loadImage(result.media) { onBackPressed() }
-                        viewModel.imageCropped(media, result.media)
+                        viewModel.setCroppedImage(media, result.media)
                     }
                 }
             }

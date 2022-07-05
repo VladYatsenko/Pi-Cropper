@@ -93,6 +93,7 @@ class PickerViewModel(application: Application, private val arguments: Arguments
     private var fullscreenPosition: Int = -1
 
     private var croppingMedia: Media.Image? = null
+    private var croppedMedia: Media.Image? = null
 
     private var ratioRawData: List<AspectRatioWrapper>
 
@@ -193,28 +194,36 @@ class PickerViewModel(application: Application, private val arguments: Arguments
         return list.map { AspectRatioWrapper(it.ratio, it.ratio == item.ratio) }
     }
 
-    fun imageCropped(media: Media.Image, croppedImage: Media.Image) {
-        croppingMedia = null
-
-        val indexInResult = if (_selectedImages.isEmpty()) 0 else _selectedImages.size
-        val updatedMedia = media.copy(indexInResult = indexInResult, croppedImage = croppedImage)
-        _selectedImages.add(updatedMedia)
-        val index = rawData.second.indexOfFirst { it.id == media.id }
-        if (index != -1) {
-            val mutableList = rawData.second.toMutableList()
-            mutableList.removeAt(index)
-            mutableList.add(index, updatedMedia)
-            rawData = Pair(rawData.first, mutableList)
-            refreshFolderImages()
-            refreshOverlay()
-            refreshViewer()
-        }
+    fun setCroppedImage(media: Media.Image, croppedImage: Media.Image) {
+        this.croppingMedia = media
+        this.croppedMedia = croppedImage
     }
 
-    fun onCropClosed() {
+    fun imageCropped() {
+        if (croppedMedia != null) {
+            val indexInResult = if (_selectedImages.isEmpty()) 0 else _selectedImages.size
+            val updatedMedia = croppingMedia!!.copy(indexInResult = indexInResult, croppedImage = croppedMedia)
+            _selectedImages.add(updatedMedia)
+            val index = rawData.second.indexOfFirst { it.id == croppingMedia?.id }
+            if (index != -1) {
+                val mutableList = rawData.second.toMutableList()
+                mutableList.removeAt(index)
+                mutableList.add(index, updatedMedia)
+                rawData = Pair(rawData.first, mutableList)
+
+            }
+            croppedMedia = null
+        }
         croppingMedia = null
         refreshFolderImages()
         refreshOverlay()
+        refreshViewer()
+    }
+
+    fun onCropClosed() {
+//        croppingMedia = null
+//        refreshFolderImages()
+//        refreshOverlay()
     }
 
     private fun refreshFolderImages(folder: Folder = pickerStateData.selectedFolder) {
