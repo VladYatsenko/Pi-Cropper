@@ -24,4 +24,6 @@ interface Crop: LifecycleEventObserver {
 
     fun cancelCrop()
 
+    fun exitCrop(): Boolean
+
 }

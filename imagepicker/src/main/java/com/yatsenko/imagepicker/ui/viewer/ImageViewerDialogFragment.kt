@@ -186,11 +186,10 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
         if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
             return
 
-        val viewHolder = pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)
-        if (viewHolder?.resetScale() == true)
-            return
-
         pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { viewHolder ->
+            if (viewHolder.resetScale())
+                return
+
             exit(viewHolder, viewHolder.endView)
         }
     }

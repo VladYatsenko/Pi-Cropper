@@ -45,13 +45,19 @@ class UCropIml(
 
     private val outputFile = FileUtils.tempFile(context, ".jpg")
 
+    private var initScale = -1f
+    private var wasCropped = false
+
     init {
         gestureCropImageView.isRotateEnabled = false
 
         gestureCropImageView.setTransformImageListener(object : TransformImageListener {
             override fun onRotate(currentAngle: Float) = internalResult(AdapterResult.OnImageRotated(currentAngle))
 
-            override fun onScale(currentScale: Float) {}
+            override fun onScale(currentScale: Float) {
+                if (initScale == -1f)
+                    initScale = gestureCropImageView.currentScale
+            }
 
             override fun onLoadComplete() {
                 result(AdapterResult.OnCropImageLoaded)
@@ -110,6 +116,7 @@ class UCropIml(
             try {
                 gestureCropImageView.cropAndSaveImage(compressFormat, compressQuality, object : BitmapCropCallback {
                     override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
+                        wasCropped = true
                         val newMedia = Media.Image.croppedImage(outputFile, imageWidth, imageHeight)
                         internalResult(AdapterResult.OnImageCropped(newMedia))
                     }
@@ -126,6 +133,14 @@ class UCropIml(
 
     override fun cancelCrop() {
         cropJob?.cancel()
+    }
+
+    override fun exitCrop(): Boolean {
+        val value = (gestureCropImageView.currentScale != initScale || gestureCropImageView.currentAngle != 0f) && !wasCropped
+        onResetRotation()
+        gestureCropImageView.zoomOutImage(initScale)
+
+        return value
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {

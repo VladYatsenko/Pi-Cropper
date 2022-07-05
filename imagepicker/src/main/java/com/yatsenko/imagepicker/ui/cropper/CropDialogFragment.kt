@@ -203,10 +203,8 @@ class CropDialogFragment : BaseDialogFragment() {
                         piCropFragment.provideResultToTarget(result.media)
                     }
                     else -> {
+                        cropTransitionOverlay.loadImage(result.media) { onBackPressed() }
                         viewModel.imageCropped(media, result.media)
-                        cropTransitionOverlay.loadImage(result.media)
-                        cropTransitionOverlay.visible()
-                        onBackPressed()
                     }
                 }
             }
@@ -224,16 +222,18 @@ class CropDialogFragment : BaseDialogFragment() {
         if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
             return
 
-        if (piCropFragment.args.forceOpenEditor)
-            background.changeToBackgroundColor(Color.TRANSPARENT)
-
-        val startView = transitionHelper.provide(media.id)
-        TransitionEndHelper.end(this, startView, transitionEnd) {
-            if (!piCropFragment.args.forceOpenEditor)
+        background.postDelayed({
+            if (piCropFragment.args.forceOpenEditor)
                 background.changeToBackgroundColor(Color.TRANSPARENT)
 
-            viewModel.onCropClosed()
-        }
+            val startView = transitionHelper.provide(media.id)
+            TransitionEndHelper.end(this, startView, transitionEnd) {
+                viewModel.onCropClosed()
+
+                if (!piCropFragment.args.forceOpenEditor)
+                    background.changeToBackgroundColor(Color.TRANSPARENT)
+            }
+        }, if (crop.exitCrop()) 200 else 0)
     }
 
 }
