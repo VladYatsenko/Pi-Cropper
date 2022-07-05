@@ -148,6 +148,10 @@ class CropDialogFragment : BaseDialogFragment() {
             // photoView.alpha = startView?.alpha ?: 0f
             fade(startView)
             cropTransitionOverlay.layoutParams = cropTransitionOverlay.layoutParams.apply {
+                if (this is ConstraintLayout.LayoutParams) {
+                    this.bottomToTop = UNSET
+                }
+
                 width = startView?.width ?: width
                 height = startView?.height ?: height
                 val location = IntArray(2)
@@ -158,18 +162,13 @@ class CropDialogFragment : BaseDialogFragment() {
                     marginEnd = 0
                     bottomMargin = 0
                 }
-                if (this is ConstraintLayout.LayoutParams) {
-                    this.bottomToTop = UNSET
-                }
             }
 
             viewModel.imageCropped()
         }
 
         override fun fade(startView: View?) {
-            cropTransitionOverlay.animate()
-                .setDuration(100)
-                .alpha(1f).start()
+            cropTransitionOverlay.alpha = 1f
 
             crop.cropView.animate()
                 .setDuration(50)
@@ -203,7 +202,10 @@ class CropDialogFragment : BaseDialogFragment() {
                         piCropFragment.provideResultToTarget(result.media)
                     }
                     else -> {
-                        cropTransitionOverlay.loadImage(result.media) { onBackPressed() }
+                        cropTransitionOverlay.alpha = 1f
+                        cropTransitionOverlay.loadImage(result.media) {
+                            onBackPressed()
+                        }
                         viewModel.setCroppedImage(media, result.media)
                     }
                 }

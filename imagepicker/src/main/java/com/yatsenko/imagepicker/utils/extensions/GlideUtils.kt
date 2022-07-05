@@ -13,7 +13,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.yatsenko.imagepicker.model.Media
 
 
-fun ImageView.loadImage(image: Media?) {
+fun ImageView.loadImage(image: Media?, onLoadingFinished: () -> Unit = {}) {
     val requestOptions = RequestOptions()
         .skipMemoryCache(false)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -25,6 +25,7 @@ fun ImageView.loadImage(image: Media?) {
             target: Target<Drawable>?,
             isFirstResource: Boolean
         ): Boolean {
+            onLoadingFinished()
             return false
         }
 
@@ -36,6 +37,7 @@ fun ImageView.loadImage(image: Media?) {
             isFirstResource: Boolean
         ): Boolean {
             this@loadImage.setImageDrawable(resource)
+            onLoadingFinished()
             return false
         }
     }
@@ -48,39 +50,9 @@ fun ImageView.loadImage(image: Media?) {
         .into(this)
 }
 
-fun ImageView.loadImage(image: Media, onLoadingFinished: () -> Unit) {
-    val listener = object : RequestListener<Drawable> {
-        override fun onLoadFailed(
-            e: GlideException?,
-            model: Any?,
-            target: Target<Drawable>?,
-            isFirstResource: Boolean
-        ): Boolean {
-            onLoadingFinished()
-            return false
-        }
-
-        override fun onResourceReady(
-            resource: Drawable?,
-            model: Any?,
-            target: Target<Drawable>?,
-            dataSource: DataSource?,
-            isFirstResource: Boolean
-        ): Boolean {
-            this@loadImage.setImageDrawable(resource)
-            onLoadingFinished()
-            return false
-        }
-    }
-    Glide.with(this)
-        .load(image.mediaPath)
-        .apply(RequestOptions().dontTransform())
-        .listener(listener)
-        .into(this)
-}
-
 internal fun PhotoView.resetScale(animate: Boolean): Boolean {
     val canReset = scale != minimumScale
-    setScale(minimumScale, animate)
+    if (canReset)
+        setScale(minimumScale, animate)
     return canReset
 }
