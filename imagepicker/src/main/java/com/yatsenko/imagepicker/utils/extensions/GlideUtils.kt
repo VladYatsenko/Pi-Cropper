@@ -79,6 +79,8 @@ fun ImageView.loadImage(image: Media, onLoadingFinished: () -> Unit) {
         .into(this)
 }
 
-internal fun PhotoView.resetScale(animate: Boolean) {
+internal fun PhotoView.resetScale(animate: Boolean): Boolean {
+    val canReset = scale != minimumScale
     setScale(minimumScale, animate)
+    return canReset
 }

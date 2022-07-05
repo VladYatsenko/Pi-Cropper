@@ -16,4 +16,6 @@ abstract class FullscreenViewHolder(view: View): RecyclerView.ViewHolder(view), 
 
     abstract var endView: View
 
+    open fun resetScale(): Boolean = false
+
 }

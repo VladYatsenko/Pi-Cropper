@@ -11,6 +11,7 @@ import com.yatsenko.imagepicker.ui.viewer.adapter.ImageViewerAdapterListener
 import com.yatsenko.imagepicker.utils.ImageLoader
 import com.yatsenko.imagepicker.ui.viewer.utils.VHCustomizer
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
+import com.yatsenko.imagepicker.utils.extensions.resetScale
 import com.yatsenko.imagepicker.utils.transition.TransitionEndHelper
 import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.imageview.PhotoView2
@@ -54,6 +55,10 @@ class ImageViewHolder(
         ImageLoader.load(photoView, data)
         photoView.isInvisible = data.hideInViewer
         vhCustomizer.bind(ITEM_TYPE, data, this)
+    }
+
+    override fun resetScale(): Boolean {
+        return photoView.resetScale(true)
     }
 
     override fun afterTransitionStart() {

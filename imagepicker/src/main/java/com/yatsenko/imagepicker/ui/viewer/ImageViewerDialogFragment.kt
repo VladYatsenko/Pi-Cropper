@@ -97,9 +97,12 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                 is AdapterResult.OnCropImageClicked -> {
                     pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { viewHolder ->
                         CropperTransitionHelper.put(it.media.id, viewHolder.endView as ImageView)
+                        viewHolder.resetScale()
                     }
-                    viewModel.prepareAspectRatio(it.media as Media.Image)
-                    router.openCropper(it.media)
+                    pager.postDelayed({
+                        viewModel.prepareAspectRatio(it.media as Media.Image)
+                        router.openCropper(it.media)
+                    }, 200)
                 }
             }
         }
@@ -181,6 +184,10 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     override fun onBackPressed() {
         if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
+            return
+
+        val viewHolder = pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)
+        if (viewHolder?.resetScale() == true)
             return
 
         pager.findViewHolderByAdapterPosition<FullscreenViewHolder>(pager.currentItem)?.let { viewHolder ->
