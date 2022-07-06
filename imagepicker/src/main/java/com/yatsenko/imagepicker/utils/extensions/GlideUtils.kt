@@ -13,10 +13,43 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.yatsenko.imagepicker.model.Media
 
 
-fun ImageView.loadImage(image: Media?, onLoadingFinished: () -> Unit = {}) {
+fun ImageView.loadImage(image: Media?) {
     val requestOptions = RequestOptions()
         .skipMemoryCache(false)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .dontAnimate()
+    val listener = object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>?,
+            isFirstResource: Boolean
+        ): Boolean {
+            return false
+        }
+
+        override fun onResourceReady(
+            resource: Drawable?,
+            model: Any?,
+            target: Target<Drawable>?,
+            dataSource: DataSource?,
+            isFirstResource: Boolean
+        ): Boolean {
+            this@loadImage.setImageDrawable(resource)
+            return false
+        }
+    }
+    Glide.with(this)
+        .load(image?.mediaPath)
+        .apply(requestOptions)
+        .listener(listener)
+        .thumbnail(0.2f)
+        .dontTransform()
+        .into(this)
+}
+
+fun ImageView.loadImage(image: Media?, onLoadingFinished: () -> Unit = {}) {
+    val requestOptions = RequestOptions()
         .dontAnimate()
     val listener = object : RequestListener<Drawable> {
         override fun onLoadFailed(
@@ -45,8 +78,7 @@ fun ImageView.loadImage(image: Media?, onLoadingFinished: () -> Unit = {}) {
         .load(image?.mediaPath)
         .apply(requestOptions)
         .listener(listener)
-        .thumbnail(0.2f)
-        .dontTransform()
+        .fitCenter()
         .into(this)
 }
 

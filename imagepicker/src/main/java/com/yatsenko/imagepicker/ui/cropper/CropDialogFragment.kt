@@ -3,6 +3,8 @@ package com.yatsenko.imagepicker.ui.cropper
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +24,10 @@ import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.ui.viewer.utils.Config
 import com.yatsenko.imagepicker.utils.ImageLoader
-import com.yatsenko.imagepicker.utils.extensions.*
+import com.yatsenko.imagepicker.utils.extensions.dpToPxInt
+import com.yatsenko.imagepicker.utils.extensions.invisible
+import com.yatsenko.imagepicker.utils.extensions.loadImage
+import com.yatsenko.imagepicker.utils.extensions.visible
 import com.yatsenko.imagepicker.utils.transition.*
 import com.yatsenko.imagepicker.widgets.BackgroundView
 import com.yatsenko.imagepicker.widgets.crop.CropToolsView
@@ -58,6 +63,20 @@ class CropDialogFragment : BaseDialogFragment() {
         ownerProducer = ::requireParentFragment,
         factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
     )
+
+    private val exitHandler = Handler(Looper.getMainLooper())
+    private val exitRunnable = Runnable {
+        if (piCropFragment.args.forceOpenEditor)
+            background.changeToBackgroundColor(Color.TRANSPARENT)
+
+        val startView = transitionHelper.provide(media.id)
+        TransitionEndHelper.end(this, startView, transitionEnd) {
+            viewModel.onCropClosed()
+
+            if (!piCropFragment.args.forceOpenEditor)
+                background.changeToBackgroundColor(Color.TRANSPARENT)
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
@@ -150,10 +169,17 @@ class CropDialogFragment : BaseDialogFragment() {
             cropTransitionOverlay.layoutParams = cropTransitionOverlay.layoutParams.apply {
                 if (this is ConstraintLayout.LayoutParams) {
                     this.bottomToTop = UNSET
+
+                    if (piCropFragment.args.forceOpenEditor) {
+                        width = startView?.width ?: width
+                        height = startView?.height ?: height
+                    } else {
+                        this.startToStart = PARENT_ID
+                        this.endToEnd = PARENT_ID
+                        this.bottomToBottom = PARENT_ID
+                    }
                 }
 
-                width = startView?.width ?: width
-                height = startView?.height ?: height
                 val location = IntArray(2)
                 TransitionEndHelper.getLocationOnScreen(startView, location)
                 if (this is ViewGroup.MarginLayoutParams) {
@@ -203,9 +229,7 @@ class CropDialogFragment : BaseDialogFragment() {
                     }
                     else -> {
                         cropTransitionOverlay.alpha = 1f
-                        cropTransitionOverlay.loadImage(result.media) {
-                            onBackPressed()
-                        }
+                        cropTransitionOverlay.loadImage(result.media, ::onBackPressed)
                         viewModel.setCroppedImage(media, result.media)
                     }
                 }
@@ -224,18 +248,10 @@ class CropDialogFragment : BaseDialogFragment() {
         if (TransitionStartHelper.transitionAnimating || TransitionEndHelper.transitionAnimating)
             return
 
-        background.postDelayed({
-            if (piCropFragment.args.forceOpenEditor)
-                background.changeToBackgroundColor(Color.TRANSPARENT)
+        if (exitHandler.hasCallbacks(exitRunnable))
+            return
 
-            val startView = transitionHelper.provide(media.id)
-            TransitionEndHelper.end(this, startView, transitionEnd) {
-                viewModel.onCropClosed()
-
-                if (!piCropFragment.args.forceOpenEditor)
-                    background.changeToBackgroundColor(Color.TRANSPARENT)
-            }
-        }, if (crop.exitCrop()) 200 else 0)
+        exitHandler.postDelayed(exitRunnable, if (crop.exitCrop()) 200 else 0)
     }
 
 }
