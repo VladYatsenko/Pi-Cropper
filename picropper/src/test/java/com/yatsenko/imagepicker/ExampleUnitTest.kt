@@ -1,4 +1,4 @@
-package com.yatsenko.picropperdemo
+package com.yatsenko.picropper
 
 import org.junit.Test
 

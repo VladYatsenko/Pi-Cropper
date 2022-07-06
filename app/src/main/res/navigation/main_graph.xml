@@ -6,12 +6,12 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.yatsenko.imagepickerdemo.HomeFragment"
+        android:name="com.yatsenko.picropperdemo.HomeFragment"
         android:label="HomeFragment" />
 
     <fragment
         android:id="@+id/piCropperFragment"
-        android:name="com.yatsenko.imagepicker.ui.PiCropperFragment"
+        android:name="com.yatsenko.picropper.ui.PiCropperFragment"
         android:label="PiCropperFragment" />
 
 

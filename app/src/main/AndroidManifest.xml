@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.yatsenko.imagepickerdemo">
+    package="com.yatsenko.imagepicker">
 
     <application
         android:allowBackup="true"
@@ -9,18 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/DemoTheme">
-        <activity android:name="com.yatsenko.imagepickerdemo.DemoActivity"
-            android:screenOrientation="portrait">
+        <activity android:name="com.yatsenko.imagepicker.DemoActivity"
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.yatsenko.imagepicker.ui.PiCropperActivity"
-            android:screenOrientation="portrait"
-            android:exported="true" />
     </application>
 
 </manifest>
