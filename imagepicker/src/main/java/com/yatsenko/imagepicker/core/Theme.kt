@@ -38,6 +38,9 @@ object Theme {
         toolbarColor to R.color.ebony_clay,
         toolbarContentColor to R.color.white,
 
+        statusBarColor to R.color.mirage,
+        navigationBarColor to R.color.mirage,
+
         gridBackgroundColor to R.color.mirage,
 
         toolsColor to R.color.white,

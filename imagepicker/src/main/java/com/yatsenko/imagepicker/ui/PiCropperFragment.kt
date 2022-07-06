@@ -15,6 +15,8 @@ import com.yatsenko.imagepicker.ui.abstraction.BaseFragment
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
 import com.yatsenko.imagepicker.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.imagepicker.utils.Router
+import com.yatsenko.imagepicker.utils.extensions.setupActionBar
+import com.yatsenko.imagepicker.utils.extensions.setupBottomBar
 
 class PiCropperFragment : BaseFragment() {
 
@@ -69,6 +71,14 @@ class PiCropperFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         router.openPicker()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().apply {
+            setupActionBar()
+            setupBottomBar()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
