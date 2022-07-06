@@ -1,12 +1,15 @@
 package com.yatsenko.imagepicker.widgets.imageview
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -83,16 +86,18 @@ class Overlay @JvmOverloads constructor(
             result(AdapterResult.GoBack)
         }
         crop.setOnClickListener {
-            data?.image?.let {
-                result(AdapterResult.OnCropImageClicked(it))
-            }
+            val image = data?.image ?: return@setOnClickListener
+            val hasCroppedImage = (image as? Media.Image)?.hasCroppedImage ?: false
+            if (!hasCroppedImage)
+                result(AdapterResult.OnCropImageClicked(image))
         }
         brush.setOnClickListener {}
 
         doneFab = findViewById(R.id.doneFab)
         doneFab.applyTheming()
         doneFab.setOnClickListener {
-
+            val image = data?.image ?: return@setOnClickListener
+            result(AdapterResult.OnProvideImageClicked(image))
         }
     }
 
@@ -113,6 +118,9 @@ class Overlay @JvmOverloads constructor(
         info.text = data?.image?.let {
             "${it.width}x${it.height} • ${FileUtils.stringFileSize(it.size)}"
         }
+
+        val hasCroppedImage = (data?.image as? Media.Image)?.hasCroppedImage == true
+        crop.imageTintList = ColorStateList.valueOf(if (hasCroppedImage) ContextCompat.getColor(context, R.color.silver_chalice) else Color.WHITE)
 
         if (overlayAnimation) {
             if (data?.image?.hideInViewer == true) {

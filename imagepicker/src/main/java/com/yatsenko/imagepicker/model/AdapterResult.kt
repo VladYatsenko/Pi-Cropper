@@ -10,7 +10,8 @@ sealed class AdapterResult {
 
     data class OnSelectImageClicked(val media: Media): AdapterResult()
     data class OnImageClicked(val view: ImageView, val media: Media, val position: Int) : AdapterResult()
-    class OnCropImageClicked(val media: Media) : AdapterResult()
+    data class OnCropImageClicked(val media: Media) : AdapterResult()
+    data class OnProvideImageClicked(val media: Media) : AdapterResult()
 
     //crop
     data class OnAspectRatioClicked(val item: AspectRatioWrapper) : AdapterResult()

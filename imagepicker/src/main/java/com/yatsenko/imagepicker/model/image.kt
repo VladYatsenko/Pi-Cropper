@@ -41,6 +41,9 @@ sealed class Media(
         val croppedImage: Image? = null,
     ) : Media(id, path, lastModified, folderId, width, height, size, name, indexInResult, hideInGrid) {
 
+        val hasCroppedImage: Boolean
+            get() = croppedImage != null
+
         override val mediaPath: String
             get() = croppedImage?.path ?: path
 

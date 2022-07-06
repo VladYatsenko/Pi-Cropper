@@ -104,6 +104,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
                         router.openCropper(it.media)
                     }, 200)
                 }
+                is AdapterResult.OnProvideImageClicked -> piCropFragment.provideResultToTarget(it.media)
             }
         }
         overlayView.addView(overlayHelper.provideView(overlayView))
