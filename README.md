@@ -1,4 +1,4 @@
-# piCropper 
+# Pi-Cropper 
 Android library, which helps to pick images from a device and crops them
 
 # Preview 
