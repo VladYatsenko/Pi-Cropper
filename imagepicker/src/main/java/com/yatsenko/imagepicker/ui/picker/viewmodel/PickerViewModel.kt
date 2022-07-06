@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class PickerViewModel(application: Application, private val arguments: Arguments) : AndroidViewModel(application) {
+internal class PickerViewModel(application: Application, private val arguments: Arguments) : AndroidViewModel(application) {
 
     private val imageReader by lazy { ImageReaderContract(application) }
 

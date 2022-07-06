@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
 
-class ImageGripAdapter(
+internal class ImageGripAdapter(
     private val single: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

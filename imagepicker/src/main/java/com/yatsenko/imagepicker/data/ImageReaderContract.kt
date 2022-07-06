@@ -12,7 +12,7 @@ import com.yatsenko.imagepicker.model.Folder
 import com.yatsenko.imagepicker.model.Media
 import java.util.*
 
-class ImageReaderContract(private val context: Context) {
+internal class ImageReaderContract(private val context: Context) {
 
     private val columns = arrayOf(
         BaseColumns._ID,

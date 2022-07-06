@@ -10,7 +10,7 @@ import com.yatsenko.imagepicker.utils.Router
 
 abstract class BaseChildFragment : Fragment() {
 
-    val router: Router
+    internal val router: Router
         get() = (parentFragment as PiCropperFragment).router
 
     protected val piCropFragment: PiCropperFragment

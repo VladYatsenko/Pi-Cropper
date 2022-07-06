@@ -13,7 +13,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.yatsenko.imagepicker.model.Media
 
 
-fun ImageView.loadImage(image: Media?) {
+internal fun ImageView.loadImage(image: Media?) {
     val requestOptions = RequestOptions()
         .skipMemoryCache(false)
         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -48,7 +48,7 @@ fun ImageView.loadImage(image: Media?) {
         .into(this)
 }
 
-fun ImageView.loadImage(image: Media?, onLoadingFinished: () -> Unit = {}) {
+internal fun ImageView.loadImage(image: Media?, onLoadingFinished: () -> Unit = {}) {
     val requestOptions = RequestOptions()
         .dontAnimate()
     val listener = object : RequestListener<Drawable> {

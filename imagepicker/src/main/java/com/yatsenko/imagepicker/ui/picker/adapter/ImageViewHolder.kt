@@ -22,7 +22,7 @@ import com.yatsenko.imagepicker.utils.extensions.loadImage
 import com.yatsenko.imagepicker.widgets.checkbox.CheckBoxGrid
 
 
-class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+internal class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val VIEW_TYPE = R.layout.item_image

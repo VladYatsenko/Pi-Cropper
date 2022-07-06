@@ -5,7 +5,7 @@ import android.net.Uri
 import java.io.File
 import java.text.DecimalFormat
 
-object FileUtils {
+internal object FileUtils {
 
     fun stringFileSize(size: Int): String {
         val df = DecimalFormat("0.00")

@@ -22,7 +22,7 @@ private val callback = object : DiffUtil.ItemCallback<Media>() {
 
 }
 
-class ImageViewerAdapter(
+internal class ImageViewerAdapter(
     initKey: String,
     private val vhCustomizer: VHCustomizer,
 ) : PagedListAdapter<Media, FullscreenViewHolder>(callback) {

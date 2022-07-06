@@ -14,6 +14,7 @@ import com.yalantis.ucrop.view.TransformImageView.TransformImageListener
 import com.yalantis.ucrop.view.UCropView
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.AdapterResult
+import com.yatsenko.imagepicker.model.Arguments
 import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.extensions.FileUtils
@@ -23,9 +24,10 @@ import kotlinx.android.synthetic.main.layout_crop_tools.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class UCropIml(
+internal class UCropIml(
     private val context: Context,
     private val inputUri: Uri,
+    arguments: Arguments,
     private val result: (AdapterResult) -> Unit) : Crop {
 
     private val scope = CoroutineScope(Job() + Dispatchers.Main)
@@ -40,17 +42,17 @@ class UCropIml(
     private val gestureCropImageView = cropView.cropImageView
     private val overlayView = cropView.overlayView
 
-    private val compressFormat = Bitmap.CompressFormat.JPEG
-    private val compressQuality = 80
+    private val compressFormat = arguments.bitmapCompressFormat
+    private val compressQuality = arguments.quality
 
-    private val outputFile = FileUtils.tempFile(context, ".jpg")
+    private val outputFile = FileUtils.tempFile(context, arguments.compressFormatExtension)
 
     private var initScale = -1f
     private var wasCropped = false
 
     init {
         gestureCropImageView.isRotateEnabled = false
-
+        overlayView.setCircleDimmedLayer(arguments.circleCrop)
         gestureCropImageView.setTransformImageListener(object : TransformImageListener {
             override fun onRotate(currentAngle: Float) = internalResult(AdapterResult.OnImageRotated(currentAngle))
 

@@ -3,7 +3,7 @@ package com.yatsenko.imagepicker.utils.extensions
 import android.view.View
 import android.view.animation.TranslateAnimation
 
-object Animations {
+internal object Animations {
 
 
     // slide the view from below itself to the current position

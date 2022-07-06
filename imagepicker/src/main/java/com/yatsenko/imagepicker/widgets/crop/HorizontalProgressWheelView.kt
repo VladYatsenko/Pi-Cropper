@@ -19,15 +19,7 @@ class HorizontalProgressWheelView @JvmOverloads constructor(
 ) : View(context, attrs) {
 
     private val accentColor = ContextCompat.getColor(context, Theme.themedColor(Theme.accentColor))
-    private val accentColorList = ColorStateList.valueOf(accentColor)
     private val toolsColor = ContextCompat.getColor(context, Theme.themedColor(Theme.toolsColor))
-
-//    var middleLineColor = ContextCompat.getColor(context, R.color.cerulean)
-//        set(value) {
-//            field = value
-//            progressMiddleLinePaint.color = value
-//            invalidate()
-//        }
 
     private val canvasClipBounds = Rect()
 

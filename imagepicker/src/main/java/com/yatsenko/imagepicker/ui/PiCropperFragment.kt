@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.model.Arguments
 import com.yatsenko.imagepicker.model.AspectRatio
+import com.yatsenko.imagepicker.model.CompressFormat
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.abstraction.BaseFragment
 import com.yatsenko.imagepicker.ui.picker.viewmodel.PickerViewModel
@@ -27,6 +28,8 @@ class PiCropperFragment : BaseFragment() {
         internal const val ALL_IMAGES_FOLDER = "ALL_IMAGES_FOLDER"
         internal const val CIRCLE_CROP = "CIRCLE_CROP"
         internal const val FORCE_OPEN_EDITOR = "FORCE_OPEN_EDITOR"
+        internal const val QUALITY = "QUALITY"
+        internal const val COMPRESS_FORMAT = "COMPRESS_FORMAT"
 
         const val INTENT_PiCROPPER_RESULT = "intent_picropper_result"
         const val PiCROPPER_RESULT = "picropper_result"
@@ -34,17 +37,21 @@ class PiCropperFragment : BaseFragment() {
 
         fun prepareOptions(
             aspectRatio: List<AspectRatio> = AspectRatio.defaultList,
-            collectCount: Int = 10,
             allImagesFolder: String? = null,
+            collectCount: Int = 10,
+            forceOpenEditor: Boolean = false,
             circleCrop: Boolean = false,
-            forceOpenEditor: Boolean = false
+            quality: Int = 80,
+            compressFormat: CompressFormat = CompressFormat.JPEG
         ): Bundle {
             return Bundle().apply {
                 putParcelableArrayList(ASPECT_RATIO, ArrayList(aspectRatio))
-                putInt(COLLECT_COUNT, collectCount)
                 putString(ALL_IMAGES_FOLDER, allImagesFolder)
+                putInt(COLLECT_COUNT, collectCount)
                 putBoolean(CIRCLE_CROP, circleCrop)
                 putBoolean(FORCE_OPEN_EDITOR, forceOpenEditor)
+                putInt(QUALITY, quality)
+                putParcelable(COMPRESS_FORMAT, compressFormat)
             }
         }
 
@@ -53,14 +60,15 @@ class PiCropperFragment : BaseFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_picropper
 
-    val router by lazy { Router(R.id.container, childFragmentManager) }
+    internal val router by lazy { Router(R.id.container, childFragmentManager) }
 
-    val args by lazy { Arguments(
+    internal val args by lazy { Arguments(
         aspectRatioList = (requireArguments().getParcelableArrayList<AspectRatio>(ASPECT_RATIO) as? List<AspectRatio>) ?: AspectRatio.defaultList,
-        collectCount = requireArguments().getInt(COLLECT_COUNT, 1),
-        circleCrop = requireArguments().getBoolean(CIRCLE_CROP, false),
         allImagesFolder = requireArguments().getString(ALL_IMAGES_FOLDER, getString(R.string.all_image_folder)),
-        quality = 80,
+        collectCount = requireArguments().getInt(COLLECT_COUNT, 10),
+        circleCrop = requireArguments().getBoolean(CIRCLE_CROP, false),
+        quality = requireArguments().getInt(QUALITY, 80),
+        compressFormat = requireArguments().getParcelable<CompressFormat>(COMPRESS_FORMAT) ?: CompressFormat.JPEG,
         shouldForceOpenEditor = requireArguments().getBoolean(FORCE_OPEN_EDITOR, false)
     ) }
 
@@ -90,23 +98,19 @@ class PiCropperFragment : BaseFragment() {
                     router.canGoBack -> router.goBack()
                     else -> {
                         isEnabled = false
-                        if (requireActivity() is PiCropperActivity) {
-                            requireActivity().finish()
-                        } else {
-                            router.clearBackStack()
-                            requireActivity().onBackPressed()
-                        }
+                        router.clearBackStack()
+                        requireActivity().onBackPressed()
                     }
                 }
             }
         })
     }
 
-    fun provideResultToTarget() {
+    internal fun provideResultToTarget() {
         sendResult(viewModel.selectedImages)
     }
 
-    fun provideResultToTarget(media: Media) {
+    internal fun provideResultToTarget(media: Media) {
         sendResult(listOf(media))
     }
 
@@ -115,16 +119,8 @@ class PiCropperFragment : BaseFragment() {
             putStringArrayList(RESULT_MEDIA, ArrayList(list.map { it.mediaPath }))
         }
 
-        if (requireActivity() is PiCropperActivity) {
-            val resultIntent = Intent()
-            resultIntent.putExtra(INTENT_PiCROPPER_RESULT, bundle)
-            requireActivity().setResult(Activity.RESULT_OK, resultIntent)
-            requireActivity().finish()
-        } else {
-            setFragmentResult(PiCROPPER_RESULT, bundle)
-            requireActivity().onBackPressed()
-        }
-
+        setFragmentResult(PiCROPPER_RESULT, bundle)
+        requireActivity().onBackPressed()
     }
 
 }

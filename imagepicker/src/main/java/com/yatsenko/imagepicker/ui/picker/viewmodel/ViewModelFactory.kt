@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.yatsenko.imagepicker.model.Arguments
 import com.yatsenko.imagepicker.ui.PiCropperFragment
 
-class ViewModelFactory(
+internal class ViewModelFactory(
     private val application: Application,
     private val arguments: Arguments
 ) : ViewModelProvider.AndroidViewModelFactory(application) {

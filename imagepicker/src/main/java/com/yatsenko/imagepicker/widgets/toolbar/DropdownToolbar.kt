@@ -17,7 +17,7 @@ import com.yatsenko.imagepicker.model.Folder
 import com.yatsenko.imagepicker.ui.picker.adapter.HeaderStockOverviewAdapter
 import com.yatsenko.imagepicker.utils.extensions.dpToPx
 
-class DropdownToolbar @JvmOverloads constructor(
+internal class DropdownToolbar @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
@@ -26,7 +26,7 @@ class DropdownToolbar @JvmOverloads constructor(
     private val toolbar: Toolbar
     private val spinner: Spinner
 
-    var data: Data? = null
+    internal var data: Data? = null
         set(value) {
             field = value
             refreshLayout()
@@ -35,7 +35,7 @@ class DropdownToolbar @JvmOverloads constructor(
     private val folders: List<Folder>
         get() = data?.folders ?: emptyList()
 
-    var result: (AdapterResult) -> Unit = {}
+    internal var result: (AdapterResult) -> Unit = {}
 
     private val folderAdapter: HeaderStockOverviewAdapter
         get() = HeaderStockOverviewAdapter(context, objects = folders)
@@ -70,7 +70,7 @@ class DropdownToolbar @JvmOverloads constructor(
         spinner.setSelection(folders.indexOf(currentFolder))
     }
 
-    data class Data(
+    internal data class Data(
         val currentFolder: Folder,
         val folders: List<Folder>
     )

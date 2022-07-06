@@ -12,7 +12,7 @@ import com.yatsenko.imagepicker.R
 import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.Folder
 
-class HeaderStockOverviewAdapter(
+internal class HeaderStockOverviewAdapter(
     context: Context,
     @LayoutRes
     resource: Int = R.layout.item_folder,

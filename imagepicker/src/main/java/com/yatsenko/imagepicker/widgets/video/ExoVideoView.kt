@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.video.VideoSize
 import kotlin.math.min
 
-open class ExoVideoView @JvmOverloads constructor(
+internal open class ExoVideoView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

@@ -49,7 +49,7 @@ class CropToolsView @JvmOverloads constructor(
 
     private val adapter = AspectRatioAdapter()
 
-    var data: Data? = null
+    internal var data: Data? = null
         set(value) {
             field = value
             refreshLayout()
@@ -61,7 +61,7 @@ class CropToolsView @JvmOverloads constructor(
             rotate.text = String.format(Locale.getDefault(), "%.1f°", value)
         }
 
-    var result: (AdapterResult) -> Unit = {}
+    internal var result: (AdapterResult) -> Unit = {}
     private val internalResult: (AdapterResult) -> Unit = { result(it) }
 
     init {
@@ -149,7 +149,7 @@ class CropToolsView @JvmOverloads constructor(
         this.slideDown(0f, this.height.toFloat())
     }
 
-    data class Data(
+    internal data class Data(
         val aspectRatioList: List<AspectRatioWrapper>
     )
 

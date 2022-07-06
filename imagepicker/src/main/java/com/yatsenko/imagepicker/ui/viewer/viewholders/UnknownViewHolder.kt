@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.yatsenko.imagepicker.model.Media
 
-class UnknownViewHolder(view: View) : FullscreenViewHolder(view) {
+internal class UnknownViewHolder(view: View) : FullscreenViewHolder(view) {
 
     companion object {
         fun create(parent: ViewGroup) = UnknownViewHolder(View(parent.context))

@@ -1,10 +1,8 @@
 package com.yatsenko.imagepicker.model
 
-import android.content.Context
 import android.os.Parcelable
 import androidx.annotation.IntRange
 import kotlinx.android.parcel.Parcelize
-import java.io.Serializable
 import java.util.*
 
 sealed class AspectRatio(
@@ -25,7 +23,7 @@ sealed class AspectRatio(
             Custom(9, 16)
         )
 
-        fun remapOriginal(ratio: AspectRatio, media: Media): AspectRatio {
+        internal fun remapOriginal(ratio: AspectRatio, media: Media): AspectRatio {
             return if (ratio is Original) {
                 val factor = greatestCommonFactor(media.width, media.height)
                 val widthRatio: Int = media.width / factor

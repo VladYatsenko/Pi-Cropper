@@ -12,7 +12,7 @@ import com.yatsenko.imagepicker.utils.transition.TransitionEndHelper
 import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.imageview.SubsamplingScaleImageView2
 
-class SubsamplingViewHolder(view: View, callback: ImageViewerAdapterListener) : FullscreenViewHolder(view) {
+internal class SubsamplingViewHolder(view: View, callback: ImageViewerAdapterListener) : FullscreenViewHolder(view) {
 
     companion object {
         val ITEM_TYPE: Int = R.layout.item_imageviewer_subsampling

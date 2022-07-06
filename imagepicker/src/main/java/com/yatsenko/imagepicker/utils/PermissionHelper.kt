@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment
 import com.yatsenko.imagepicker.R
 import java.util.ArrayList
 
-class PermissionHelper(
+internal class PermissionHelper(
     private val fragment: Fragment,
     private val onPermissionGranted: () -> Unit
 ) {

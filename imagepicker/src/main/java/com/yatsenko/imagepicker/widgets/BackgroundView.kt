@@ -9,7 +9,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.yatsenko.imagepicker.ui.viewer.utils.Config.durationBg
 
-class BackgroundView @JvmOverloads constructor(
+internal class BackgroundView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs) {

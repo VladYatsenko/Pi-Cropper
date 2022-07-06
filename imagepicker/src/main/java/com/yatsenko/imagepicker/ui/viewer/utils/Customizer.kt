@@ -11,12 +11,12 @@ interface OverlayCustomizer {
     fun provideView(parent: ViewGroup): View? = null
 }
 
-interface VHCustomizer {
+internal interface VHCustomizer {
     fun initialize(type: Int, viewHolder: RecyclerView.ViewHolder) {}
     fun bind(type: Int, data: Media, viewHolder: RecyclerView.ViewHolder) {}
 }
 
-interface ViewerCallback : ImageViewerAdapterListener {
+internal interface ViewerCallback : ImageViewerAdapterListener {
     override fun onInit(viewHolder: FullscreenViewHolder) {}
     override fun onDrag(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {}
     override fun onRestore(viewHolder: FullscreenViewHolder, view: View, fraction: Float) {}

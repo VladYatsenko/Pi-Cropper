@@ -11,11 +11,11 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yatsenko.imagepicker.core.Theme
 
-fun dpToPx(@Dimension(unit = Dimension.DP) dp: Int): Float {
+internal fun dpToPx(@Dimension(unit = Dimension.DP) dp: Int): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), Resources.getSystem().displayMetrics)
 }
 
-fun dpToPxInt(@Dimension(unit = Dimension.DP) dp: Float): Int {
+internal fun dpToPxInt(@Dimension(unit = Dimension.DP) dp: Float): Int {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().displayMetrics).toInt()
 }
 
@@ -47,15 +47,15 @@ internal fun View.applyMargin(
     }
 }
 
-fun FloatingActionButton.applyTheming() {
+internal fun FloatingActionButton.applyTheming() {
     this.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, Theme.themedColor(Theme.accentColor)))
     this.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, Theme.themedColor(Theme.accentDualColor)))
 }
 
-val Context.actionBarSize: Int
+internal val Context.actionBarSize: Int
     get() = this.sizeByIdentifier("status_bar_height")
 
-val Context.navigationBarSize: Int
+internal val Context.navigationBarSize: Int
     get() = this.sizeByIdentifier("navigation_bar_height")
 
 private fun Context.sizeByIdentifier(name: String): Int {

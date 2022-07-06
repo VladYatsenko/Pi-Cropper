@@ -7,7 +7,7 @@ import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.viewer.viewholders.FullscreenViewHolder
 import com.yatsenko.imagepicker.widgets.imageview.Overlay
 
-class OverlayHelper (private val single: Boolean): VHCustomizer, OverlayCustomizer, ViewerCallback {
+internal class OverlayHelper (private val single: Boolean): VHCustomizer, OverlayCustomizer, ViewerCallback {
 
     private var overlayView: Overlay? = null
     var adapterResult: (AdapterResult) -> Unit = {}

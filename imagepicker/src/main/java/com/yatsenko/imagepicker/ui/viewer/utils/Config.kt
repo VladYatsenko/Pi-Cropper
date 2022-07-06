@@ -6,7 +6,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 
 //internal var Loader = object: MediaLoader {}
 
-object Config {
+internal object Config {
     var isDebug: Boolean = true
     var offscreenPageLimit: Int = 3
     var VIEWER_ORIENTATION: Int = ViewPager2.ORIENTATION_HORIZONTAL

@@ -14,7 +14,7 @@ import com.yatsenko.imagepicker.utils.Router
 
 open class BaseDialogFragment : DialogFragment() {
 
-    protected val router: Router
+    internal val router: Router
         get() = (requireParentFragment() as PiCropperFragment).router
 
     protected val piCropFragment: PiCropperFragment

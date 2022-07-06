@@ -32,7 +32,7 @@ import com.yatsenko.imagepicker.utils.transition.*
 import com.yatsenko.imagepicker.widgets.BackgroundView
 import com.yatsenko.imagepicker.widgets.crop.CropToolsView
 
-class CropDialogFragment : BaseDialogFragment() {
+internal class CropDialogFragment : BaseDialogFragment() {
 
     companion object {
         private const val CROP_URL = "crop_url"
@@ -47,9 +47,11 @@ class CropDialogFragment : BaseDialogFragment() {
     }
 
     private val media by lazy { requireArguments().getSerializable(CROP_URL) as Media.Image }
-    private val crop by lazy { UCropIml(requireContext(), Uri.parse(media.path), ::handleResult).also {
-        lifecycle.addObserver(it)
-    } }
+    private val crop by lazy {
+        UCropIml(requireContext(), Uri.parse(media.path), piCropFragment.args, ::handleResult).also {
+            lifecycle.addObserver(it)
+        }
+    }
 
     private lateinit var root: ConstraintLayout
     private lateinit var cropTools: CropToolsView
@@ -134,7 +136,7 @@ class CropDialogFragment : BaseDialogFragment() {
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = 0
                 if (this is ViewGroup.MarginLayoutParams) {
-                    val margin =  dpToPxInt(16f)
+                    val margin = dpToPxInt(16f)
                     marginStart = margin
                     marginEnd = margin
                     topMargin = margin

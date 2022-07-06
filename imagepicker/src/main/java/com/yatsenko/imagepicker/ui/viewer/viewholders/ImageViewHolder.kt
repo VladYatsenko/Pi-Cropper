@@ -17,7 +17,7 @@ import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.imageview.PhotoView2
 import kotlin.math.max
 
-class ImageViewHolder(
+internal class ImageViewHolder(
     val view: View,
     val vhCustomizer: VHCustomizer,
     callback: ImageViewerAdapterListener) : FullscreenViewHolder(view) {

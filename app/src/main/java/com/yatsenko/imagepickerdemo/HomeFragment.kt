@@ -14,18 +14,12 @@ import com.yatsenko.imagepicker.ui.PiCropperFragment
 
 class HomeFragment: Fragment() {
 
-    //with runActivity()
-    private val contract = registerForActivityResult(PiCropperContract) { list ->
-        list?.let { applyMediaResult(it) }
-    }
-
     private val adapter = MediaAdapter()
     private lateinit var recycler: RecyclerView
     private lateinit var crop: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //with runFragment()
         setFragmentResultListener(PiCropperFragment.PiCROPPER_RESULT) { key, bundle ->
             bundle.getStringArrayList(PiCropperFragment.RESULT_MEDIA)?.mapNotNull { it }?.let {
                 applyMediaResult(it)
@@ -43,7 +37,7 @@ class HomeFragment: Fragment() {
 
         crop = view.findViewById(R.id.crop)
         crop.setOnClickListener {
-            runFragment()
+            openPiCropperFragment()
         }
 
         recycler = view.findViewById(R.id.recycler)
@@ -51,17 +45,12 @@ class HomeFragment: Fragment() {
         recycler.adapter = adapter
     }
 
-    private fun runFragment() {
+    private fun openPiCropperFragment() {
         val args = PiCropperFragment.prepareOptions(
             collectCount = 10,
             forceOpenEditor = true
         )
         findNavController().navigate(R.id.piCropperFragment, args)
-    }
-
-    private fun runActivity() {
-        //doesnt return result
-        contract.launch(null)
     }
 
     private fun applyMediaResult(list: List<String>) {

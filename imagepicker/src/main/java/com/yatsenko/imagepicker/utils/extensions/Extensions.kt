@@ -8,7 +8,7 @@ import androidx.core.util.forEach
 import androidx.core.view.ViewCompat
 import com.yatsenko.imagepicker.core.Theme
 
-fun <T> SparseArray<T>?.toList(): List<T> {
+internal fun <T> SparseArray<T>?.toList(): List<T> {
     val list = ArrayList<T>()
     this?.forEach { _, value ->
         list.add(value)
@@ -16,7 +16,7 @@ fun <T> SparseArray<T>?.toList(): List<T> {
     return list.toList()
 }
 
-fun Activity.setupActionBar() {
+internal fun Activity.setupActionBar() {
     val color = Theme.themedColor(this, Theme.statusBarColor)
     val lightStatusBar = true
     window.statusBarColor = color
@@ -33,7 +33,7 @@ fun Activity.setupActionBar() {
     }
 }
 
-fun Activity.setupBottomBar() {
+internal fun Activity.setupBottomBar() {
     val color = Theme.themedColor(this, Theme.navigationBarColor)
     val lightStatusBar = true
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

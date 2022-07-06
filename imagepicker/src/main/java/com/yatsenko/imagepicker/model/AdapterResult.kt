@@ -4,7 +4,7 @@ import android.widget.ImageView
 import com.yatsenko.imagepicker.widgets.crop.AspectRatioAdapter
 import com.yatsenko.imagepicker.widgets.crop.AspectRatioWrapper
 
-sealed class AdapterResult {
+internal sealed class AdapterResult {
     data class FolderChanged(val folder: Folder): AdapterResult()
     object GoBack: AdapterResult()
 

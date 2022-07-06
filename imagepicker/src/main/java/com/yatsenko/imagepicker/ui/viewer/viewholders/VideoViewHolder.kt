@@ -14,7 +14,7 @@ import com.yatsenko.imagepicker.utils.transition.TransitionStartHelper
 import com.yatsenko.imagepicker.widgets.video.ExoVideoView2
 import kotlin.math.max
 
-class VideoViewHolder(
+internal class VideoViewHolder(
     view: View,
     callback: ImageViewerAdapterListener
 ) : FullscreenViewHolder(view) {

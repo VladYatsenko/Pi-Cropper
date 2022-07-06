@@ -9,7 +9,7 @@ import com.yatsenko.imagepicker.ui.cropper.CropDialogFragment
 import com.yatsenko.imagepicker.ui.picker.PickerFragment
 import com.yatsenko.imagepicker.ui.viewer.ImageViewerDialogFragment
 
-class Router(private val containerId: Int, private val fragmentManager: FragmentManager) {
+internal class Router(private val containerId: Int, private val fragmentManager: FragmentManager) {
 
     val backStackCount: Int
         get() = fragmentManager.backStackEntryCount

@@ -54,7 +54,7 @@ class Overlay @JvmOverloads constructor(
     private val top: View
     private val bottom: View
 
-    var data: Data? = null
+    internal var data: Data? = null
         set(value) {
             val checkboxAnimation = value?.image?.shouldAnimate?.invoke(field?.image) == true
             val overlayAnimation = value?.image?.hideInViewer != field?.image?.hideInViewer
@@ -62,7 +62,7 @@ class Overlay @JvmOverloads constructor(
             refreshLayout(checkboxAnimation, overlayAnimation)
         }
 
-    var result: (AdapterResult) -> Unit = {}
+    internal var result: (AdapterResult) -> Unit = {}
 
     init {
         inflate(context, R.layout.view_overlay, this)
@@ -151,7 +151,7 @@ class Overlay @JvmOverloads constructor(
         }
     }
 
-    data class Data(
+    internal data class Data(
         val image: Media,
         val single: Boolean = false
     ) {

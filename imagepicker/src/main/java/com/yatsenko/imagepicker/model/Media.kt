@@ -3,7 +3,7 @@ package com.yatsenko.imagepicker.model
 import java.io.File
 import java.io.Serializable
 
-sealed class Media(
+internal sealed class Media(
     open val id: String,
     open val path: String,
     open val lastModified: Long,
@@ -110,7 +110,7 @@ sealed class Media(
 
 }
 
-sealed class Folder(
+internal sealed class Folder(
     open val id: String,
     open val name: String?,
     open val firstImagePath: String,

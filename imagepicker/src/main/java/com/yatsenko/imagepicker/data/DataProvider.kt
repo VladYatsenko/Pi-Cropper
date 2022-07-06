@@ -5,13 +5,13 @@ import android.os.Looper
 import com.yatsenko.imagepicker.model.Media
 import kotlin.math.min
 
-interface DataProvider {
+internal interface DataProvider {
     fun loadInitial(): List<Media> = emptyList()
     fun loadAfter(key: String, callback: (List<Media>) -> Unit) {}
     fun loadBefore(key: String, callback: (List<Media>) -> Unit) {}
 }
 
-class SimpleDataProvider(val list: List<Media>) : DataProvider {
+internal class SimpleDataProvider(val list: List<Media>) : DataProvider {
 
     override fun loadInitial() = list
 

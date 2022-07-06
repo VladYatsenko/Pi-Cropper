@@ -16,7 +16,7 @@ import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.AspectRatio
 
-class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() {
+internal class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() {
 
     private val callback = object : DiffUtil.ItemCallback<AspectRatioWrapper>() {
 
@@ -81,7 +81,7 @@ class AspectRatioAdapter: RecyclerView.Adapter<AspectRatioAdapter.ViewHolder>() 
 }
 
 
-data class AspectRatioWrapper(
+internal data class AspectRatioWrapper(
     val ratio: AspectRatio,
     val isSelected: Boolean
 ) {
