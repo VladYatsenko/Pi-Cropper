@@ -1,16 +1,4 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/pickerColorPrimary</item>
-        <item name="colorPrimaryDark">@color/pickerColorPrimaryDark</item>
-        <item name="colorAccent">@color/pickerColorAccent</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
-
-    //
-
     <style name="Theme.Light.NoTitle.ViewerDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>

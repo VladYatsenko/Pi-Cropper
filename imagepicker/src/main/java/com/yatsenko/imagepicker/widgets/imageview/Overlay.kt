@@ -19,7 +19,6 @@ import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.extensions.*
 import com.yatsenko.imagepicker.utils.extensions.Animations.slideDown
 import com.yatsenko.imagepicker.utils.extensions.Animations.slideUp
-import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
 import com.yatsenko.imagepicker.utils.extensions.applyMargin
 import com.yatsenko.imagepicker.widgets.checkbox.CheckBox2
 

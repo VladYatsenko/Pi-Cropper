@@ -1,13 +1,12 @@
 package com.yatsenko.imagepicker.ui
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.Arguments
 import com.yatsenko.imagepicker.model.AspectRatio
 import com.yatsenko.imagepicker.model.CompressFormat
@@ -31,7 +30,6 @@ class PiCropperFragment : BaseFragment() {
         internal const val QUALITY = "QUALITY"
         internal const val COMPRESS_FORMAT = "COMPRESS_FORMAT"
 
-        const val INTENT_PiCROPPER_RESULT = "intent_picropper_result"
         const val PiCROPPER_RESULT = "picropper_result"
         const val RESULT_MEDIA = "result_media"
 
@@ -83,9 +81,9 @@ class PiCropperFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().apply {
-            setupActionBar()
-            setupBottomBar()
+        requireActivity().window.apply {
+            setupActionBar(Theme.themedColor(requireContext(), Theme.statusBarColor), Theme.lightStatusBar)
+            setupBottomBar(Theme.themedColor(requireContext(), Theme.navigationBarColor), Theme.lightNavigationBar)
         }
     }
 

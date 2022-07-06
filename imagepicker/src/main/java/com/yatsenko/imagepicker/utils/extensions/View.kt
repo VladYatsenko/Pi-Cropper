@@ -8,6 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Dimension
 import androidx.core.content.ContextCompat
+import androidx.core.view.*
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yatsenko.imagepicker.core.Theme
 
@@ -65,5 +68,20 @@ private fun Context.sizeByIdentifier(name: String): Int {
         resources.getDimensionPixelSize(resourceId)
     } else 0
 }
+
+internal fun <T : RecyclerView.ViewHolder> RecyclerView.findViewHolderByAdapterPosition(position: Int): T? {
+    return this.findViewHolderForAdapterPosition(position) as? T
+}
+
+internal fun <T : RecyclerView.ViewHolder> ViewPager2.findViewHolderByAdapterPosition(position: Int): T? {
+    return (getChildAt(0) as? RecyclerView?)?.findViewHolderByAdapterPosition(position)
+}
+
+fun View.updateMargin(
+    left: Int = marginLeft,
+    top: Int = marginTop,
+    right: Int = marginRight,
+    bottom: Int = marginBottom
+) = updateLayoutParams<ViewGroup.MarginLayoutParams> { updateMargins(left, top, right, bottom) }
 
 

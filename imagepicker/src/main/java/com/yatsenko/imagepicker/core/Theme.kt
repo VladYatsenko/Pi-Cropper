@@ -49,6 +49,8 @@ object Theme {
     )
 
     var theme: Map<String, Int> = dark
+    var lightStatusBar: Boolean = true
+    var lightNavigationBar: Boolean = true
 
     fun themedColor(name: String): Int {
         return theme[name] ?: R.color.ebony_clay

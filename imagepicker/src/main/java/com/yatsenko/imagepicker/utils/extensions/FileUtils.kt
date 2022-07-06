@@ -30,5 +30,5 @@ internal object FileUtils {
         return File(context.cacheDir, destinationFileName)
     }
 
-    fun File.fileUri(context: Context) = Uri.fromFile(this)
+    internal fun File.fileUri(context: Context) = Uri.fromFile(this)
 }

@@ -8,7 +8,6 @@ import android.view.animation.Transformation
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
@@ -16,9 +15,9 @@ import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.transition.ViewerTransitionHelper
-import com.yatsenko.imagepicker.utils.extensions.EdgeToEdge.updateMargin
 import com.yatsenko.imagepicker.utils.extensions.dpToPx
 import com.yatsenko.imagepicker.utils.extensions.loadImage
+import com.yatsenko.imagepicker.utils.extensions.updateMargin
 import com.yatsenko.imagepicker.widgets.checkbox.CheckBoxGrid
 
 

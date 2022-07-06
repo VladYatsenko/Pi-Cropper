@@ -1,11 +1,9 @@
 package com.yatsenko.imagepicker.ui.abstraction
 
 import android.app.Dialog
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.CallSuper
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.yatsenko.imagepicker.R
@@ -56,6 +54,10 @@ open class BaseDialogFragment : DialogFragment() {
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
         win.attributes = lp
         win.setGravity(Gravity.CENTER)
+
+        //todo migrate to win insets
+        //win.setupActionBar(ContextCompat.getColor(win.context, R.color.transparent_gray_35), false)
+        //win.setupBottomBar(ContextCompat.getColor(win.context, R.color.transparent_gray_40), false)
 
         win.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
     }
