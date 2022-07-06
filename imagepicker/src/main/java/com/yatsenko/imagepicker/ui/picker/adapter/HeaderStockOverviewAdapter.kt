@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.Nullable
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.Folder
 
 class HeaderStockOverviewAdapter(
@@ -28,7 +29,10 @@ class HeaderStockOverviewAdapter(
         val view = convertView ?: inflater.inflate(R.layout.item_folder, parent, false)
 
         val rowItem: Folder? = getItem(position)
-        view.findViewById<TextView>(R.id.folderNameTxt).text = rowItem?.name
+        view.findViewById<TextView>(R.id.folderNameTxt).apply {
+            text = rowItem?.name
+            setTextColor(Theme.themedColor(context, Theme.toolbarContentColor))
+        }
         return view
     }
 
@@ -36,7 +40,10 @@ class HeaderStockOverviewAdapter(
         val view: View = convertView ?: inflater.inflate(R.layout.item_folder_row, parent, false)
 
         val rowItem: Folder? = getItem(position)
-        view.findViewById<TextView>(R.id.folderNameTxt).text = rowItem?.name
+        view.findViewById<TextView>(R.id.folderNameTxt).apply {
+            text = rowItem?.name
+            setTextColor(Theme.themedColor(context, Theme.toolbarContentColor))
+        }
         view.findViewById<TextView>(R.id.imageContTxt).text = rowItem?.count.toString()
 
         return view

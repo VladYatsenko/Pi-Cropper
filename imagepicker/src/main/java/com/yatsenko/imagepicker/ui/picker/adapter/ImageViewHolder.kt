@@ -7,9 +7,12 @@ import android.view.animation.Animation
 import android.view.animation.Transformation
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.utils.transition.ViewerTransitionHelper
@@ -26,6 +29,10 @@ class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun create(parent: ViewGroup) = ImageViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
         )
+    }
+
+    private val root = view.findViewById<ConstraintLayout>(R.id.root).apply {
+        this.setBackgroundColor(Theme.themedColor(context, Theme.imageBackgroundColor))
     }
 
     private val thumbnail = view.findViewById<ImageView>(R.id.image)

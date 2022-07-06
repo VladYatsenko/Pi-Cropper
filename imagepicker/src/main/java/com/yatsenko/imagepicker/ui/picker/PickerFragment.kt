@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Media
 import com.yatsenko.imagepicker.ui.abstraction.BaseChildFragment
@@ -38,6 +39,7 @@ class PickerFragment : BaseChildFragment() {
         super.onViewCreated(view, savedInstanceState)
         toolbar = view.findViewById(R.id.dropdown_toolbar)
         recycler = view.findViewById(R.id.recycler)
+        recycler.setBackgroundColor(Theme.themedColor(requireContext(), Theme.gridBackgroundColor))
         recycler.layoutManager = GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         recycler.adapter = imageAdapter
         recycler.itemAnimator = null

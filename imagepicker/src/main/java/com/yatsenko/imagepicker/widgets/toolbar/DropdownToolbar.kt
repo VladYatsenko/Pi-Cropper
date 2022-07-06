@@ -1,6 +1,8 @@
 package com.yatsenko.imagepicker.widgets.toolbar
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.AdapterView
@@ -9,6 +11,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.yatsenko.imagepicker.R
+import com.yatsenko.imagepicker.core.Theme
 import com.yatsenko.imagepicker.model.AdapterResult
 import com.yatsenko.imagepicker.model.Folder
 import com.yatsenko.imagepicker.ui.picker.adapter.HeaderStockOverviewAdapter
@@ -42,7 +45,11 @@ class DropdownToolbar @JvmOverloads constructor(
         ViewCompat.setElevation(this, dpToPx(8))
 
         toolbar = findViewById(R.id.toolbar)
+        toolbar.setBackgroundColor(Theme.themedColor(context, Theme.toolbarColor))
         spinner = findViewById(R.id.spinner)
+        spinner.backgroundTintList = ColorStateList.valueOf(Theme.themedColor(context, Theme.toolbarContentColor))
+        spinner.setPopupBackgroundDrawable(ColorDrawable(Theme.themedColor(context, Theme.toolbarColor)))
+        toolbar.navigationIcon?.setTint(Theme.themedColor(context, Theme.toolbarContentColor))
         toolbar.setNavigationOnClickListener {
             result(AdapterResult.GoBack)
         }
