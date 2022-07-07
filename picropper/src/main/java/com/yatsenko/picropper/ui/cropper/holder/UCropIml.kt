@@ -1,10 +1,8 @@
 package com.yatsenko.picropper.ui.cropper.holder
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.view.ViewGroup
-import androidx.core.view.updatePadding
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.yalantis.ucrop.callback.BitmapCropCallback
@@ -12,17 +10,16 @@ import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_DISABLE
 import com.yalantis.ucrop.view.OverlayView.FREESTYLE_CROP_MODE_ENABLE
 import com.yalantis.ucrop.view.TransformImageView.TransformImageListener
 import com.yalantis.ucrop.view.UCropView
-import com.yatsenko.picropper.R
 import com.yatsenko.picropper.model.AdapterResult
 import com.yatsenko.picropper.model.Arguments
 import com.yatsenko.picropper.model.AspectRatio
 import com.yatsenko.picropper.model.Media
 import com.yatsenko.picropper.utils.extensions.FileUtils
 import com.yatsenko.picropper.utils.extensions.FileUtils.fileUri
-import com.yatsenko.picropper.utils.extensions.actionBarSize
-import kotlinx.android.synthetic.main.layout_crop_tools.view.*
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 internal class UCropIml(
     private val context: Context,
@@ -119,7 +116,7 @@ internal class UCropIml(
                 gestureCropImageView.cropAndSaveImage(compressFormat, compressQuality, object : BitmapCropCallback {
                     override fun onBitmapCropped(resultUri: Uri, offsetX: Int, offsetY: Int, imageWidth: Int, imageHeight: Int) {
                         wasCropped = true
-                        val newMedia = Media.Image.croppedImage(outputFile, imageWidth, imageHeight)
+                        val newMedia = Media.Image.croppedImage(resultUri, imageWidth, imageHeight, outputFile.length().toInt())
                         internalResult(AdapterResult.OnImageCropped(newMedia))
                     }
 

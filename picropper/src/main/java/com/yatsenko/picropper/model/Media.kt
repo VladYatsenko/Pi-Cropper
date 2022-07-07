@@ -1,6 +1,7 @@
 package com.yatsenko.picropper.model
 
-import java.io.File
+import android.net.Uri
+import androidx.core.net.toFile
 import java.io.Serializable
 
 internal sealed class Media(
@@ -48,16 +49,16 @@ internal sealed class Media(
             get() = croppedImage?.path ?: path
 
         companion object {
-            fun croppedImage(file: File, width: Int, height: Int): Image {
+            fun croppedImage(uri: Uri, width: Int, height: Int, size: Int): Image {
                 return Image(
                     id = "",
-                    path = file.path,
+                    path = uri.toString(),
                     lastModified = 0,
                     folderId = "",
                     width = width,
                     height = height,
-                    size = file.length().toInt(),
-                    name = "",
+                    size = size,
+                    name = uri.toFile().name,
                     indexInResult = -1,
                     hideInGrid = false,
                     croppedImage = null
