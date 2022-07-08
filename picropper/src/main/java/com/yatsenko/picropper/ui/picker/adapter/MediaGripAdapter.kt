@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yatsenko.picropper.model.AdapterResult
 import com.yatsenko.picropper.model.Media
 
-internal class ImageGripAdapter(
+internal class MediaGripAdapter(
     private val single: Boolean = true
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -41,14 +41,14 @@ internal class ImageGripAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ImageViewHolder.create(parent)
+        return MediaViewHolder.create(parent)
     }
 
     override fun getItemCount() = list.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ImageViewHolder -> list[position].let { image ->
+            is MediaViewHolder -> list[position].let { image ->
                 holder.bind(image, single) { result(it) }
             }
         }
@@ -57,12 +57,12 @@ internal class ImageGripAdapter(
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         super.onViewAttachedToWindow(holder)
         when (holder) {
-            is ImageViewHolder -> holder.refreshTransitionView()
+            is MediaViewHolder -> holder.refreshTransitionView()
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return ImageViewHolder.VIEW_TYPE
+        return MediaViewHolder.VIEW_TYPE
     }
 
     override fun getItemId(position: Int): Long {

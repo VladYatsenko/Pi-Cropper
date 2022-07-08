@@ -11,9 +11,9 @@ import com.yatsenko.picropper.core.Theme
 import com.yatsenko.picropper.model.AdapterResult
 import com.yatsenko.picropper.model.Media
 import com.yatsenko.picropper.ui.abstraction.BaseChildFragment
-import com.yatsenko.picropper.ui.picker.adapter.ImageGripAdapter
-import com.yatsenko.picropper.ui.picker.adapter.ImageViewHolder
-import com.yatsenko.picropper.ui.picker.viewmodel.PickerViewModel
+import com.yatsenko.picropper.ui.picker.adapter.MediaGripAdapter
+import com.yatsenko.picropper.ui.picker.adapter.MediaViewHolder
+import com.yatsenko.picropper.ui.picker.viewmodel.MediaViewModel
 import com.yatsenko.picropper.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.picropper.utils.PermissionHelper
 import com.yatsenko.picropper.utils.extensions.applyTheming
@@ -27,12 +27,12 @@ class PickerFragment : BaseChildFragment() {
     private lateinit var recycler: RecyclerView
     private lateinit var doneFab: FloatingActionButton
 
-    private val viewModel: PickerViewModel by viewModels(
+    private val viewModel: MediaViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
         factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
     )
 
-    private val imageAdapter by lazy { ImageGripAdapter(piCropFragment.args.single) }
+    private val imageAdapter by lazy { MediaGripAdapter(piCropFragment.args.single) }
     private val permissionHelper by lazy { PermissionHelper(this, viewModel::extractImages) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ class PickerFragment : BaseChildFragment() {
         recycler.layoutManager = GridLayoutManager(requireContext(), 3, RecyclerView.VERTICAL, false)
         recycler.adapter = imageAdapter
         recycler.itemAnimator = null
-        recycler.recycledViewPool.setMaxRecycledViews(ImageViewHolder.VIEW_TYPE, 40)
+        recycler.recycledViewPool.setMaxRecycledViews(MediaViewHolder.VIEW_TYPE, 40)
 
         toolbar.result = ::handleAdapterResult
         imageAdapter.result = ::handleAdapterResult

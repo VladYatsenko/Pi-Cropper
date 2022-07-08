@@ -20,7 +20,7 @@ import com.yatsenko.picropper.model.AdapterResult
 import com.yatsenko.picropper.model.Media
 import com.yatsenko.picropper.ui.abstraction.BaseDialogFragment
 import com.yatsenko.picropper.ui.cropper.holder.UCropIml
-import com.yatsenko.picropper.ui.picker.viewmodel.PickerViewModel
+import com.yatsenko.picropper.ui.picker.viewmodel.MediaViewModel
 import com.yatsenko.picropper.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.picropper.ui.viewer.utils.Config
 import com.yatsenko.picropper.utils.ImageLoader
@@ -61,7 +61,7 @@ internal class CropDialogFragment : BaseDialogFragment() {
     private val transitionHelper: TransitionHelper
         get() = if (piCropFragment.args.forceOpenEditor) ViewerTransitionHelper else CropperTransitionHelper
 
-    private val viewModel: PickerViewModel by viewModels(
+    private val viewModel: MediaViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
         factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
     )

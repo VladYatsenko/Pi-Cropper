@@ -7,7 +7,7 @@ import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.yatsenko.picropper.R
 import com.yatsenko.picropper.model.Arguments
-import com.yatsenko.picropper.ui.picker.viewmodel.PickerViewModel
+import com.yatsenko.picropper.ui.picker.viewmodel.MediaViewModel
 import com.yatsenko.picropper.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.picropper.utils.Router
 import com.yatsenko.picropper.utils.extensions.setupActionBar
@@ -70,7 +70,7 @@ class PiCropperFragment : BaseFragment() {
         shouldForceOpenEditor = requireArguments().getBoolean(FORCE_OPEN_EDITOR, false)
     ) }
 
-    private val viewModel: PickerViewModel by viewModels(
+    private val viewModel: MediaViewModel by viewModels(
         factoryProducer = { ViewModelFactory(requireActivity().application, args) }
     )
 

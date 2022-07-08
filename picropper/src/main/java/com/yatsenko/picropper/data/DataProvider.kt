@@ -11,7 +11,7 @@ internal interface DataProvider {
     fun loadBefore(key: String, callback: (List<Media>) -> Unit) {}
 }
 
-internal class SimpleDataProvider(val list: List<Media>) : DataProvider {
+internal class MediaDataProvider(val list: List<Media>) : DataProvider {
 
     override fun loadInitial() = list
 

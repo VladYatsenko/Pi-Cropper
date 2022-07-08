@@ -16,7 +16,7 @@ import com.yatsenko.picropper.R
 import com.yatsenko.picropper.model.AdapterResult
 import com.yatsenko.picropper.model.Media
 import com.yatsenko.picropper.ui.abstraction.BaseDialogFragment
-import com.yatsenko.picropper.ui.picker.viewmodel.PickerViewModel
+import com.yatsenko.picropper.ui.picker.viewmodel.MediaViewModel
 import com.yatsenko.picropper.ui.picker.viewmodel.ViewModelFactory
 import com.yatsenko.picropper.ui.viewer.adapter.ImageViewerAdapter
 import com.yatsenko.picropper.ui.viewer.adapter.ImageViewerAdapterListener
@@ -63,7 +63,7 @@ open class ImageViewerDialogFragment : BaseDialogFragment() {
 
     private val overlayHelper by lazy { OverlayHelper(piCropFragment.args.single) }
 
-    private val viewModel: PickerViewModel by viewModels(
+    private val viewModel: MediaViewModel by viewModels(
         ownerProducer = ::requireParentFragment,
         factoryProducer = { ViewModelFactory(requireActivity().application, piCropFragment.args) }
     )

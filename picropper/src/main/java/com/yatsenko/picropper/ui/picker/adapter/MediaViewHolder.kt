@@ -21,11 +21,11 @@ import com.yatsenko.picropper.utils.extensions.updateMargin
 import com.yatsenko.picropper.widgets.checkbox.CheckBoxGrid
 
 
-internal class ImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+internal class MediaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     companion object {
         val VIEW_TYPE = R.layout.item_image
-        fun create(parent: ViewGroup) = ImageViewHolder(
+        fun create(parent: ViewGroup) = MediaViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
         )
     }

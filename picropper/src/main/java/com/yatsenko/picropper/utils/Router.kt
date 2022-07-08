@@ -1,7 +1,6 @@
 package com.yatsenko.picropper.utils
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.yatsenko.picropper.model.Media
@@ -11,7 +10,7 @@ import com.yatsenko.picropper.ui.viewer.ImageViewerDialogFragment
 
 internal class Router(private val containerId: Int, private val fragmentManager: FragmentManager) {
 
-    val backStackCount: Int
+    private val backStackCount: Int
         get() = fragmentManager.backStackEntryCount
 
     val canGoBack: Boolean

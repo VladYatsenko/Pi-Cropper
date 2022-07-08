@@ -9,18 +9,18 @@ import androidx.paging.toLiveData
 import com.yatsenko.picropper.data.ImageReaderContract
 import com.yatsenko.picropper.model.*
 import com.yatsenko.picropper.data.DataProvider
-import com.yatsenko.picropper.data.SimpleDataProvider
+import com.yatsenko.picropper.data.MediaDataProvider
 import com.yatsenko.picropper.widgets.crop.AspectRatioWrapper
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-internal class PickerViewModel(application: Application, private val arguments: Arguments) : AndroidViewModel(application) {
+internal class MediaViewModel(application: Application, private val arguments: Arguments) : AndroidViewModel(application) {
 
     private val imageReader by lazy { ImageReaderContract(application) }
 
     private val dataProvider: DataProvider
-        get() = SimpleDataProvider(media)
+        get() = MediaDataProvider(media)
     private val lock = Any()
     private var snapshot: List<Media>? = null
     private var dataSource: DataSource<String, Media>? = null

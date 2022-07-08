@@ -8,16 +8,6 @@
 
     <application
         android:allowBackup="true"
-        android:supportsRtl="true">
-<!--        <provider-->
-<!--            android:name="com.yatsenko.picropper.utils.CropFileProvider"-->
-<!--            android:authorities="${applicationId}.cropper.fileprovider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true" >-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/library_file_paths" />-->
-<!--        </provider>-->
-    </application>
+        android:supportsRtl="true"/>
 
 </manifest>
