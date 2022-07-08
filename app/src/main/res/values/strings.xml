@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Image picker cropper</string>
+    <string name="app_name">Pi-Cropper</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -51,6 +51,10 @@ class HomeFragment: Fragment() {
         findNavController().navigate(R.id.piCropperFragment, args)
     }
 
+    private fun openSettings() {
+        
+    }
+
     private fun applyMediaResult(list: List<Uri>) {
         adapter.submitList(list)
     }
