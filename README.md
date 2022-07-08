@@ -4,20 +4,49 @@ Android library, which helps to pick images from a device and crops them
 # Preview 
 <img src="media/Screenshot_20220706-154832.jpg" alt="" width="250"/> <img src="media/Screenshot_20220706-154855.jpg" alt="" width="250"/> <img src="media/Screenshot_20220706-154905.jpg" alt="" width="250"/>
 
+# Installation
+
+Include the library to your project
+
+In `settings.gradle` file:
+```
+allprojects {
+    repositories {
+        ...
+        maven { url "https://jitpack.io" }
+    }
+}
+```
+In app `build.gradle` file:
+``` 
+dependencies {
+    implementation 'com.github.VladYatsenko:pi-cropper:X.X' 
+}	
+```
 # Usage
+Define result callback in your fragment
+```java
+override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    piCropperFragmentResultListener { list ->
+        val result: List<Uri> = list
+    }
+}
+```
 
-1. Include the library to your project
-
-	```
-	allprojects {
-	   repositories {
-	      jcenter()
-	      maven { url "https://jitpack.io" }
-	   }
-	}
-	```
-  
-    ``` implementation 'com.github.VladYatsenko:pi-cropper:1.0' ```
+Open PiCropperFragment
+```java
+val args = PiCropperFragment.prepareOptions(
+    aspectRatio = AspectRatio.defaultList,
+    allImagesFolder = "All Images",
+    collectCount = 10,
+    forceOpenEditor = false,
+    circleCrop = false,
+    quality = 90,
+    compressFormat = CompressFormat.JPEG
+)
+findNavController().navigate(R.id.piCropperFragment, args)
+```
     
 # Customization
 ### Setup params
@@ -29,6 +58,7 @@ Android library, which helps to pick images from a device and crops them
 | shouldForceOpenEditor | Open editor from images grid. Only if collectCount == 1 | false |
 | circleCrop | Editor's circle crop mode | false |
 | quality | Quality of edited image | 80 |
+| compressFormat | Compress format of edited image | CompressFormat.JPEG |
 
 ### Theming params
 
