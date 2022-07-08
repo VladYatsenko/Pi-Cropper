@@ -1,6 +1,7 @@
 # Pi-Cropper 
 Android library, which helps to pick images from a device and crops them
 
+[![](https://jitpack.io/v/VladYatsenko/Pi-Cropper.svg)](https://jitpack.io/#VladYatsenko/Pi-Cropper)
 # Preview 
 <img src="media/Screenshot_20220706-154832.jpg" alt="" width="250"/> <img src="media/Screenshot_20220706-154855.jpg" alt="" width="250"/> <img src="media/Screenshot_20220706-154905.jpg" alt="" width="250"/>
 
