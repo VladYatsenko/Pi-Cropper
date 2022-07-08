@@ -1,5 +1,6 @@
-package com.yatsenko.picropperdemo
+package com.yatsenko.imagepicker
 
+import android.net.Uri
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
@@ -8,9 +9,9 @@ import com.bumptech.glide.request.RequestOptions
 
 class MediaAdapter: RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
 
-    private val list: MutableList<String> = mutableListOf()
+    private val list: MutableList<Uri> = mutableListOf()
 
-    fun submitList(list: List<String>) {
+    fun submitList(list: List<Uri>) {
         this.list.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -36,7 +37,7 @@ class MediaAdapter: RecyclerView.Adapter<MediaAdapter.ViewHolder>() {
             }
         }
 
-        fun bind(url: String) {
+        fun bind(url: Uri) {
             Glide.with(view)
                 .load(url)
                 .apply(RequestOptions().dontTransform())

@@ -1,5 +1,6 @@
-package com.yatsenko.picropperdemo
+package com.yatsenko.imagepicker
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.yatsenko.imagepicker.R
+import com.yatsenko.picropper.core.piCropperFragmentResultListener
 import com.yatsenko.picropper.ui.PiCropperFragment
 
 class HomeFragment: Fragment() {
@@ -21,11 +22,7 @@ class HomeFragment: Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResultListener(PiCropperFragment.PiCROPPER_RESULT) { key, bundle ->
-            bundle.getStringArrayList(PiCropperFragment.RESULT_MEDIA)?.mapNotNull { it }?.let {
-                applyMediaResult(it)
-            }
-        }
+        piCropperFragmentResultListener(::applyMediaResult)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,7 +51,7 @@ class HomeFragment: Fragment() {
         findNavController().navigate(R.id.piCropperFragment, args)
     }
 
-    private fun applyMediaResult(list: List<String>) {
+    private fun applyMediaResult(list: List<Uri>) {
         adapter.submitList(list)
     }
 }
