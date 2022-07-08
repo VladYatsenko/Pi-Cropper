@@ -1,8 +1,8 @@
 <resources>
 
+    <string name="app_name">cropper</string>
     <string name="all_image_folder">All Images</string>
     <string name="crop_style_dynamic">Free</string>
     <string name="crop_style_original">Original</string>
-
 
 </resources>

@@ -29,6 +29,7 @@ class PiCropperFragment : BaseFragment() {
         internal const val FORCE_OPEN_EDITOR = "FORCE_OPEN_EDITOR"
         internal const val QUALITY = "QUALITY"
         internal const val COMPRESS_FORMAT = "COMPRESS_FORMAT"
+        internal const val CAMERA = "CAMERA"
 
         const val PiCROPPER_RESULT = "picropper_result"
         const val RESULT_MEDIA = "result_media"
@@ -40,7 +41,8 @@ class PiCropperFragment : BaseFragment() {
             forceOpenEditor: Boolean = false,
             circleCrop: Boolean = false,
             quality: Int = 80,
-            compressFormat: CompressFormat = CompressFormat.JPEG
+            compressFormat: CompressFormat = CompressFormat.JPEG,
+            camera: Boolean = true
         ): Bundle {
             return Bundle().apply {
                 putParcelableArrayList(ASPECT_RATIO, ArrayList(aspectRatio))
@@ -50,6 +52,7 @@ class PiCropperFragment : BaseFragment() {
                 putBoolean(FORCE_OPEN_EDITOR, forceOpenEditor)
                 putInt(QUALITY, quality)
                 putParcelable(COMPRESS_FORMAT, compressFormat)
+                putBoolean(CAMERA, camera)
             }
         }
 
@@ -67,7 +70,8 @@ class PiCropperFragment : BaseFragment() {
         circleCrop = requireArguments().getBoolean(CIRCLE_CROP, false),
         quality = requireArguments().getInt(QUALITY, 80),
         compressFormat = requireArguments().getParcelable<CompressFormat>(COMPRESS_FORMAT) ?: CompressFormat.JPEG,
-        shouldForceOpenEditor = requireArguments().getBoolean(FORCE_OPEN_EDITOR, false)
+        shouldForceOpenEditor = requireArguments().getBoolean(FORCE_OPEN_EDITOR, false),
+        camera = requireArguments().getBoolean(CAMERA, true)
     ) }
 
     private val viewModel: MediaViewModel by viewModels(

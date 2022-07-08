@@ -11,7 +11,8 @@ internal data class Arguments(
     val circleCrop: Boolean,
     val quality: Int,
     val compressFormat: CompressFormat,
-    private val shouldForceOpenEditor: Boolean
+    private val shouldForceOpenEditor: Boolean,
+    val camera: Boolean
 ) {
 
     val single: Boolean
@@ -21,24 +22,24 @@ internal data class Arguments(
         get() = shouldForceOpenEditor && single
 
     val bitmapCompressFormat: Bitmap.CompressFormat
-        get() = when(compressFormat) {
+        get() = when (compressFormat) {
             CompressFormat.JPEG -> Bitmap.CompressFormat.JPEG
             CompressFormat.PNG -> Bitmap.CompressFormat.PNG
         }
 
     val compressFormatExtension: String
-        get() = when(compressFormat) {
+        get() = when (compressFormat) {
             CompressFormat.JPEG -> ".jpeg"
             CompressFormat.PNG -> ".png"
         }
 }
 
-sealed class CompressFormat: Parcelable {
+sealed class CompressFormat : Parcelable {
 
     @Parcelize
-    object JPEG: CompressFormat()
+    object JPEG : CompressFormat()
 
     @Parcelize
-    object PNG: CompressFormat()
+    object PNG : CompressFormat()
 
 }

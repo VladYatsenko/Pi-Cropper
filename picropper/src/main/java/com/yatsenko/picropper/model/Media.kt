@@ -109,6 +109,8 @@ internal sealed class Media(
 
     }
 
+    object Camera: Media("", "", 0, "", 0, 0, 0, "")
+
 }
 
 internal sealed class Folder(

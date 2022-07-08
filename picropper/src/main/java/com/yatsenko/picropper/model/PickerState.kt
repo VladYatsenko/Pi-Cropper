@@ -5,7 +5,8 @@ import com.yatsenko.picropper.widgets.crop.AspectRatioWrapper
 internal data class PickerState(
     val folders: List<Folder>,
     val selectedFolder: Folder,
-    val media: List<Media>
+    val grid: List<Media>,
+    val viewer: List<Media>
 )
 
 internal data class OverlayState(
