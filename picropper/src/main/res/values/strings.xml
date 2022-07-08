@@ -2,7 +2,10 @@
 
     <string name="all_image_folder">All Images</string>
     <string name="crop_style_dynamic">Free</string>
-    <string name="crop_style_original">Original</string>
 
+    <string name="permission_read_storage">Requires storage access to work properly.</string>
+    <string name="permission_read_storage_ok">OK</string>
+    <string name="permission_never_ask_again">Requires storage access to work properly. Provide permission in app settings.</string>
+    <string name="permission_never_ask_again_ok">OK</string>
 
 </resources>

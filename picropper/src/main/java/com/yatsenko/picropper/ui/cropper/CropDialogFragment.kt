@@ -73,8 +73,6 @@ internal class CropDialogFragment : BaseDialogFragment() {
 
         val startView = transitionHelper.provide(media.id)
         TransitionEndHelper.end(this, startView, transitionEnd) {
-            viewModel.onCropClosed()
-
             if (!piCropFragment.args.forceOpenEditor)
                 background.changeToBackgroundColor(Color.TRANSPARENT)
         }

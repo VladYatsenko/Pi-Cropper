@@ -1,0 +1,17 @@
+<paths>
+    <external-path
+        name="cropper_external"
+        path="Pictures" />
+    <external-files-path
+        name="cropper_external_files"
+        path="Pictures" />
+    <cache-path
+        name="cropper_cache"
+        path="Pictures" />
+    <external-cache-path
+        name="cropper_external_cache"
+        path="Pictures" />
+    <files-path
+        name="cropper_files"
+        path="Pictures" />
+</paths>

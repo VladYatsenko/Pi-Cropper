@@ -70,13 +70,14 @@ internal class MediaViewModel(application: Application, private val arguments: A
     private var pickerStateData = PickerState(
         folders = emptyList(),
         selectedFolder = noopFolder,
-        media = emptyList()
+        grid = emptyList(),
+        viewer = emptyList()
     )
 
     private var overlayStateData = OverlayState(media = null)
 
     val media: List<Media>
-        get() = pickerStateData.media
+        get() = pickerStateData.grid
 
     private val _selectedImages = mutableListOf<Media>()
     val selectedImages: List<Media>
@@ -90,7 +91,7 @@ internal class MediaViewModel(application: Application, private val arguments: A
 
     val viewerState: LiveData<PagedList<Media>> = dataSourceFactory.toLiveData(pageSize = 1)
 
-    private var fullscreenPosition: Int = -1
+    private var fullscreenId: String? = null
 
     private var croppingMedia: Media.Image? = null
     private var croppedMedia: Media.Image? = null
@@ -115,7 +116,7 @@ internal class MediaViewModel(application: Application, private val arguments: A
             if (pickerStateData.selectedFolder == noopFolder) {
                 pickerStateData = pickerStateData.copy(
                     folders = rawData.first,
-                    media = rawData.second
+                    grid = rawData.second
                 )
                 changeFolder(rawData.first.first())
             } else {
@@ -150,23 +151,24 @@ internal class MediaViewModel(application: Application, private val arguments: A
         refreshViewer()
     }
 
-    fun openFullscreen(position: Int) {
-        fullscreenPosition = position
+    fun openFullscreen(id: String) {
+        fullscreenId = id
         refreshFolderImages()
         refreshOverlay()
         refreshViewer()
     }
 
     fun onFullscreenPageChanged(position: Int) {
-        if (fullscreenPosition == position) return
+        val itemId = pickerStateData.viewer[position].id
+        if (fullscreenId == itemId) return
 
-        fullscreenPosition = position
+        fullscreenId = itemId
         refreshFolderImages()
         refreshOverlay()
     }
 
     fun onFullscreenClosed() {
-        fullscreenPosition = -1
+        fullscreenId = null
         refreshFolderImages()
         refreshOverlay()
     }
@@ -220,50 +222,52 @@ internal class MediaViewModel(application: Application, private val arguments: A
         refreshViewer()
     }
 
-    fun onCropClosed() {
-//        croppingMedia = null
-//        refreshFolderImages()
-//        refreshOverlay()
-    }
-
     private fun refreshFolderImages(folder: Folder = pickerStateData.selectedFolder) {
         val images = when (folder) {
             is Folder.All -> rawData.second
             is Folder.Common -> rawData.second.filter { it.folderId == folder.id }.distinctBy { it.lastModified }
-        }.mapIndexed(::remapSelectedImage)
+        }.mapIndexed(::remapSelectedImage).toMutableList()
+
+        val grid = if (arguments.camera && folder is Folder.All) {
+            images.add(0, Media.Camera)
+            images
+        } else images
+
         pickerStateData = pickerStateData.copy(
             selectedFolder = folder,
-            media = images
+            grid = grid,
+            viewer = images
         )
         _pickerState.postValue(pickerStateData)
     }
 
     private fun refreshViewer() {
-        val item = pickerStateData.media.getOrNull(fullscreenPosition) ?: return
+        val item = pickerStateData.grid.firstOrNull { it.id == fullscreenId } ?: return
         snapshot = listOf(item)
         dataSource?.invalidate()
     }
 
     private fun refreshOverlay() {
-        overlayStateData = overlayStateData.copy(media = pickerStateData.media.getOrNull(fullscreenPosition))
+        overlayStateData = overlayStateData.copy(media = pickerStateData.grid.firstOrNull { it.id == fullscreenId })
         _overlayState.postValue(overlayStateData)
     }
 
-    private fun remapSelectedImage(index: Int, image: Media): Media {
-        val indexInResult = _selectedImages.indexOfFirst { it.id == image.id }
-        val inFullscreen = index == fullscreenPosition
-        val inCropping = image.id == croppingMedia?.id
+    private fun remapSelectedImage(index: Int, media: Media): Media {
+        val indexInResult = _selectedImages.indexOfFirst { it.id == media.id }
+        val inFullscreen = media.id == fullscreenId
+        val inCropping = media.id == croppingMedia?.id
 
-        return if (image.indexInResult == indexInResult && image.hideInGrid == inFullscreen && image.hideInViewer == inCropping)
-            image
+        return if (media.indexInResult == indexInResult && media.hideInGrid == inFullscreen && media.hideInViewer == inCropping)
+            media
         else {
-            return when (image) {
+            return when (media) {
                 is Media.Image -> {
-                    val croppedImage = if (indexInResult != -1) image.croppedImage else null
-                    image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen, hideInViewer = inCropping, croppedImage = croppedImage)
+                    val croppedImage = if (indexInResult != -1) media.croppedImage else null
+                    media.copy(indexInResult = indexInResult, hideInGrid = inFullscreen, hideInViewer = inCropping, croppedImage = croppedImage)
                 }
-                is Media.SubsamplingImage -> image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
-                is Media.Video -> image.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
+                is Media.SubsamplingImage -> media.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
+                is Media.Video -> media.copy(indexInResult = indexInResult, hideInGrid = inFullscreen)
+                is Media.Camera -> media
             }
         }
     }

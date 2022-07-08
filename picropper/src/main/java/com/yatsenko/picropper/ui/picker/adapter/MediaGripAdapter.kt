@@ -41,7 +41,10 @@ internal class MediaGripAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MediaViewHolder.create(parent)
+        return when (viewType) {
+            MediaViewHolder.VIEW_TYPE -> MediaViewHolder.create(parent)
+            else -> CameraViewHolder.create(parent)
+        }
     }
 
     override fun getItemCount() = list.size
@@ -51,6 +54,7 @@ internal class MediaGripAdapter(
             is MediaViewHolder -> list[position].let { image ->
                 holder.bind(image, single) { result(it) }
             }
+            is CameraViewHolder -> holder.bind(result)
         }
     }
 
@@ -62,7 +66,10 @@ internal class MediaGripAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return MediaViewHolder.VIEW_TYPE
+        return when(list[position]) {
+            is Media.Camera -> CameraViewHolder.VIEW_TYPE
+            else -> MediaViewHolder.VIEW_TYPE
+        }
     }
 
     override fun getItemId(position: Int): Long {
