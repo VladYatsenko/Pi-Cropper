@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Pi-Cropper</string>
+
+    <!--override resource -->
+    <string name="permission_read_storage">Requires storage access to work properly</string>
+
 </resources>
